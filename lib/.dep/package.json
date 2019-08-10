@@ -1,0 +1,29 @@
+{
+  "name": "jigc",
+  "version": "0.0.1",
+  "description": "JavaScript Implimentation of Garbled Circuits",
+  "main": "../../server.js",
+  "dependencies": {
+    "app-module-path": "^2.2.0",
+    "express": "^4.17.1",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wyatt-howe/jigc.git"
+  },
+  "keywords": [
+    "Garbled-Circuit",
+    "2PC"
+  ],
+  "author": "Wyatt Howe",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wyatt-howe/jigc/issues"
+  },
+  "homepage": "https://github.com/wyatt-howe/jigc#readme"
+}
