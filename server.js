@@ -6,6 +6,7 @@ var io = require('socket.io')(http);
 app.get('/', (request, response) => response.sendFile(__dirname+'/client.html'));
 app.get('/lib/base.js', (request, response) => response.sendFile(__dirname+'/lib/base.js'));
 app.get('/lib/socket.js', (request, response) => response.sendFile(__dirname+'/lib/socket.js'));
+app.get('/lib/operators.js', (request, response) => response.sendFile(__dirname+'/lib/operators.js'));
 
 http.listen(3000, () => console.log('listening on *:3000'));
 
@@ -38,7 +39,6 @@ io.on('connection', function(socket) {
   });
 
   socket.on('send', function(tag, msg) {
-    console.log(mailbox);
     if (socket.id === party.garbler) {
       if (typeof(mailbox.evaluator[tag]) !== 'undefined' && mailbox.evaluator[tag] != null && !(typeof(mailbox.evaluator[tag]) === 'string')) {
         mailbox.evaluator[tag](msg);

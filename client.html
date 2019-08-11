@@ -5,20 +5,19 @@
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="lib/socket.js"></script>
+    <script src="lib/operators.js"></script>
     <script src="lib/base.js"></script>
   </head>
   <body style="font-family: sans-serif; margin: 2em;">
     <h1>Garbled Circuits in JavaScript</h1>
     <!-- <select>
-      <option value="volvo">Pick Party Type</option>
-      <option value="saab">Garbler</option>
-      <option value="opel">Evaluator</option>
+      <option value="whoever">Pick Party Type</option>
+      <option value="garbler">Garbler</option>
+      <option value="evaluator">Evaluator</option>
     </select> -->
     <p>Enter a 64 digit (256bit) haxadecimal string to compute on:<p>
-    <form action="">
-      <input id="m" autocomplete="off"></input><br>
-      <button style="margin-top: 1em;">Compute</button>
-    </form>
+    <input id="source" autocomplete="off" style="font-family: monospace; width: 42em;" value="DA5698BE17B9B46962335799779FBECA8CE5D491C0D26243BAFEF9EA1837A9D8"></input><br>
+    <button style="margin-top: 1em;">Compute</button>
     <ul id="messages" style="nth-child(odd) { background: #eee; }"></ul>
   </body>
 </html>
