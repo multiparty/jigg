@@ -1,25 +1,23 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-    </style>
+    <title>Garbled Circuit JS 2PC</title>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="lib/base.js"></script>
   </head>
-  <body>
-    <ul id="messages"></ul>
+  <body style="font-family: sans-serif; margin: 2em;">
+    <h1>Garbled Circuits in JavaScript</h1>
+    <!-- <select>
+      <option value="volvo">Pick Party Type</option>
+      <option value="saab">Garbler</option>
+      <option value="opel">Evaluator</option>
+    </select> -->
+    <p>Enter a 64 digit (256bit) haxadecimal string to compute on:<p>
     <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+      <input id="m" autocomplete="off"></input><br>
+      <button style="margin-top: 1em;">Compute</button>
     </form>
+    <ul id="messages" style="nth-child(odd) { background: #eee; }"></ul>
   </body>
 </html>
