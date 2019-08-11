@@ -11,30 +11,18 @@ http.listen(3000, () => console.log('listening on *:3000'));
 var party = {garbler: null, evaluator: null};
 io.on('connection', function(socket) {
   socket.on('join', function(msg) {
-    if (msg === 'garbler') {
+    if (msg === 'garbler' || (!(msg === 'evaluator') && party.garbler == null)) {
       party.garbler = socket.id;
       console.log('connect garbler');
+      socket.emit('whoami', 'garbler');
       socket.on('disconnect', function() {
         party.garbler = null;
         console.log('garbler disconnected');
       });
-    } else if (msg === 'evaluator') {
+    } else if (msg === 'evaluator' || party.evaluator == null) {
       party.evaluator = socket.id;
       console.log('connect evaluator');
-      socket.on('disconnect', function() {
-        party.evaluator = null;
-        console.log('evaluator disconnected');
-      });
-    } else if (party.garbler == null) {
-      party.garbler = socket.id;
-      console.log('connect garbler');
-      socket.on('disconnect', function() {
-        party.garbler = null;
-        console.log('garbler disconnected');
-      });
-    } else if (party.evaluator == null) {
-      party.evaluator = socket.id;
-      console.log('connect evaluator');
+      socket.emit('whoami', 'evaluator');
       socket.on('disconnect', function() {
         party.evaluator = null;
         console.log('evaluator disconnected');
