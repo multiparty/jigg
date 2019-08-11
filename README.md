@@ -1,5 +1,5 @@
-# JIGC
- JavaScript implementation of garbled circuit 2PC protocols
+# JIGG
+ JavaScript implementation of garbled gates and 2PC boolean circuit  protocols
 
  ## Installation and Setup
 
