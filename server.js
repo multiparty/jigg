@@ -28,17 +28,21 @@ io.on('connection', function(socket) {
         console.log('evaluator disconnected');
       });
     }
+    if (party.garbler != null && party.evaluator != null) {
+      console.log('Both parties connected.');
+      io.to(party.garbler).emit('go');
+      io.to(party.evaluator).emit('go');
+    }
   });
 
-  socket.on('send', function(msg) {
-    console.log('socket.id', socket.id);
+  socket.on('send', function(tag, msg) {
     if (socket.id === party.garbler) {
-      console.log('sent', msg, 'to evaluator');
-      io.to(party.evaluator).emit('receive', msg);
+      console.log('sent', tag, msg, 'to evaluator');
+      io.to(party.evaluator).emit('receive', tag, msg);
     }
     if (socket.id === party.evaluator) {
-      console.log('sent', msg, 'to garbler');
-      io.to(party.garbler).emit('receive', msg);
+      console.log('sent', tag, msg, 'to garbler');
+      io.to(party.garbler).emit('receive', tag, msg);
     }
   });
 });
