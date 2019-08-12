@@ -97,14 +97,13 @@ io.on('connection', function(socket) {
   socket.on('oblv', function(length) {
     const random_bit = () => Math.random() < 0.5 ? 0 : 1;
 
-    let r0 = [];
-    let r1 = [];
+    var r0, r1;
     if (cache.unused) {
-      r0 = [];
-      r1 = [];
+      r0 = 0;
+      r1 = 0;
       for (var i = 0; i < length; i++) {  // or with map(...)
-        r0[i] = random_bit();
-        r1[i] = random_bit();
+        r0 += random_bit() * Math.pow(2, i);
+        r1 += random_bit() * Math.pow(2, i);
       }
       cache.r0 = r0;
       cache.r1 = r1;
