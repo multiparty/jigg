@@ -89,4 +89,24 @@ io.on('connection', function(socket) {
       }
     }
   });
+
+  socket.on('oblv', function(length) {
+    const random_bit = () => Math.random() < 0.5 ? 0 : 1;
+
+    let r0 = [];
+    let r1 = [];
+    for (var i = 0; i < length; i++) {  // or with map(...)
+      r0[i] = random_bit();
+      r1[i] = random_bit();
+    }
+
+    if (socket.id === party.garbler) {
+      socket.emit('oblv', JSON.stringify(r0), JSON.stringify(r1));
+    }
+
+    if (socket.id === party.evaluator) {
+      let d = random_bit();
+      socket.emit('oblv', String(d), JSON.stringify(d ? r1 : r0));
+    }
+  });
 });

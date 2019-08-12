@@ -1,7 +1,7 @@
 {
-  "name": "jigc",
+  "name": "jigg",
   "version": "0.0.1",
-  "description": "JavaScript Implimentation of Garbled Circuits",
+  "description": "JavaScript Implimentation of Garbled Gates (two-party computation library for boolean circuits)",
   "main": "../../server.js",
   "dependencies": {
     "app-module-path": "^2.2.0",
