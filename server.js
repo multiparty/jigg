@@ -12,6 +12,7 @@ http.listen(3000, () => console.log('listening on *:3000'));
 
 var party = {garbler: null, evaluator: null};
 var mailbox = {garbler: {}, evaluator: {}};
+var cache = {unused: true};
 io.on('connection', function(socket) {
   socket.on('join', function(msg) {
     if (msg === 'garbler' || (!(msg === 'evaluator') && party.garbler == null)) {
@@ -20,6 +21,7 @@ io.on('connection', function(socket) {
       socket.emit('whoami', 'garbler');
       socket.on('disconnect', function() {
         party.garbler = null;
+        mailbox.garbler = {};
         console.log('garbler disconnected');
       });
     } else if (msg === 'evaluator' || party.evaluator == null) {
@@ -28,6 +30,7 @@ io.on('connection', function(socket) {
       socket.emit('whoami', 'evaluator');
       socket.on('disconnect', function() {
         party.evaluator = null;
+        mailbox.evaluator = {};
         console.log('evaluator disconnected');
       });
     }
@@ -56,18 +59,19 @@ io.on('connection', function(socket) {
   });
 
   socket.on('listening for', function(tag) {
+    console.log('listening for', tag);
     if (socket.id === party.garbler) {
       if (typeof(mailbox.garbler[tag]) === 'string') {
         let msg = mailbox.garbler[tag];
         console.log('sent', tag, msg, 'to garbler');
-        io.to(party.garbler).emit('receive', tag, msg);
+        io.to(party.garbler).emit(tag, msg);
         mailbox.garbler[tag] = null;
       } else {
         (new Promise(function(resolve, reject) {
           mailbox.garbler[tag] = resolve;
         })).then(function (msg) {
           console.log('sent', tag, msg, 'to garbler');
-          io.to(party.garbler).emit('receive', tag, msg);
+          io.to(party.garbler).emit(tag, msg);
           mailbox.garbler[tag] = null;
         });
       }
@@ -76,14 +80,14 @@ io.on('connection', function(socket) {
       if (typeof(mailbox.evaluator[tag]) === 'string') {
         let msg = mailbox.evaluator[tag];
         console.log('sent', tag, msg, 'to evaluator');
-        io.to(party.evaluator).emit('receive', tag, msg);
+        io.to(party.evaluator).emit(tag, msg);
         mailbox.evaluator[tag] = null;
       } else {
         (new Promise(function(resolve, reject) {
           mailbox.evaluator[tag] = resolve;
         })).then(function (msg) {
           console.log('sent', tag, msg, 'to evaluator');
-          io.to(party.evaluator).emit('receive', tag, msg);
+          io.to(party.evaluator).emit(tag, msg);
           mailbox.evaluator[tag] = null;
         });
       }
@@ -95,18 +99,29 @@ io.on('connection', function(socket) {
 
     let r0 = [];
     let r1 = [];
-    for (var i = 0; i < length; i++) {  // or with map(...)
-      r0[i] = random_bit();
-      r1[i] = random_bit();
+    if (cache.unused) {
+      r0 = [];
+      r1 = [];
+      for (var i = 0; i < length; i++) {  // or with map(...)
+        r0[i] = random_bit();
+        r1[i] = random_bit();
+      }
+      cache.r0 = r0;
+      cache.r1 = r1;
+      cache.unused = false;
+    } else {
+      r0 = cache.r0;
+      r1 = cache.r1;
+      cache = {unused: true};  // clear cache
     }
 
     if (socket.id === party.garbler) {
-      socket.emit('oblv', JSON.stringify(r0), JSON.stringify(r1));
+      socket.emit('oblv', JSON.stringify([r0, r1]));
     }
 
     if (socket.id === party.evaluator) {
       let d = random_bit();
-      socket.emit('oblv', String(d), JSON.stringify(d ? r1 : r0));
+      socket.emit('oblv', JSON.stringify([d, d ? r1 : r0]));
     }
   });
 });
