@@ -20,6 +20,9 @@
 
  ### As a Party
  Parties can go to `http(s)://localhost:3000/client.html` in a web browser supporting JavaScript to begin communications.  This is a strictly 2-party protocol.
+ 
+ ### Demos
+ The current circuit in `base.js` is just a small 4-gate test.  SHA256 coming soon.
 
 ## To Do
 
@@ -27,3 +30,4 @@
  - Write point-and-permute
  - Change current oblivious transfer to use RSA
  - a lot of optimizations (free xor, 4-3 row trick, etc.)
+ - Complete web UI
