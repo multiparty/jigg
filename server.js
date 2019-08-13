@@ -1,5 +1,6 @@
 require('./lib/.dep/node_modules/app-module-path').addPath(__dirname+'/lib/.dep/node_modules/');
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
@@ -7,6 +8,7 @@ app.get('/', (request, response) => response.sendFile(__dirname+'/client.html'))
 app.get('/lib/base.js', (request, response) => response.sendFile(__dirname+'/lib/base.js'));
 app.get('/lib/socket.js', (request, response) => response.sendFile(__dirname+'/lib/socket.js'));
 app.get('/lib/operators.js', (request, response) => response.sendFile(__dirname+'/lib/operators.js'));
+app.use("/circuits/", express.static(__dirname+'/circuits/'))
 
 http.listen(3000, () => console.log('listening on *:3000'));
 

@@ -1,0 +1,10 @@
+{
+  "wires": "8", "gates": "4",
+  "input": [1, 2, 3, 4], "output": [5, 6, 7],
+  "gate": [
+    {"wirein": [1, 2], "wireout": 5, "type": "AND"},
+    {"wirein": [3, 4], "wireout": 6, "type": "XOR"},
+    {"wirein": [6], "wireout": 7, "type": "INV"},
+    {"wirein": [5, 7], "wireout": 8, "type": "AND"}
+  ]
+}
