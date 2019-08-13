@@ -25,7 +25,6 @@
  The current circuit in `base.js` is just a small 4-gate test.  SHA256 coming soon.
 
 ## To Do
-
  - Replace encryption with AES
  - Write point-and-permute
  - Change current oblivious transfer to use RSA
