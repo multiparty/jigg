@@ -62,7 +62,7 @@ io.on('connection', function(socket) {
     console.log('listening for', tag);
     if (socket.id === party.garbler) {
       if (typeof(mailbox.garbler[tag]) === 'string') {
-        let msg = mailbox.garbler[tag];
+        const msg = mailbox.garbler[tag];
         console.log('sent', tag, msg, 'to garbler');
         io.to(party.garbler).emit(tag, msg);
         mailbox.garbler[tag] = null;
@@ -78,7 +78,7 @@ io.on('connection', function(socket) {
     }
     if (socket.id === party.evaluator) {
       if (typeof(mailbox.evaluator[tag]) === 'string') {
-        let msg = mailbox.evaluator[tag];
+        const msg = mailbox.evaluator[tag];
         console.log('sent', tag, msg, 'to evaluator');
         io.to(party.evaluator).emit(tag, msg);
         mailbox.evaluator[tag] = null;
@@ -94,14 +94,16 @@ io.on('connection', function(socket) {
     }
   });
 
-  socket.on('oblv', function(length) {
+  socket.on('oblv', function(params) {
+    console.log('oblv', params);
+    const msg_id = params.msg_id;
     const random_bit = () => Math.random() < 0.5 ? 0 : 1;
 
     var r0, r1;
     if (cache.unused) {
       r0 = 0;
       r1 = 0;
-      for (var i = 0; i < length; i++) {  // or with map(...)
+      for (var i = 0; i < params.length; i++) {  // or with map(...)
         r0 += random_bit() * Math.pow(2, i);
         r1 += random_bit() * Math.pow(2, i);
       }
@@ -115,12 +117,12 @@ io.on('connection', function(socket) {
     }
 
     if (socket.id === party.garbler) {
-      socket.emit('oblv', JSON.stringify([r0, r1]));
+      socket.emit('oblv'+msg_id, JSON.stringify([r0, r1]));
     }
 
     if (socket.id === party.evaluator) {
-      let d = random_bit();
-      socket.emit('oblv', JSON.stringify([d, d ? r1 : r0]));
+      const d = random_bit();
+      socket.emit('oblv'+msg_id, JSON.stringify([d, d ? r1 : r0]));
     }
   });
 });
