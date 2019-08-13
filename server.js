@@ -12,7 +12,7 @@ http.listen(3000, () => console.log('listening on *:3000'));
 
 var party = {garbler: null, evaluator: null};
 var mailbox = {garbler: {}, evaluator: {}};
-var cache = {unused: true};
+var cache = [];
 io.on('connection', function(socket) {
   socket.on('join', function(msg) {
     if (msg === 'garbler' || (!(msg === 'evaluator') && party.garbler == null)) {
@@ -97,23 +97,27 @@ io.on('connection', function(socket) {
   socket.on('oblv', function(params) {
     console.log('oblv', params);
     const msg_id = params.msg_id;
+    const length = params.length;
     const random_bit = () => Math.random() < 0.5 ? 0 : 1;
 
     var r0, r1;
-    if (cache.unused) {
+    if (cache[msg_id] === undefined || cache[msg_id].unused) {
+      if (cache[msg_id] === undefined) {
+        cache[msg_id] = {unused: true};  // or with just {}
+      }
       r0 = 0;
       r1 = 0;
-      for (var i = 0; i < params.length; i++) {  // or with map(...)
+      for (var i = 0; i < length; i++) {  // or with map(...)
         r0 += random_bit() * Math.pow(2, i);
         r1 += random_bit() * Math.pow(2, i);
       }
-      cache.r0 = r0;
-      cache.r1 = r1;
-      cache.unused = false;
+      cache[msg_id].r0 = r0;
+      cache[msg_id].r1 = r1;
+      cache[msg_id].unused = false;
     } else {
-      r0 = cache.r0;
-      r1 = cache.r1;
-      cache = {unused: true};  // clear cache
+      r0 = cache[msg_id].r0;
+      r1 = cache[msg_id].r1;
+      cache[msg_id] = {unused: true};  // clear cache[msg_id]
     }
 
     if (socket.id === party.garbler) {
