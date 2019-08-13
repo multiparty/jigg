@@ -46,10 +46,10 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 4 8
 1 4
 1 3
-2 1 1 2 5 AND
-2 1 3 4 6 XOR
-1 1 6 7 INV
-2 1 5 7 8 AND
+2 1 0 1 4 AND
+2 1 2 3 5 XOR
+1 1 5 6 INV
+2 1 4 6 7 AND
 ```
 
 ## To Do
