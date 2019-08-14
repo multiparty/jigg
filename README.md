@@ -22,7 +22,7 @@
  Parties can go to `http(s)://localhost:port/` in a web browser supporting JavaScript to begin communications.  This is strictly a 2-party protocol at the moment.
 
  ### Demos
- The current circuit in `base.js` is a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) from [here](https://homes.esat.kuleuven.be/~nsmart/MPC/).  SHA256 should work but it has +100,000 gates, and JIGG needs some optimizations/throttling before it is reasonable to compute a circuit that large in-browser.
+ The current circuit in `base.js` is a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuitd larger than ~5000 gates seem to hang the JS engine.  SHA256 should work in theory, but it has +100,000 gates, and JIGG will need some optimizations/throttling before it can reasonably compute a circuit that large in the browser.
 
  ### Circuit Format
  JIGG can evaluate a boolean circuit in either of the following formats:
