@@ -22,7 +22,7 @@
  Parties can go to `http(s)://localhost:3000/client.html` in a web browser supporting JavaScript to begin communications.  This is a strictly 2-party protocol.
  
  ### Demos
- The current circuit in `base.js` is just a small 4-gate test.  SHA256 coming soon.
+ The current circuit in `base.js` is a 64-bit Equal-to-Zero test from [here](https://homes.esat.kuleuven.be/~nsmart/MPC/).  SHA256 should work, but JIGG needs some optimizations/throttling before this is reasonable in-browser.
  
  ### Circuit Format
  JIGG can evaluate a boolean circuit in either of the following formats:
@@ -53,7 +53,7 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 ```
 
 ## To Do
- - Replace encryption with AES
+ - Make encryption AES not one-time pad
  - W̶r̶i̶t̶e̶ ̶p̶o̶i̶n̶t̶-̶a̶n̶d̶-̶p̶e̶r̶m̶u̶t̶e̶
  - Change current oblivious transfer to use RSA
  - a lot of optimizations (free xor, 4-3 row trick, etc.)
