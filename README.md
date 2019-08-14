@@ -54,7 +54,7 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 
 ## To Do
  - Replace encryption with AES
- - Write point-and-permute
+ - W̶r̶i̶t̶e̶ ̶p̶o̶i̶n̶t̶-̶a̶n̶d̶-̶p̶e̶r̶m̶u̶t̶e̶
  - Change current oblivious transfer to use RSA
  - a lot of optimizations (free xor, 4-3 row trick, etc.)
- - Complete web UI
+ - C̶o̶m̶p̶l̶e̶t̶e̶ ̶w̶e̶b̶ ̶U̶I̶
