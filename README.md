@@ -19,7 +19,7 @@
  ```
 
  ### As a Party
- Parties can go to `http(s)://localhost:3000/client.html` in a web browser supporting JavaScript to begin communications.  This is a strictly 2-party protocol.
+ Parties can go to `http(s)://localhost:3000/` in a web browser supporting JavaScript to begin communications.  This is strictly a 2-party protocol at the mmoment.
  
  ### Demos
  The current circuit in `base.js` is a 64-bit Equal-to-Zero test from [here](https://homes.esat.kuleuven.be/~nsmart/MPC/).  SHA256 should work, but JIGG needs some optimizations/throttling before this is reasonable in-browser.
