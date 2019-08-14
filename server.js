@@ -8,9 +8,11 @@ app.get('/', (request, response) => response.sendFile(__dirname+'/client.html'))
 app.get('/lib/base.js', (request, response) => response.sendFile(__dirname+'/lib/base.js'));
 app.get('/lib/socket.js', (request, response) => response.sendFile(__dirname+'/lib/socket.js'));
 app.get('/lib/operators.js', (request, response) => response.sendFile(__dirname+'/lib/operators.js'));
+app.get('/lib/sodium.js', (request, response) => response.sendFile(__dirname+'/lib/sodium.js'));
 app.use("/circuits/", express.static(__dirname+'/circuits/'))
 
-http.listen(3000, () => console.log('listening on *:3000'));
+const port = (process.argv.length == 3)? process.argv[2] : 3000;
+http.listen(port, () => console.log('listening on *:'+port));
 
 var party = {garbler: null, evaluator: null};
 var mailbox = {garbler: {}, evaluator: {}};

@@ -6,6 +6,7 @@
   "dependencies": {
     "app-module-path": "^2.2.0",
     "express": "^4.17.1",
+    "libsodium": "^0.7.5",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {},
