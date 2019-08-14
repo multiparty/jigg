@@ -5,7 +5,7 @@
 
  The entirety of this project is written in JavaScript.  Running the server requires [Node](https://nodejs.org/en/), [npm](https://www.npmjs.com/), [Socket.IO](https://socket.io/), and [libsodium](https://www.npmjs.com/package/libsodium).
 
- Run `npm` to install all JIGC dependencies inside the `lib/.dep` directory:
+ Run `npm` to install all JIGG dependencies inside the `lib/.dep` directory:
  ```shell
  npm install --prefix lib/.dep
  ```
@@ -19,10 +19,10 @@
  ```
 
  ### As a Party
- Parties can go to `http(s)://localhost:3000/` in a web browser supporting JavaScript to begin communications.  This is strictly a 2-party protocol at the moment.
+ Parties can go to `http(s)://localhost:port/` in a web browser supporting JavaScript to begin communications.  This is strictly a 2-party protocol at the moment.
 
  ### Demos
- The current circuit in `base.js` is a 64-bit Equal-to-Zero test in `circuits/zero_equal.txt` from [here](https://homes.esat.kuleuven.be/~nsmart/MPC/).  SHA256 should work but it has +100,000 gates, and JIGG needs some optimizations/throttling before it is reasonable to compute a circuit that large in-browser.
+ The current circuit in `base.js` is a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) from [here](https://homes.esat.kuleuven.be/~nsmart/MPC/).  SHA256 should work but it has +100,000 gates, and JIGG needs some optimizations/throttling before it is reasonable to compute a circuit that large in-browser.
 
  ### Circuit Format
  JIGG can evaluate a boolean circuit in either of the following formats:
