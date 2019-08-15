@@ -3,7 +3,7 @@
 
  ## Installation and Setup
 
- The entirety of this project is written in JavaScript.  Running the server requires [Node](https://nodejs.org/en/), [npm](https://www.npmjs.com/), [Socket.IO](https://socket.io/), and [libsodium](https://www.npmjs.com/package/libsodium).
+ The entirety of this project is written in JavaScript.  Running the server requires [Node](https://nodejs.org/en/), [npm](https://www.npmjs.com/) (both installed via `yum install nodejs npm` or `brew install npm` on macOS), and [Socket.IO](https://socket.io/) and [libsodium](https://www.npmjs.com/package/libsodium).
 
  Run `npm` to install all JIGG dependencies inside the `lib/.dep` directory:
  ```shell
