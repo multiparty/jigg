@@ -19,9 +19,9 @@
       <option value="comparator_32bit_signed_lt.txt">32-bit Signed Less Than Comparison</option>
       <option value="adder64.txt">64-bit Adder</option>
       <option value="sub64.txt">64-bit Subtract</option>
-      <option value="mult64.txt">64x64-bit Multiplier [UNSTABLE]</option>
-      <option value="divide64.txt">64x64-bit Division [UNSTABLE]</option>
-      <option value="sha256.txt">SHA256 (input 256-bits each) [UNSTABLE]</option>
+      <option value="mult64.txt">64x64-bit Multiplier [SLOW]</option>
+      <option value="divide64.txt">64x64-bit Division [SLOW]</option>
+      <option value="sha256.txt">SHA256 (input 256-bits each) [SLOW]</option>
     </select>
     &nbsp;
     <select id="partytype">
@@ -43,6 +43,8 @@
     <!-- <pre>No hash yet, check the log for small demo</pre> -->
     <!-- <p>64-bit equal-to-zero operation</p> -->
     <pre id="results">^--- Least significant bit
-Check the log for progress</pre>
+Check the log for progress
+
+Any slow circuit should run gates <20 in parallel</pre>
   </body>
 </html>
