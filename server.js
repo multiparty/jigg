@@ -47,14 +47,14 @@ io.on('connection', function(socket) {
 
   socket.on('send', function(tag, msg) {
     if (socket.id === party.garbler) {
-      if (typeof(mailbox.evaluator[tag]) !== 'undefined' && mailbox.evaluator[tag] != null && !(typeof(mailbox.evaluator[tag]) === 'string')) {
+      if (typeof(mailbox.evaluator[tag]) !== 'undefined' && mailbox.evaluator[tag] != null) {
         mailbox.evaluator[tag](msg);
       } else {
         mailbox.evaluator[tag] = msg;
       }
     }
     if (socket.id === party.evaluator) {
-      if (typeof(mailbox.garbler[tag]) !== 'undefined' && mailbox.garbler[tag] != null && !(typeof(mailbox.garbler[tag]) === 'string')) {
+      if (typeof(mailbox.garbler[tag]) !== 'undefined' && mailbox.garbler[tag] != null) {
         mailbox.garbler[tag](msg);
       } else {
         mailbox.garbler[tag] = msg;
@@ -65,7 +65,7 @@ io.on('connection', function(socket) {
   socket.on('listening for', function(tag) {
     console.log('listening for', tag);
     if (socket.id === party.garbler) {
-      if (typeof(mailbox.garbler[tag]) === 'string') {
+      if (typeof(mailbox.garbler[tag]) !== 'undefined' && mailbox.garbler[tag] != null) {
         const msg = mailbox.garbler[tag];
         console.log('sent', tag, msg, 'to garbler');
         io.to(party.garbler).emit(tag, msg);
@@ -74,14 +74,14 @@ io.on('connection', function(socket) {
         (new Promise(function(resolve, reject) {
           mailbox.garbler[tag] = resolve;
         })).then(function (msg) {
-          console.log('sent', tag, msg, 'to garbler');
+          console.log('sent', tag, msg, 'to garbler (as promised)');
           io.to(party.garbler).emit(tag, msg);
           mailbox.garbler[tag] = null;
         });
       }
     }
     if (socket.id === party.evaluator) {
-      if (typeof(mailbox.evaluator[tag]) === 'string') {
+      if (typeof(mailbox.evaluator[tag]) !== 'undefined' && mailbox.evaluator[tag] != null) {
         const msg = mailbox.evaluator[tag];
         console.log('sent', tag, msg, 'to evaluator');
         io.to(party.evaluator).emit(tag, msg);
@@ -90,7 +90,7 @@ io.on('connection', function(socket) {
         (new Promise(function(resolve, reject) {
           mailbox.evaluator[tag] = resolve;
         })).then(function (msg) {
-          console.log('sent', tag, msg, 'to evaluator');
+          console.log('sent', tag, msg, 'to evaluator (as promised)');
           io.to(party.evaluator).emit(tag, msg);
           mailbox.evaluator[tag] = null;
         });
