@@ -5,6 +5,8 @@ var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
 app.get('/', (request, response) => response.sendFile(__dirname+'/client.html'));
+app.get('/sha/', (request, response) => response.sendFile(__dirname+'/sha256.html'));
+app.get('/sha256/', (request, response) => response.sendFile(__dirname+'/sha256.html'));
 app.get('/lib/base.js', (request, response) => response.sendFile(__dirname+'/lib/base.js'));
 app.get('/lib/socket.js', (request, response) => response.sendFile(__dirname+'/lib/socket.js'));
 app.get('/lib/operators.js', (request, response) => response.sendFile(__dirname+'/lib/operators.js'));
@@ -66,7 +68,7 @@ io.on('connection', function(socket) {
 
   socket.on('listening for', function(tag) {
     console.log('listening for', tag);
-    console.log('mailbox', JSON.stringify(mailbox));
+    // console.log('mailbox', JSON.stringify(mailbox));
     if (socket.id === party.garbler) {
       if (typeof(mailbox.garbler[tag]) !== 'undefined' && mailbox.garbler[tag] != null) {
         const msg = mailbox.garbler[tag];
