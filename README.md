@@ -22,7 +22,7 @@
  Parties can go to `http(s)://localhost:port/` in a web browser supporting JavaScript to begin communications.  This is strictly a 2-party protocol at the moment.
 
  ### Demos
- The current circuit in `lib/base.js` is a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily), and now are throttled by default to prevent this from occuring.
+ The current circuit in `lib/base.js` is a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily) and so are now forced to run in sequence to prevent this from occuring.
  
  There is now a SHA-256 demo at `<webserver>/sha256.html` and the default client page.
  The boolean circuit for SHA has +100,000 gates, and by limiting the number of gates encrypted in parralel, JIGG is able to compute it in 4-5 minutes in the browser.  Test vectors are found [here](https://homes.esat.kuleuven.be/~nsmart/MPC/sha-256-test.txt).
@@ -56,7 +56,7 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 ```
 
 ## To Do
- - Do encryption with AES from libsodium instead of the one-time pad
- - Change current oblivious transfer to use ECC from libsodium
+ - Replace encryption with AES from libsodium instead of the one-time pad
+ - Change the current oblivious transfer to use ECC from libsodium
  - Encrypt communications between parties
- - a lot of optimizations (free xor, half and, etc.)
+ - Half AND gate optimization
