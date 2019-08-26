@@ -56,7 +56,6 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 ```
 
 ## To Do
- - Replace encryption with AES from libsodium instead of the one-time pad
  - Change the current oblivious transfer to use ECC from libsodium
  - Encrypt communications between parties
  - Half AND gate optimization
