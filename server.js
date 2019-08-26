@@ -49,7 +49,6 @@ io.on('connection', function(socket) {
   });
 
   socket.on('send', function(tag, msg) {
-    // console.log('mailbox before sent', JSON.stringify(mailbox));
     console.log('send', tag, msg);
     if (socket.id === party.garbler) {
       if (typeof(mailbox.evaluator[tag]) !== 'undefined' && mailbox.evaluator[tag] != null) {
@@ -69,7 +68,6 @@ io.on('connection', function(socket) {
 
   socket.on('listening for', function(tag) {
     console.log('listening for', tag);
-    // console.log('mailbox', JSON.stringify(mailbox));
     if (socket.id === party.garbler) {
       if (typeof(mailbox.garbler[tag]) !== 'undefined' && mailbox.garbler[tag] != null) {
         const msg = mailbox.garbler[tag];
@@ -126,7 +124,7 @@ io.on('connection', function(socket) {
     } else {
       r0 = cache[msg_id].r0;
       r1 = cache[msg_id].r1;
-      cache[msg_id] = {unused: true};  // clear cache[msg_id]
+      cache[msg_id] = {unused: true};  // clear cache
     }
 
     if (socket.id === party.garbler) {
