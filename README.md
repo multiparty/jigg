@@ -3,7 +3,7 @@
 
  ## Installation and Setup
 
- The entirety of this project is written in JavaScript.  Running the server requires [Node](https://nodejs.org/en/), [npm](https://www.npmjs.com/) (both installed via `yum install nodejs npm` or `brew install npm` on macOS), and [Socket.IO](https://socket.io/) and [libsodium](https://www.npmjs.com/package/libsodium).
+ The entirety of this project is written in JavaScript.  Running the server requires [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/) (both installed via `yum install nodejs npm` or `brew install npm` on macOS), and [Socket.IO](https://socket.io/) and [libsodium](https://www.npmjs.com/package/libsodium).
 
  Run `npm` to install all JIGG dependencies inside the `lib/.dep` directory:
  ```shell
@@ -19,7 +19,7 @@
  ```
 
  ### As a Party
- Parties can go to `http(s)://localhost:port/` in a web browser supporting JavaScript to begin communications.  This is strictly a 2-party protocol at the moment.
+ Parties can go to `http://localhost:port/` in a web browser supporting JavaScript to begin communications.  This is strictly a 2-party protocol at the moment.
 
  ### Demos
  The current circuit in `lib/base.js` is a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily) and so are now forced to run in sequence to prevent this from occurring.
@@ -57,7 +57,7 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 
 ## Capabilities
 
-JIGG is designed for semi-honest parties.  We support point-and-permute, free-XOR, free single-input gates, encryption from a random oracle (fixed-key XChaCha20).  The half-AND optimization is compatible but not yet supported.  The default label size is 128 bits and relies on JavaScript's Uint8Array.  The branch `simple-labels` demonstrates dynamically sized labels <53 bits without using arrays.  Some potential improvements are listed below.
+JIGG is designed for semi-honest parties.  We support point-and-permute, free-XOR, free single-input gates, encryption from a random oracle (fixed-key XChaCha20).  The half-AND optimization is compatible but not yet supported.  The default label size is 128 bits and relies on JavaScript's Uint8Array class.  The [`simple-labels`](https://github.com/wyatt-howe/jigg/tree/simple-labels) branch demonstrates dynamically-sized labels ≤53 bits without using arrays.  Some potential improvements are listed below.
 
 ## To Do
  - Change the current oblivious transfer to use ECC from libsodium
