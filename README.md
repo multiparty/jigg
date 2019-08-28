@@ -1,5 +1,5 @@
 # JIGG
- JavaScript implementation of garbled gates and 2PC boolean circuit  protocols
+ JavaScript implementation of garbled gates and 2PC boolean circuit protocols
 
  ## Installation and Setup
 
@@ -22,10 +22,10 @@
  Parties can go to `http(s)://localhost:port/` in a web browser supporting JavaScript to begin communications.  This is strictly a 2-party protocol at the moment.
 
  ### Demos
- The current circuit in `lib/base.js` is a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily) and so are now forced to run in sequence to prevent this from occuring.
- 
+ The current circuit in `lib/base.js` is a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily) and so are now forced to run in sequence to prevent this from occurring.
+
  There is now a SHA-256 demo at `sha256.html` and `client.html`.
- The boolean circuit for SHA has +100,000 gates, and by limiting the number of gates encrypted in parralel, JIGG is able to compute it in 4-5 minutes in the browser.  Test vectors are found [here](https://homes.esat.kuleuven.be/~nsmart/MPC/sha-256-test.txt).
+ The boolean circuit for SHA has +100,000 gates, and by limiting the number of gates encrypted in parallel, JIGG is able to compute it in 4-5 minutes in the browser.  Test vectors are found [here](https://homes.esat.kuleuven.be/~nsmart/MPC/sha-256-test.txt).
 
  ### Circuit Format
  JIGG can evaluate a boolean circuit in either of the following formats:
@@ -54,6 +54,10 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 1 1 5 6 INV
 2 1 4 6 7 AND
 ```
+
+## MPC scheme
+
+JIGG is designed for semi-honest parties.  We support point-and-permute, free-XOR, free 1-input gates, encryption from a random oracle (XChaCha20).  The default label size is 128 bits and relies on JavaScript's Uint8Array.  The branch `simple-labels` demonstrates dynamically sized labels <53 bits without using arrays.
 
 ## To Do
  - Change the current oblivious transfer to use ECC from libsodium
