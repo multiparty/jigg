@@ -55,9 +55,9 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 2 1 4 6 7 AND
 ```
 
-## MPC scheme
+## Capabilities
 
-JIGG is designed for semi-honest parties.  We support point-and-permute, free-XOR, free 1-input gates, encryption from a random oracle (XChaCha20).  The default label size is 128 bits and relies on JavaScript's Uint8Array.  The branch `simple-labels` demonstrates dynamically sized labels <53 bits without using arrays.
+JIGG is designed for semi-honest parties.  We support point-and-permute, free-XOR, free single-input gates, encryption from a random oracle (fixed-key XChaCha20).  The half-AND optimization is compatible but not yet supported.  The default label size is 128 bits and relies on JavaScript's Uint8Array.  The branch `simple-labels` demonstrates dynamically sized labels <53 bits without using arrays.  Some potential improvements are listed below.
 
 ## To Do
  - Change the current oblivious transfer to use ECC from libsodium
