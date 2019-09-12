@@ -1,3 +1,5 @@
+var io = require('socket.io-client');
+
 var socket = io();
 
 /*
@@ -5,7 +7,7 @@ var socket = io();
  */
 function hear(tag) {
   return new Promise(function (resolve) {
-    socket.on(tag, function(msg) {
+    socket.on(tag, function (msg) {
       resolve(msg);
     });
   });
@@ -24,7 +26,7 @@ function call(tag, msg) {
 function get(tag) {
   socket.emit('listening for', tag);
   return new Promise(function (resolve) {
-    socket.on(tag, function(msg) {
+    socket.on(tag, function (msg) {
       // console.log('received msg:', tag, msg);
       resolve(msg);
     });
@@ -35,7 +37,11 @@ function get(tag) {
  *  Give a string to the other party
  */
 function give(tag, msg) {
-  socket.emit('send', tag, safe_stringify(msg));
+  if (msg != null && typeof(msg.stringify) === 'function') {
+    msg = msg.stringify();
+  }
+
+  socket.emit('send', tag, msg);
 }
 
 /*
@@ -48,14 +54,23 @@ function join(role) {
 var idnumber = 0;
 function nextid() {
   idnumber++;  // DEBUG SOON: idnumber is getting mutated somehow
-  let ret = parseInt(String(idnumber));
-  return ret;
+  return parseInt(String(idnumber));
 }
 
 function geturl(path, type) {
   return new Promise(function (resolve) {
-    fetch(path).then(function(response) {
-        resolve(response[type]());
+    fetch(path).then(function (response) {
+      resolve(response[type]());
     });
   });
 }
+
+module.exports = {
+  geturl: geturl,
+  nextid: nextid,
+  join: join,
+  give: give,
+  get: get,
+  call: call,
+  hear: hear
+};

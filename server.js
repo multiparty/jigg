@@ -1,20 +1,16 @@
-require('./lib/.dep/node_modules/app-module-path').addPath(__dirname+'/lib/.dep/node_modules/');
+// require('./src/.dep/node_modules/app-module-path').addPath(__dirname+'/src/.dep/node_modules/');
 var express = require('express');
 var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var sodium = require('libsodium-wrappers');
 
+app.use('/dist', express.static('dist'));
+app.use('/circuits', express.static(__dirname+'/circuits/'));
 app.get('/', (request, response) => response.sendFile(__dirname+'/client.html'));
-app.get('/sha/', (request, response) => response.sendFile(__dirname+'/sha256.html'));
-app.get('/sha256/', (request, response) => response.sendFile(__dirname+'/sha256.html'));
-app.get('/lib/base.js', (request, response) => response.sendFile(__dirname+'/lib/base.js'));
-app.get('/lib/socket.js', (request, response) => response.sendFile(__dirname+'/lib/socket.js'));
-app.get('/lib/operators.js', (request, response) => response.sendFile(__dirname+'/lib/operators.js'));
-app.get('/lib/sodium.js', (request, response) => response.sendFile(__dirname+'/lib/sodium.js'));
-app.use("/circuits/", express.static(__dirname+'/circuits/'))
+app.get('/sha', (request, response) => response.sendFile(__dirname+'/sha256.html'));
 
-const port = (process.argv.length == 3)? process.argv[2] : 3000;
+const port = (process.argv.length === 3)? process.argv[2] : 3000;
 http.listen(port, () => console.log('listening on *:'+port));
 
 var party = {garbler: null, evaluator: null};
