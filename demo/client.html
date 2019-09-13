@@ -9,6 +9,7 @@
   <body style="font-family: sans-serif; margin: 2em;">
     <h1 style="margin-bottom: 0.25em;">Garbled Circuits in JavaScript</h1>
     <h3 style="margin-top: 0em;">64-bit Equal to Zero Test (<a href="https://homes.esat.kuleuven.be/~nsmart/MPC/zero_equal.txt">Circuit</a> & <a href="https://homes.esat.kuleuven.be/~nsmart/MPC/">Others</a>)</h3>
+
     <select id="circuit">
       <option value="zero_equal.txt">64-bit Equal to Zero (input 32-bits each)</option>
       <option value="adder_32bit.txt">32-bit Adder</option>
@@ -20,13 +21,13 @@
       <option value="divide64.txt">64x64-bit Division [SLOW]</option>
       <option value="sha256.txt">SHA256 (input 256-bits each) [SLOW]</option>
     </select>
-    &nbsp;
+
     <select id="partytype">
-      <option value="whoever">Pick Party Type</option>
+      <option value="-">Pick Party Type</option>
       <option value="garbler">Garbler</option>
       <option value="evaluator">Evaluator</option>
     </select>
-    &nbsp;
+
     <!-- <p>Enter a 64 digit (256bit) haxadecimal string to compute on:<p> -->
     <br>
     <p style="margin-top: 1em; margin-bottom: 0;">Enter a string to compute on and the maximum encryptions to run in parallel:</p>
@@ -37,14 +38,55 @@
     <!-- <br>
     <span style="margin-top: 0em; margin-bottom: 0;">Encryptions in parallel:</span> -->
     <input id="parallel" autocomplete="off" style="margin-top: 1em; margin-bottom: 1em; font-family: monospace; width: 3em;" value="10"><br>
-    <button onclick="jigg.begin()">Compute</button>
+    <button onclick="start()">Compute</button>
     <!-- <ul id="gates" style="nth-child(odd) { background: #eee; }"></ul> -->
     <br>
     <!-- <pre>No hash yet, check the log for small demo</pre> -->
     <!-- <p>64-bit equal-to-zero operation</p> -->
-    <pre id="results">^--- Least significant bit
+    <pre>^--- Least significant bit
 Check the log for progress
 
-Any slow circuit should run <30 gates in parallel</pre>
-</body><script>const logtext = $('#results').text();</script>
+Any slow circuit should run <30 gates in parallel
+    </pre>
+    <pre id="results">
+    </pre>
+  </body>
+  <script type="text/javascript">
+    const progress = function (start, total) {
+      $('#results').text('\n\n' + start + '/' + total);
+    };
+    const callback = function (results) {
+      const base = $('#base').val();
+      if (base === 'hex') {
+        results = jigg.bin2hex(results);
+      }
+      results = results.split('').reverse().join('');
+
+      $('#results').text('Results: ' + results);
+    };
+    const start = function () {
+      var input = $('#input').val();
+
+      const base = $('#base').val();
+      if (base === 'hex') {
+        input = jigg.hex2bin(input);
+      }
+      input = input.split('').map(JSON.parse).reverse();
+
+      const role = $('#partytype').val();
+      if (role === '-') {
+        alert('Please select role!');
+        return;
+      }
+
+      const circuitURL = 'circuits/' + $('#circuit').val();
+      if (role === 'garbler') {
+        var garbler = new jigg.Garbler(circuitURL, input, callback, progress);
+        garbler.start();
+      } else if (role === 'evaluator') {
+        var evaluator = new jigg.Evaluator(circuitURL, input, callback, progress);
+        evaluator.start();
+      }
+    };
+  </script>
 </html>
