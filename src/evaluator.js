@@ -18,6 +18,10 @@ function Evaluator(circuitURL, input, callback, progress, parallel, throttle) {
   this.parallel = parallel == null ? 10 : parallel;
   this.throttle = throttle == null ? 1 : throttle;
   this.progress = progress == null ? function () {} : progress;
+
+  if (this.parallel === 0) {
+    this.parallel = Number.MAX_VALUE;
+  }
 }
 
 Evaluator.prototype.start = function () {
@@ -93,7 +97,11 @@ Evaluator.prototype.evaluate = function (start) {
     return;
   }
 
-  setTimeout(this.evaluate.bind(this, start), this.throttle);
+  if (this.throttle > 0) {
+    setTimeout(this.evaluate.bind(this, start), this.throttle);
+  } else {
+    this.evaluate(start);
+  }
 };
 
 Evaluator.prototype.finish = function () {

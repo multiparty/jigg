@@ -20,6 +20,10 @@ function Garbler(circuitURL, input, callback, progress, parallel, throttle) {
   this.throttle = throttle == null ? 1 : throttle;
   this.progress = progress == null ? function () {} : progress;
   this.gates = [];
+
+  if (this.parallel === 0) {
+    this.parallel = Number.MAX_VALUE;
+  }
 }
 
 Garbler.prototype.start = function () {
@@ -129,7 +133,11 @@ Garbler.prototype.garble = function (start) {
     return;
   }
 
-  setTimeout(this.garble.bind(this, start), this.throttle);
+  if (this.throttle > 0) {
+    setTimeout(this.garble.bind(this, start), this.throttle);
+  } else {
+    this.garble(start);
+  }
 };
 
 Garbler.prototype.finish = function () {

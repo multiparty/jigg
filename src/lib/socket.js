@@ -1,6 +1,6 @@
 var io = require('socket.io-client');
 
-var socket = io();
+var socket = io('http://localhost:3000');
 
 /*
  *  Listen from server
@@ -59,7 +59,7 @@ function nextid() {
 
 function geturl(path, type) {
   return new Promise(function (resolve) {
-    fetch(path).then(function (response) {
+    fetch('http://localhost:3000/' + path).then(function (response) {
       resolve(response[type]());
     });
   });

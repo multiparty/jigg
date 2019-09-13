@@ -9,11 +9,6 @@ const table16 = {
   C: '1100', D: '1101', E: '1110', F: '1111'
 };
 function hex2bin(hex) {
-  if ($('#base').val() === 'bin') {
-    // skip if already base2
-    return hex;
-  }
-
   var bin = '';
   for (var i = 0; i < hex.length; i++) {
     bin += table16[hex[i].toUpperCase()];
