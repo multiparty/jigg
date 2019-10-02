@@ -27,7 +27,7 @@
  ```
  For example to join an AES-128 computation as the garbler, write:
   ```shell
- node demo/party.js aes128.txt garbler 00000000000000000000000000000000
+ node demo/party.js aes128.txt garbler 00000000000000000000000000000000  # all zero message in base 16
  ```
 
  ### Demos
