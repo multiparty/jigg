@@ -43,6 +43,45 @@
     <!-- <p>64-bit equal-to-zero operation</p> -->
     <pre id="results">^--- Least significant bit
 Check the log for progress
-</pre><script>const logtext = $('#results').text();</script>
+</pre>
+  <script type="text/javascript">
+    const logtext = $('#results').text();
+    const progress = function (start, total) {
+      $('#results').text('\n\n' + start + '/' + total);
+    };
+    const callback = function (results) {
+      const base = $('#base').val();
+      if (base === 'hex') {
+        results = jigg.bin2hex(results);
+      }
+      results = results.split('').reverse().join('');
+
+      $('#results').text('Results: ' + results);
+    };
+    const start = function () {
+      var input = $('#input').val();
+
+      const base = $('#base').val();
+      if (base === 'hex') {
+        input = jigg.hex2bin(input);
+      }
+      input = input.split('').map(JSON.parse).reverse();
+
+      const role = $('#partytype').val();
+      if (role === '-') {
+        alert('Please select role!');
+        return;
+      }
+
+      const circuitURL = 'circuits/' + $('#circuit').val();
+      if (role === 'garbler') {
+        var garbler = new jigg.Garbler(circuitURL, input, callback, progress);
+        garbler.start();
+      } else if (role === 'evaluator') {
+        var evaluator = new jigg.Evaluator(circuitURL, input, callback, progress);
+        evaluator.start();
+      }
+    };
+  </script>
   </body>
 </html>
