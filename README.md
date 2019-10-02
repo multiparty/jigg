@@ -7,7 +7,7 @@
 
  Run `npm` to install all JIGG dependencies inside the `lib/.dep` directory:
  ```shell
- npm install --prefix lib/.dep
+ npm install
  ```
 
  ## Running the Prototype
