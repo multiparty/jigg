@@ -16,7 +16,7 @@ function Garbler(circuitURL, input, callback, progress, parallel, throttle) {
   this.circuitURL = circuitURL;
   this.input = input;
   this.callback = callback;
-  this.parallel = parallel == null ? 10 : parallel;
+  this.parallel = parallel == null ? 30 : parallel;
   this.throttle = throttle == null ? 1 : throttle;
   this.progress = progress == null ? function () {} : progress;
   this.gates = [];
@@ -188,10 +188,10 @@ Garbler.prototype.garble_gate = function (type, wirein, wireout) {
       [crypto.encrypt(this.Wire[i][0], this.Wire[j][1], k, this.Wire[k][t[1]]).stringify(), (2 * this.Wire[i][0].pointer()) + this.Wire[j][1].pointer()],
       [crypto.encrypt(this.Wire[i][1], this.Wire[j][0], k, this.Wire[k][t[2]]).stringify(), (2 * this.Wire[i][1].pointer()) + this.Wire[j][0].pointer()],
       [crypto.encrypt(this.Wire[i][1], this.Wire[j][1], k, this.Wire[k][t[3]]).stringify(), (2 * this.Wire[i][1].pointer()) + this.Wire[j][1].pointer()]
-    ].sort(function (c1, c2) {
-      return c1[1] - c2[1]
+    ].sort(function (c1, c2) {  // point-and-permute
+      return c1[1] - c2[1];
     }).map(function (c) {
-      return c = c[0];  // point-and-permute
+      return c = c[0];
     });
   }
   // --Define any other gates here--

@@ -15,7 +15,7 @@ function Evaluator(circuitURL, input, callback, progress, parallel, throttle) {
   this.circuitURL = circuitURL;
   this.input = input;
   this.callback = callback;
-  this.parallel = parallel == null ? 10 : parallel;
+  this.parallel = parallel == null ? 30 : parallel;
   this.throttle = throttle == null ? 1 : throttle;
   this.progress = progress == null ? function () {} : progress;
 
