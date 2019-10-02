@@ -5,21 +5,30 @@
 
  The entirety of this project is written in JavaScript.  Running the server requires [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/) (both installed via `yum install nodejs npm` or `brew install npm` on macOS), and [Socket.IO](https://socket.io/) and [libsodium](https://www.npmjs.com/package/libsodium).
 
- Run `npm` to install all JIGG dependencies inside the `lib/.dep` directory:
+ Run `npm` to install all JIGG dependencies:
  ```shell
- npm install --prefix lib/.dep
+ npm install
  ```
 
  ## Running the Prototype
-
- ### As a Server
- Start the server from server.js with the command below and optionally specify a port number such as:
+ 
+ Start the communications server from server.js with the command below and optionally specify a port number such as:
  ```shell
  node server 3000
  ```
 
- ### As a Party
+ ### As a Browser Party
  Parties can go to `http://localhost:port/` in a web browser supporting JavaScript to begin communications.  This is strictly a 2-party protocol at the moment.
+
+ ### As a Node.js Party
+ Connect a new party in Node.js by running:
+  ```shell
+ node demo/party.js <circuit> <role> <b16-input>
+ ```
+ For example to join an AES-128 computation as the garbler, write:
+  ```shell
+ node demo/party.js aes128.txt garbler 00000000000000000000000000000000
+ ```
 
  ### Demos
  The current circuit in `lib/base.js` is a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily) and so are now forced to run in sequence to prevent this from occurring.
