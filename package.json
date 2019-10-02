@@ -1,18 +1,23 @@
 {
   "name": "jigg",
   "version": "0.0.1",
-  "description": "JavaScript Implimentation of Garbled Gates (two-party computation library for boolean circuits)",
+  "description": "JavaScript Implementation of Garbled Gates (two-party computation library for boolean circuits)",
   "main": "../../server.js",
   "dependencies": {
     "app-module-path": "^2.2.0",
     "express": "^4.17.1",
     "libsodium": "^0.7.5",
     "libsodium-wrappers": "^0.7.5",
+    "node-fetch": "^2.6.0",
     "socket.io": "^2.2.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-plugin-requirejs": "^4.0.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify src/jigg.js --debug --s jigg -o dist/jigg.js"
   },
   "repository": {
     "type": "git",

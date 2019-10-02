@@ -1,27 +1,26 @@
-require('./lib/.dep/node_modules/app-module-path').addPath(__dirname+'/lib/.dep/node_modules/');
+// require('./src/.dep/node_modules/app-module-path').addPath(__dirname+'/src/.dep/node_modules/');
 var express = require('express');
 var app = express();
 var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+var io = require('socket.io')(http, {
+  pingTimeout: 25000,
+  pingInterval: 50000
+});
 var sodium = require('libsodium-wrappers');
 
-app.get('/', (request, response) => response.sendFile(__dirname+'/client.html'));
-app.get('/sha/', (request, response) => response.sendFile(__dirname+'/sha256.html'));
-app.get('/sha256/', (request, response) => response.sendFile(__dirname+'/sha256.html'));
-app.get('/lib/base.js', (request, response) => response.sendFile(__dirname+'/lib/base.js'));
-app.get('/lib/socket.js', (request, response) => response.sendFile(__dirname+'/lib/socket.js'));
-app.get('/lib/operators.js', (request, response) => response.sendFile(__dirname+'/lib/operators.js'));
-app.get('/lib/sodium.js', (request, response) => response.sendFile(__dirname+'/lib/sodium.js'));
-app.use("/circuits/", express.static(__dirname+'/circuits/'))
+app.use('/dist', express.static(__dirname + '/dist/'));
+app.use('/circuits', express.static(__dirname + '/circuits/'));
+app.get('/', (request, response) => response.sendFile(__dirname + '/demo/client.html'));
+app.get('/sha', (request, response) => response.sendFile(__dirname + '/demo/sha256.html'));
 
-const port = (process.argv.length == 3)? process.argv[2] : 3000;
+const port = (process.argv.length === 3)? process.argv[2] : 3000;
 http.listen(port, () => console.log('listening on *:'+port));
 
 var party = {garbler: null, evaluator: null};
 var mailbox = {garbler: {}, evaluator: {}};
 var cache = [];
-io.on('connection', function(socket) {
-  socket.on('join', function(msg) {
+io.on('connection', function (socket) {
+  socket.on('join', function (msg) {
     if (msg === 'garbler' || (!(msg === 'evaluator') && party.garbler == null)) {
       party.garbler = socket.id;
       console.log('connect garbler');
