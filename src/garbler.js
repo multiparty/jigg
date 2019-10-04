@@ -161,9 +161,12 @@ Garbler.prototype.finish = function () {
     socket.give('results', results);
     that.log('results', results);
 
-    results = results.reverse().join('');
+    if (this.circuitURL === "circuits/aes128.txt") {  // temporarily adjust circuit
+      results = results.reverse();
+    }
+    results = results.join('');
     that.callback(results);
-  });
+  }.bind(this));
 };
 
 /*

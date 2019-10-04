@@ -119,8 +119,11 @@ Evaluator.prototype.finish = function () {
 
   // Receive decoded output states
   socket.get('results').then(function (results) {
-    that.callback(results.reverse().join(''));
-  });
+    if (this.circuitURL === "circuits/aes128.txt") {  // temporarily adjust circuit
+      results = results.reverse();
+    }
+    that.callback(results.join(''));
+  }.bind(this));
 };
 
 /*
