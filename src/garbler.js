@@ -161,7 +161,7 @@ Garbler.prototype.finish = function () {
     socket.give('results', results);
     that.log('results', results);
 
-    results = results.join('');
+    results = results.reverse().join('');
     that.callback(results);
   });
 };

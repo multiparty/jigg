@@ -119,7 +119,7 @@ Evaluator.prototype.finish = function () {
 
   // Receive decoded output states
   socket.get('results').then(function (results) {
-    that.callback(results.join(''));
+    that.callback(results.reverse().join(''));
   });
 };
 
