@@ -32,22 +32,29 @@
     <!-- <p>Enter a 64 digit (256bit) haxadecimal string to compute on:<p> -->
     <br>
     <p style="margin-top: 1em; margin-bottom: 0;">Enter a string to compute on and the maximum encryptions to run in parallel:</p>
-    <select id="base">
+    <select id="base" onchange="countbits()">
       <option value="bin">Binary</option>
       <option value="hex">Hexidecimal</option>
-    </select>&nbsp;<input id="input" autocomplete="off" style="margin-top: 1em; margin-bottom: 0.5em; font-family: monospace; width: 40em;" value="00000000000000000000000000000000">
+    </select>&nbsp;<input id="input" onkeyup="countbits()" autocomplete="off" style="margin-top: 1em; margin-bottom: 0.5em; font-family: monospace; width: 40em;" value="00000000000000000000000000000000">
     <!-- <br>
     <span style="margin-top: 0em; margin-bottom: 0;">Encryptions in parallel:</span> -->
-    <input id="parallel" autocomplete="off" style="margin-top: 1em; margin-bottom: 1em; font-family: monospace; width: 3em;" value="10"><br>
-    <button onclick="start()">Compute</button>
+    <input id="parallel" autocomplete="off" style="margin-top: 1em; margin-bottom: 1em; font-family: monospace; width: 3em;" value="30"><br>
+    <button id="button" onclick="start()">Compute</button>
     <!-- <ul id="gates" style="nth-child(odd) { background: #eee; }"></ul> -->
     <br>
     <!-- <pre>No hash yet, check the log for small demo</pre> -->
     <!-- <p>64-bit equal-to-zero operation</p> -->
-    <pre id="results">
+    <pre id="results">Entered 32 bits
     </pre>
   </body>
   <script type="text/javascript">
+    const countbits = function () {
+      if ($('#results').text().substr(0, 8) === 'Entered ') {
+        $('#results').text('Entered ' + (
+          (($('#base').val() === 'hex')? 4 : 1) * $('#input').val().length
+        ) + ' bits');
+      }
+    };
     const progress = function (start, total) {
       $('#results').text('\n\n' + start + '/' + total);
     };
