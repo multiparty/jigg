@@ -69,12 +69,17 @@
     };
     const start = function () {
       var input = $('#input').val();
+      const circuitURL = 'circuits/' + $('#circuit').val();
 
       const base = $('#base').val();
       if (base === 'hex') {
         input = jigg.hex2bin(input);
       }
-      input = input.split('').map(JSON.parse).reverse();
+      input = input.split('');
+      if (circuitURL === "circuits/aes128.txt") {  // temporarily adjust circuit
+        input = input.reverse();
+      }
+      input = input.map(JSON.parse);
 
       const role = $('#partytype').val();
       if (role === '-') {
@@ -82,7 +87,6 @@
         return;
       }
 
-      const circuitURL = 'circuits/' + $('#circuit').val();
       if (role === 'garbler') {
         var garbler = new jigg.Garbler(circuitURL, input, callback, progress);
         garbler.start();
