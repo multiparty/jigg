@@ -31,10 +31,10 @@
  ```
 
  ### Demos
- The current circuit in `lib/base.js` is a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily) and so are now forced to run in sequence to prevent this from occurring.
+ We have a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) in `circuits/` and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily) and so are now forced to run in sequence to prevent this from occurring.
 
  There is now a SHA-256 demo at `sha256.html` and `client.html`.
- The boolean circuit for SHA has +100,000 gates, and by limiting the number of gates encrypted in parallel, JIGG is able to compute it in 4-5 minutes in the browser.  Test vectors are found [here](https://homes.esat.kuleuven.be/~nsmart/MPC/sha-256-test.txt).
+ The boolean circuit for SHA has +100,000 gates, and by limiting the number of gates encrypted in parallel, JIGG is able to compute it in under a minute in the browser.  Test vectors are found [here](https://homes.esat.kuleuven.be/~nsmart/MPC/sha-256-test.txt) and in the `demo/test` folder.
 
  ### Circuit Format
  JIGG can evaluate a boolean circuit in either of the following formats:
