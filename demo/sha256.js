@@ -12,7 +12,7 @@ const { Garbler, Evaluator, bin2hex, hex2bin } = require('../src/jigg.js');
 
 // application code
 input = hex2bin(input);
-input = input.split('').map(JSON.parse);
+input = input.split('').reverse().map(JSON.parse);
 
 const progress = function (start, total) {
   console.log('Progress', start, '/', total);
