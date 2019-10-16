@@ -2,7 +2,7 @@
   "name": "jigg",
   "version": "0.0.1",
   "description": "JavaScript Implementation of Garbled Gates (two-party computation library for boolean circuits)",
-  "main": "../../server.js",
+  "main": "server.js",
   "dependencies": {
     "app-module-path": "^2.2.0",
     "express": "^4.17.1",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wyatt-howe/jigc.git"
+    "url": "git+https://github.com/multiparty/jigg.git"
   },
   "keywords": [
     "Garbled-Circuit",
@@ -30,7 +30,7 @@
   "author": "Wyatt Howe",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wyatt-howe/jigc/issues"
+    "url": "https://github.com/wyatt-howe/jigg/issues"
   },
-  "homepage": "https://github.com/wyatt-howe/jigc#readme"
+  "homepage": "https://github.com/wyatt-howe/jigg#readme"
 }
