@@ -136,3 +136,16 @@ io.on('connection', function (socket) {
     }
   });
 });
+
+exports.close = function () {
+  try {
+    console.log('Closing server');
+    io.to(party.garbler).emit('shutdown', 'finished');
+    io.to(party.evaluator).emit('shutdown', 'finished');
+    io.close();
+    http.close();
+    console.log('Server closed');
+  } catch (e) {
+    console.log('Closing with error', e);
+  }
+};

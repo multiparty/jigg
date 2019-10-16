@@ -1,6 +1,10 @@
 var io = require('socket.io-client');
 
 var socket = io('http://localhost:3000');
+socket.on('shutdown', function (msg) {
+  // console.log('Server closed.', msg);
+  socket.disconnect();
+});
 
 /*
  *  Listen from server
