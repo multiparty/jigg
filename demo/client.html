@@ -21,6 +21,7 @@
       <option value="divide64.txt">64x64-bit Division</option>
       <option value="sha256.txt">SHA256 (input 256-bits each)</option>
       <option value="aes128.txt">AES128 (input 128-bits key/block)</option>
+      <option value="universal_1bit.txt">Universal Circuit (1-bit program & inputs)</option>
     </select>
 
     <select id="partytype">
@@ -91,6 +92,11 @@
         var garbler = new jigg.Garbler(circuitURL, input, callback, progress);
         garbler.start();
       } else if (role === 'evaluator') {
+        if (circuitURL === "circuits/universal_1bit.txt") {
+          // pad 1-bit to make symetric with the
+          // garbler's additional bit (the 1-bit program)
+          input.push(null);
+        }
         var evaluator = new jigg.Evaluator(circuitURL, input, callback, progress);
         evaluator.start();
       }
