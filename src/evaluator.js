@@ -1,7 +1,7 @@
-const socket = require('./lib/socket.js');
+const socket = require('./lib/socket.js').io();
 const Label = require('./lib/label.js');
 const parser = require('./lib/parser.js');
-const OT = require('./lib/ot.js');
+const OT = require('./lib/ot.js')(socket);
 const crypto = require('./utils/crypto.js');
 
 /**
@@ -10,7 +10,7 @@ const crypto = require('./utils/crypto.js');
  * @param {Array<number>}input - the party's input as an array of bits
  * @constructor
  */
-function Evaluator(circuitURL, input, callback, progress, parallel, throttle) {
+function Evaluator(circuitURL, input, callback, progress, parallel, throttle, debug) {
   this.Wire = [null];
   this.circuitURL = circuitURL;
   this.input = input;
@@ -18,6 +18,10 @@ function Evaluator(circuitURL, input, callback, progress, parallel, throttle) {
   this.parallel = parallel == null ? 30 : parallel;
   this.throttle = throttle == null ? 1 : throttle;
   this.progress = progress == null ? function () {} : progress;
+  this.debug = debug;
+  this.log = this.debug? function () {
+    console.log.apply(console, ['Evaluator', ...arguments]);
+  } : new Function();
 
   if (this.parallel === 0) {
     this.parallel = Number.MAX_VALUE;
@@ -41,10 +45,6 @@ Evaluator.prototype.load_circuit = function () {
 
     that.init();
   });
-};
-
-Evaluator.prototype.log = function () {
-  // console.log.apply(console, arguments);
 };
 
 Evaluator.prototype.init = function () {

@@ -11,7 +11,7 @@
  ```
 
  ## Running the Prototype
- 
+
  Start the communications server from server.js with the command below and optionally specify a port number such as:
  ```shell
  node server 3000
