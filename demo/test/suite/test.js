@@ -53,8 +53,8 @@ function test(circuit, testvector) {
   const input2 = testvector[1];
   const answer = testvector[2];
 
-  // Start the server
-  var server = require('../../../server.js');
+  // // Start the server
+  // var server = require('../../../server.js');
 
   // Compute the circuit and compare results
   return new Promise(function (resolve) {
@@ -67,9 +67,9 @@ function test(circuit, testvector) {
     Promise.all([garbler_out/*, evaluator_out*/]).then(function (result) {
       console.log(result);
 
-      setTimeout(function(){
-        server.close();
-      }, 500);
+      // setTimeout(function(){
+      //   server.close();
+      // }, 500);
 
       resolve([
         answer,
@@ -105,4 +105,4 @@ if (process.argv.length === 4) {
   test(process.argv[2], JSON.parse(process.argv[3])).then(console.log.bind(null, process.argv[2]));
 }
 
-console.log = Function();  // TEMPORARY anti-logging hack
+// console.log = Function();  // TEMPORARY anti-logging hack

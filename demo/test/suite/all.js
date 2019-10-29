@@ -21,18 +21,37 @@ const fs = require('fs');
 // const log = console.log;
 // console.log = Function();  // TEMPORARY anti-logging hack
 
-const config = fs.readFileSync('demo/test/suite/config.json', 'utf8');
+// const config = fs.readFileSync('demo/test/suite/config.json', 'utf8');
+//
+// (function unit_test() {
+//   // unit =
+//
+//   spawn('node', ['demo/test/suite/test.js',
+//     'zero_equal.txt',
+//     '["00000000","00000000","1"]'
+//   ]).stdout.on('data', (data) => {
+//     console.log(data.toString()+"\n\n");
+//     setTimeout(function(){
+//       unit_test();
+//     }, 750);
+//   });
+// })()
 
+const test = require('./test.js');
+
+// Start the server
+var server = require('../../../server.js');
+
+console.log('begin');
+const log = console.log;
 (function unit_test() {
-  // unit =
-
-  spawn('node', ['demo/test/suite/test.js',
-    'zero_equal.txt',
-    '["00000000","00000000","da5698be17b9b46962335799779fbeca8ce5d491c0d26243bafef9ea1837a9d8"]'
-  ]).stdout.on('data', (data) => {
-    console.log(data.toString());
-    setTimeout(function(){
+  log('start');
+  test('zero_equal.txt', JSON.parse('["00000000","00000000","1"]')).then(function (data) {
+    log(data);
+    setTimeout(function () {
+      log('continue');
       unit_test();
-    }, 750);
+    }, 1500);
   });
 })()
+console.log = Function();  // TEMPORARY anti-logging hack
