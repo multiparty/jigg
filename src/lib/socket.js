@@ -52,7 +52,7 @@ const io = function() {
   *  Connect to the server
   */
   const join = function(role) {
-    console.log('join', role);
+    // console.log('join', role);
     socket.emit('join', role);
   }
 
