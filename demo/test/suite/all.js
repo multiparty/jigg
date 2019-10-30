@@ -33,7 +33,7 @@ const log = console.log;
     if (i == config.length) {
       log('done');
       server.close();
-      
+
       // BUG: somehow there is someone listing on the non-test port
       process.exit();  // TEMPORARY fix
     } else {
