@@ -70,13 +70,16 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 
 All of the built-in test vectors can be verified in `npm test`.  Communcations between the server, garbler and evaluator are automated.  You do not need to already have a server running — tests are run over port 3001.
 
-You may also access the test function directly, by running `test.js`.  See example:
+You may also access the test function directly, by running `test.js`.
 ```shell
 node demo/test/suite/test.js <circuit> <testvector>
-node demo/test/suite/test.js zero_equal.txt '["00000000","00000010","0"]'
+```
+For example to test an equal-to-zero computation with the zero vector, write:
+```shell
+node demo/test/suite/test.js zero_equal.txt '["00000000","00000000","1"]'
 ```
 
-Test cases (circuit name, test vector) for the circuits are configured in `demo/test/suite/config.json`.  A test vector is defined as `[input1, input2, output]`.
+Test cases (circuit name, test vector) for the circuits are configured in `demo/test/suite/config.json`.  Test vectors are written as `[input1, input2, output]` as shown above.
 
 ## To Do
 - Change the current oblivious transfer to use ECC from libsodium
