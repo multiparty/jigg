@@ -1,42 +1,42 @@
 # JIGG
-JavaScript implementation of garbled gates and 2PC boolean circuit protocols
+ JavaScript implementation of garbled gates and 2PC boolean circuit protocols
 
 ## Capabilities
 
 JIGG is designed for semi-honest parties.  We support point-and-permute, free-XOR, free single-input gates, encryption from a random oracle (fixed-key XChaCha20).  The half-AND optimization is compatible but not yet supported.  The default label size is 128 bits and relies on JavaScript's Uint8Array class.  The [`simple-labels`](https://github.com/wyatt-howe/jigg/tree/simple-labels) branch demonstrates dynamically-sized labels ≤53 bits without using arrays.  Some potential improvements are listed below.
 
-## Installation and Setup
+ ## Installation and Setup
 
-The entirety of this project is written in JavaScript.  Running the server requires [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/) (both installed via `yum install nodejs npm` or `brew install npm` on macOS), and [Socket.IO](https://socket.io/) and [libsodium](https://www.npmjs.com/package/libsodium).
+ The entirety of this project is written in JavaScript.  Running the server requires [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/) (both installed via `yum install nodejs npm` or `brew install npm` on macOS), and [Socket.IO](https://socket.io/) and [libsodium](https://www.npmjs.com/package/libsodium).
 
-Run `npm` to install all JIGG dependencies:
-```shell
-npm install
-```
+ Run `npm` to install all JIGG dependencies:
+ ```shell
+ npm install
+ ```
 
-## Running the Prototype
+ ## Running the Prototype
 
-Start the communications server from server.js with the command below and optionally specify a port number such as:
-```shell
-node server 3000
-```
+ Start the communications server from server.js with the command below and optionally specify a port number such as:
+ ```shell
+ node server 3000
+ ```
 
-### As a Browser Party
-Parties can go to `http://localhost:port/` in a web browser supporting JavaScript to begin communications.  This is strictly a 2-party protocol at the moment.
+ ### As a Browser Party
+ Parties can go to `http://localhost:port/` in a web browser supporting JavaScript to begin communications.  This is strictly a 2-party protocol at the moment.
 
-### As a Node.js Party
-Connect a new party in Node.js by running:
-```shell
-node demo/party.js <circuit> <role> <b16-input>
-```
-For example to join an AES-128 computation as the garbler, write:
-```shell
-node demo/party.js aes128.txt garbler 00000000000000000000000000000000  # message in base 16
-```
+ ### As a Node.js Party
+ Connect a new party in Node.js by running:
+  ```shell
+ node demo/party.js <circuit> <role> <b16-input>
+ ```
+ For example to join an AES-128 computation as the garbler, write:
+  ```shell
+ node demo/party.js aes128.txt garbler 00000000000000000000000000000000  # message in base 16
+ ```
 
-## Running Tests
+ ## Running Tests
 
-All of the built-in test vectors can be verified in `npm test`.  Communcations between the server, garbler and evaluator are automated.  You do not need to already have a server running — tests are run over port 3001.
+ All of the built-in test vectors can be verified in `npm test`.  Communcations between the server, garbler and evaluator are automated.  You do not need to already have a server running – tests are run over port 3001.
 
 You may also access the test function directly, by running `test.js`.  See example:
 ```shell
@@ -46,14 +46,14 @@ node demo/test/suite/test.js zero_equal.txt '["00000000","00000010","0"]'
 
 Test cases (circuit name, test vector) for the circuits are configured in `demo/test/suite/config.json`.  A test vector is defined as `[input1, input2, output]`.
 
-### Demos
-We have a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) in `circuits/` and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily) and so are now forced to run in sequence to prevent this from occurring.
+ ### Demos
+ We have a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) in `circuits/` and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily) and so are now forced to run in sequence to prevent this from occurring.
 
-There is now a SHA-256 demo at `sha256.html` and `client.html`.
-The boolean circuit for SHA has +100,000 gates, and by limiting the number of gates encrypted in parallel, JIGG is able to compute it in under a minute in the browser.  Test vectors are found [here](https://homes.esat.kuleuven.be/~nsmart/MPC/sha-256-test.txt) and in the `demo/test` folder.
+ There is now a SHA-256 demo at `sha256.html` and `client.html`.
+ The boolean circuit for SHA has +100,000 gates, and by limiting the number of gates encrypted in parallel, JIGG is able to compute it in under a minute in the browser.  Test vectors are found [here](https://homes.esat.kuleuven.be/~nsmart/MPC/sha-256-test.txt) and in the `demo/test` folder.
 
-### Circuit Format
-JIGG can evaluate a boolean circuit in either of the following formats:
+ ### Circuit Format
+ JIGG can evaluate a boolean circuit in either of the following formats:
 
 In JavaScript as a circuit object
 ```javascript
@@ -81,6 +81,6 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 ```
 
 ## To Do
-- Change the current oblivious transfer to use ECC from libsodium
-- Encrypt communications between parties
-- Half AND gate optimization
+ - Change the current oblivious transfer to use ECC from libsodium
+ - Encrypt communications between parties
+ - Half AND gate optimization
