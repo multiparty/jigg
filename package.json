@@ -17,7 +17,7 @@
     "eslint-plugin-requirejs": "^4.0.0"
   },
   "scripts": {
-    "test": "node demo/test/suite/test.js zero_equal.txt '[\"00000000\",\"00000010\",\"0\"]'",
+    "test": "node demo/test/suite/all.js",
     "build": "browserify src/jigg.js --debug --s jigg -o dist/jigg.js"
   },
   "repository": {

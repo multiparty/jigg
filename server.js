@@ -13,15 +13,19 @@ app.use('/circuits', express.static(__dirname + '/circuits/'));
 app.get('/', (request, response) => response.sendFile(__dirname + '/demo/client.html'));
 app.get('/sha', (request, response) => response.sendFile(__dirname + '/demo/sha256.html'));
 
-const port = (process.argv.length === 3)? process.argv[2] : 3000;
-http.listen(port, () => console.log('listening on *:'+port));
+const open = (port) => http.listen(port, () => console.log('listening on *:'+port));
+
+// If command line, open right away
+if (require.main === module) {
+  let port = (process.argv.length === 3)? process.argv[2] : 3000;
+  open(port);
+}
 
 var party = {garbler: null, evaluator: null};
 var mailbox = {garbler: {}, evaluator: {}};
 var cache = [];
 io.on('connection', function (socket) {
   socket.on('join', function (msg) {
-    console.log(JSON.stringify(party));
     if (msg === 'garbler' || (!(msg === 'evaluator') && party.garbler == null)) {
       party.garbler = socket.id;
       console.log('connect garbler');
@@ -49,7 +53,6 @@ io.on('connection', function (socket) {
   });
 
   socket.on('send', function(tag, msg) {
-    console.log(JSON.stringify(party));
     console.log('send', tag, msg);
     if (socket.id === party.garbler) {
       if (typeof(mailbox.evaluator[tag]) !== 'undefined' && mailbox.evaluator[tag] != null) {
@@ -68,7 +71,6 @@ io.on('connection', function (socket) {
   });
 
   socket.on('listening for', function(tag) {
-    console.log(JSON.stringify(party));
     console.log('listening for', tag);
     if (socket.id === party.garbler) {
       if (typeof(mailbox.garbler[tag]) !== 'undefined' && mailbox.garbler[tag] != null) {
@@ -105,7 +107,6 @@ io.on('connection', function (socket) {
   });
 
   socket.on('oblv', function(params) {
-    console.log(JSON.stringify(party));
     console.log('oblv', params);
     const msg_id = params.msg_id;
     const length = params.length;
@@ -141,7 +142,7 @@ io.on('connection', function (socket) {
   });
 });
 
-module.exports.close = function () {
+const close = function () {
   try {
     console.log('Closing server');
     io.to(party.garbler).emit('shutdown', 'finished');
@@ -152,4 +153,9 @@ module.exports.close = function () {
   } catch (e) {
     console.log('Closing with error', e);
   }
+};
+
+module.exports = {
+  open: open,
+  close: close
 };

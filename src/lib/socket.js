@@ -1,5 +1,6 @@
-const io = function() {
-  var socket = require('socket.io-client')('http://localhost:3000', {forceNew: true});
+const io = function(port) {
+  port = port == null ? 3000 : port;
+  var socket = require('socket.io-client')('http://localhost:'+port, {forceNew: true});
   // console.log('=====', socket);
   socket.on('shutdown', function (msg) {
     // console.log('Server closed.', msg);
@@ -69,13 +70,14 @@ const io = function() {
     get: get,
     call: call,
     hear: hear,
-    socket: socket
+    socket: socket,
+    port: port
   };
 }
 
-const geturl = function(path, type) {
+const geturl = function(path, type, port) {
   return new Promise(function (resolve) {
-    fetch('http://localhost:3000/' + path).then(function (response) {
+    fetch('http://localhost:' + (port == null ? 3000 : port) + '/' + path).then(function (response) {
       resolve(response[type]());
     });
   });

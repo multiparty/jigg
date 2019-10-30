@@ -30,10 +30,10 @@ function run(circuit, role, input) {
   // console.time('time');
   var promise = new Promise(function (resolve) {
     if (role === 'garbler') {
-      var garbler = new Garbler(circuitURL, input, callback.bind(this, resolve), progress, 0, 0, false);
+      var garbler = new Garbler(circuitURL, input, callback.bind(this, resolve), progress, 0, 0, 3001, false);
       garbler.start();
     } else if (role === 'evaluator') {
-      var evaluator = new Evaluator(circuitURL, input, callback.bind(this, resolve), progress, 0, 0, false);
+      var evaluator = new Evaluator(circuitURL, input, callback.bind(this, resolve), progress, 0, 0, 3001, false);
       evaluator.start();
     }
   });
@@ -53,6 +53,7 @@ function test(circuit, testvector, server) {
   if (server) {
     // Start the server
     var server = require('../../../server.js');
+    server.open(3001);
   }
 
   // Start the two parties

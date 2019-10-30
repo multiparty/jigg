@@ -9,7 +9,7 @@ const init = function(socket) {
   *  Sender calls send(a, b)
   *  Receiver calls receive(c) and gets c?a:b
   */
-  function send(a, b) {
+  const send = function(a, b) {
     var msg_id = socket.nextid();
     socket.call('oblv', {msg_id: msg_id, length: bytes + 1});
 
@@ -31,7 +31,7 @@ const init = function(socket) {
     });
   }
 
-  function receive(c) {
+  const receive = function(c) {
     var msg_id = socket.nextid();
     socket.call('oblv', {msg_id: msg_id, length: bytes + 1});
 
