@@ -64,6 +64,9 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 2 1 4 6 7 AND
 ```
 
+### Circuit Assembler
+To create a new circuit, write a macro with existing circuits as its gates and run the [macro-circuit-assembler](https://github.com/wyatt-howe/macro-circuit-assembler/tree/casm) in `casm/casm.js`.
+
 ## Capabilities
 
 JIGG is designed for semi-honest parties.  We support point-and-permute, free-XOR, free single-input gates, encryption from a random oracle (fixed-key XChaCha20).  The half-AND optimization is compatible but not yet supported.  The default label size is 128 bits and relies on JavaScript's Uint8Array class.  The [`simple-labels`](https://github.com/wyatt-howe/jigg/tree/simple-labels) branch demonstrates dynamically-sized labels ≤53 bits without using arrays.  Some potential improvements are listed below.

@@ -1,0 +1,8 @@
+5 133    # 5 gates 13 wires
+8 16    # 8 16-bit inputs
+1 1     # 1 1-bit output
+32 1 [0|>16] [16|>16] 128 zero_equal.txt
+32 1 [32|>16] [48|>16] 129 zero_equal.txt
+32 1 [64|>16] [80|>16] 130 zero_equal.txt
+32 1 [96|>16] [112|>16] 131 zero_equal.txt
+4 1 [1|>4] 132 and4.txt

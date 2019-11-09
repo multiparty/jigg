@@ -1,3 +1,4 @@
-[submodule "macro-circuit-assembler"]
-	path = macro-circuit-assembler
+[submodule "casm"]
+	path = casm
 	url = https://github.com/wyatt-howe/macro-circuit-assembler
+	branch = casm
