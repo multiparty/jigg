@@ -28,6 +28,13 @@
     "2PC"
   ],
   "author": "Wyatt Howe",
+  "contributors": [
+    {
+      "name": "Kinan Dak Albab",
+      "email": "babman@bu.edu",
+      "url": "http://cs-people.bu.edu/babman/"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/wyatt-howe/jigg/issues"
