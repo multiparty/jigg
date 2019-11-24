@@ -11,6 +11,7 @@ server.open(3001);
 
 // console.log('begin');
 const log = console.log;
+let problems = 0;
 (function unit_test(i, j) {
   if (j == 1) {
     // log('start');
@@ -21,6 +22,7 @@ const log = console.log;
   log(circuit, tvector);
   test(circuit, tvector).then(function (data) {
     log(' '.repeat(circuit.length), data);
+    problems += data[2] === false;
 
     // Scan to next test
     j++;
@@ -31,7 +33,7 @@ const log = console.log;
     }
 
     if (i == config.length) {
-      log('done');
+      log('Completed with ' + problems + ' problem' + (problems === 1 ? '.' : 's.'));
       server.close();
 
       // BUG: somehow there is someone listing on the non-test port
