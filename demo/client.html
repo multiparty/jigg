@@ -15,7 +15,7 @@
       <option value="adder_32bit.txt">32-bit Adder</option>
       <option value="mult_32x32.txt">32x32-bit Multiplier</option>
       <option value="comparator_32bit_signed_lt.txt">32-bit Signed Less Than Comparison</option>
-      <option value="adder64.txt">64-bit Adder</option>
+      <option value="adder_64bit.txt">64-bit Adder</option>
       <option value="sub64.txt">64-bit Subtract</option>
       <option value="mult64.txt">64x64-bit Multiplier</option>
       <option value="divide64.txt">64x64-bit Division</option>
@@ -77,9 +77,6 @@
         input = jigg.hex2bin(input);
       }
       input = input.split('');
-      if (circuitURL === "circuits/aes128.txt") {  // temporarily adjust circuit
-        input = input.reverse();
-      }
       input = input.map(JSON.parse);
 
       const role = $('#partytype').val();

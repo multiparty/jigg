@@ -22,6 +22,7 @@ const callback = function (results) {
   results = bin2hex(results);
   console.log('Results: ' + results);
   console.timeEnd('time');
+  // process.exit();
 };
 
 console.time('time');

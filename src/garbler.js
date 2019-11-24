@@ -11,15 +11,21 @@ const crypto = require('./utils/crypto.js');
  * @param {Array<number>}input - the party's input as an array of bits
  * @constructor
  */
-function Garbler(circuitURL, input, callback, progress, parallel, throttle) {
+function Garbler(circuitURL, input, callback, progress, parallel, throttle, port, debug) {
   this.Wire = [null];
+  this.gates = [];
   this.circuitURL = circuitURL;
   this.input = input;
   this.callback = callback;
   this.parallel = parallel == null ? 30 : parallel;
   this.throttle = throttle == null ? 1 : throttle;
   this.progress = progress == null ? function () {} : progress;
-  this.gates = [];
+  this.socket = socket.io(port == null ? 3000 : port);
+  this.OT = OT(this.socket);
+  this.debug = debug;
+  this.log = this.debug? function () {
+    console.log.apply(console, ['Garbler', ...arguments]);
+  } : new Function();
 
   if (this.parallel === 0) {
     this.parallel = Number.MAX_VALUE;
@@ -27,15 +33,16 @@ function Garbler(circuitURL, input, callback, progress, parallel, throttle) {
 }
 
 Garbler.prototype.start = function () {
-  socket.join('garbler');
-  socket.hear('go').then(this.load_circuit.bind(this));
+  this.socket.join('garbler');
+  this.socket.hear('go').then(this.load_circuit.bind(this));
 };
 
 Garbler.prototype.load_circuit = function () {
   const that = this;
 
-  var promise = parser.circuit_load_bristol(this.circuitURL);
+  var promise = parser.circuit_load_bristol(this.circuitURL, this.socket.port);
   promise.then(function (circuit) {
+    that.log(this.circuitURL, circuit);
     that.circuit = circuit;
     for (var i = 1; i <= circuit.wires; i++) {
       that.Wire.push([]);
@@ -43,10 +50,6 @@ Garbler.prototype.load_circuit = function () {
 
     that.init();
   });
-};
-
-Garbler.prototype.log = function () {
-  // console.log.apply(console, arguments);
 };
 
 Garbler.prototype.init = function () {
@@ -61,14 +64,14 @@ Garbler.prototype.init = function () {
   for (var i = 0; i < this.circuit.input.length/2; i++) {
     var j = this.circuit.input[i];
     this.log('give Wire' + j, i, this.circuit.input, inputs[j], this.Wire[j][1], this.Wire[j][0], inputs[j] ? this.Wire[j][1] : this.Wire[j][0]);
-    socket.give('Wire'+j, inputs[j] ? this.Wire[j][1] : this.Wire[j][0]);
+    this.socket.give('Wire'+j, inputs[j] ? this.Wire[j][1] : this.Wire[j][0]);
   }
 
   // Use oblivious transfer for the second half of the input labels
   for (i = this.circuit.input.length/2; i < this.circuit.input.length; i++) {
     j = this.circuit.input[i];
     this.log('transfer for Wire' + j);
-    OT.send(this.Wire[j][0], this.Wire[j][1]);
+    this.OT.send(this.Wire[j][0], this.Wire[j][1]);
   }
 
   this.garble(0);
@@ -144,10 +147,10 @@ Garbler.prototype.finish = function () {
   const that = this;
 
   // Give the garbled gates to evaluator
-  socket.give('gates', JSON.stringify(this.gates));
+  this.socket.give('gates', JSON.stringify(this.gates));
 
   // Get output labels and decode them back to their original values
-  socket.get('evaluation').then(function (evaluation) {
+  this.socket.get('evaluation').then(function (evaluation) {
     var results = [];
     for (var i = 0; i < that.circuit.output.length; i++) {
       var label = evaluation[that.circuit.output[i]];  // wire output label
@@ -158,12 +161,9 @@ Garbler.prototype.finish = function () {
       results.push(value);
     }
 
-    socket.give('results', results);
+    this.socket.give('results', results);
     that.log('results', results);
 
-    if (this.circuitURL === "circuits/aes128.txt") {  // temporarily adjust circuit
-      results = results.reverse();
-    }
     results = results.join('');
     that.callback(results);
   }.bind(this));

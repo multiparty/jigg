@@ -13,8 +13,13 @@ app.use('/circuits', express.static(__dirname + '/circuits/'));
 app.get('/', (request, response) => response.sendFile(__dirname + '/demo/client.html'));
 app.get('/sha', (request, response) => response.sendFile(__dirname + '/demo/sha256.html'));
 
-const port = (process.argv.length === 3)? process.argv[2] : 3000;
-http.listen(port, () => console.log('listening on *:'+port));
+const open = (port) => http.listen(port, () => console.log('listening on *:'+port));
+
+// If command line, open right away
+if (require.main === module) {
+  let port = (process.argv.length === 3)? process.argv[2] : 3000;
+  open(port);
+}
 
 var party = {garbler: null, evaluator: null};
 var mailbox = {garbler: {}, evaluator: {}};
@@ -137,7 +142,7 @@ io.on('connection', function (socket) {
   });
 });
 
-exports.close = function () {
+const close = function () {
   try {
     console.log('Closing server');
     io.to(party.garbler).emit('shutdown', 'finished');
@@ -148,4 +153,9 @@ exports.close = function () {
   } catch (e) {
     console.log('Closing with error', e);
   }
+};
+
+module.exports = {
+  open: open,
+  close: close
 };

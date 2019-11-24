@@ -12,11 +12,12 @@
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
+    "browserify": "^16.5.0",
     "eslint": "^5.16.0",
     "eslint-plugin-requirejs": "^4.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node demo/test/suite/all.js",
     "build": "browserify src/jigg.js --debug --s jigg -o dist/jigg.js"
   },
   "repository": {

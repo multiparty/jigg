@@ -5,7 +5,7 @@ const socket = require('./socket.js');
 const bytes = 16;
 const types = {'AND': 'and', 'XOR': 'xor', 'INV': 'not'};
 
-function circuit_load_bristol(path) {
+function circuit_load_bristol(path, port) {
   var circuit = {
     wires: 0, gates: 0,
     input: [], output: [],
@@ -13,7 +13,7 @@ function circuit_load_bristol(path) {
   };
 
   return new Promise(function (resolve) {
-    socket.geturl(path, 'text').then(function (text) {
+    socket.geturl(path, 'text', port).then(function (text) {
       const bristol = text.split('\n').map(function (line) {
         return line.split(' ');
       });
@@ -21,11 +21,15 @@ function circuit_load_bristol(path) {
       circuit.gates = +bristol[0][0];
       circuit.wires = +bristol[0][1];
 
-      for (var i = 1; i <= bristol[1][1]; i++) {
+      if (bristol[1][0] != 2) {
+        // Asymmetric inputs!!
+      }
+
+      for (var i = 1; i <= bristol[1][0] * bristol[1][1]; i++) {
         circuit.input.push(i);
       }
 
-      for (i = 1+circuit.wires-bristol[2][1]; i <= circuit.wires; i++) {
+      for (i = 1+circuit.wires-(bristol[2][0]*bristol[2][1]); i <= circuit.wires; i++) {
         circuit.output.push(i);
       }
 
