@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "app-module-path": "^2.2.0",
+    "casm": "^0.2.2",
     "express": "^4.17.1",
     "libsodium": "^0.7.5",
     "libsodium-wrappers": "^0.7.5",
@@ -18,7 +19,8 @@
   },
   "scripts": {
     "test": "node test/suite/all.js",
-    "build": "browserify src/jigg.js --debug --s jigg -o dist/jigg.js"
+    "build": "browserify src/jigg.js --debug --s jigg -o dist/jigg.js",
+    "casm": "node node_modules/casm/casm.js"
   },
   "repository": {
     "type": "git",
