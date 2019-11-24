@@ -21,11 +21,15 @@ function circuit_load_bristol(path, port) {
       circuit.gates = +bristol[0][0];
       circuit.wires = +bristol[0][1];
 
-      for (var i = 1; i <= bristol[1][1]; i++) {
+      if (bristol[1][0] != 2) {
+        // Asymmetric inputs!!
+      }
+
+      for (var i = 1; i <= bristol[1][0] * bristol[1][1]; i++) {
         circuit.input.push(i);
       }
 
-      for (i = 1+circuit.wires-bristol[2][1]; i <= circuit.wires; i++) {
+      for (i = 1+circuit.wires-(bristol[2][0]*bristol[2][1]); i <= circuit.wires; i++) {
         circuit.output.push(i);
       }
 
