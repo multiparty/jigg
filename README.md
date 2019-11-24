@@ -1,8 +1,6 @@
 # JIGG
 JavaScript implementation of garbled gates and 2PC boolean circuit protocols
 
-JIGG is designed for semi-honest parties.  We support point-and-permute, free-XOR, free single-input gates, encryption from a random oracle (fixed-key XChaCha20).  The half-AND optimization is compatible but not yet supported.  The default label size is 128 bits and relies on JavaScript's Uint8Array class.  The [`simple-labels`](https://github.com/wyatt-howe/jigg/tree/simple-labels) branch demonstrates dynamically-sized labels ≤53 bits without using arrays.  Some potential improvements are listed in the to-do section.
-
 ## Installation and Setup
 
 The entirety of this project is written in JavaScript.  Running the server requires [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/) (both installed via `yum install nodejs npm` or `brew install npm` on macOS), and [Socket.IO](https://socket.io/) and [libsodium](https://www.npmjs.com/package/libsodium).
@@ -33,7 +31,7 @@ node demo/party.js aes128.txt garbler 00000000000000000000000000000000  # messag
 ```
 
 ### Demos
-We have a 64-bit Equal-to-Zero test (`circuits/zero_equal.txt`) in `circuits/` and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily) and so are now forced to run in sequence to prevent this from occurring.
+We have a 64-bit Equal-to-Zero test (`circuits/zero_equal_64.txt`) in `circuits/` and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily) and so are now forced to run in sequence to prevent this from occurring.
 
 There is now a SHA-256 demo at `sha256.html` and `client.html`.
 The boolean circuit for SHA has +100,000 gates, and by limiting the number of gates encrypted in parallel, JIGG is able to compute it in under a minute in the browser.  Test vectors are found [here](https://homes.esat.kuleuven.be/~nsmart/MPC/sha-256-test.txt) and in the `demo/test` folder.
@@ -83,6 +81,10 @@ Test cases (circuit name, test vector) for the circuits are configured in `demo/
 
 ### Circuit Assembler
 To create a new circuit, write a macro with existing circuits as its gates and run the [macro-circuit-assembler](https://github.com/wyatt-howe/macro-circuit-assembler/tree/casm) in `casm/casm.js`.
+
+## Capabilities
+
+JIGG is designed for semi-honest parties.  We support point-and-permute, free-XOR, free single-input gates, encryption from a random oracle (fixed-key XChaCha20).  The half-AND optimization is compatible but not yet supported.  The default label size is 128 bits and relies on JavaScript's Uint8Array class.  The [`simple-labels`](https://github.com/wyatt-howe/jigg/tree/simple-labels) branch demonstrates dynamically-sized labels ≤53 bits without using arrays.  Some potential improvements are listed in the to-do section.
 
 ## To Do
 - Change the current oblivious transfer to use ECC from libsodium

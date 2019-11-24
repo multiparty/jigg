@@ -9,13 +9,12 @@ const server = require('../../../server.js');
 // Start the server
 server.open(3001);
 
-// console.log('begin');
+console.log('Testing ' + config.length + ' circuits');
 const log = console.log;
 let problems = 0;
 (function unit_test(i, j) {
   if (j == 1) {
-    // log('start');
-    // log(config[i]);
+    // starting config[i]
   }
   let circuit = config[i][0];
   let tvector = config[i][j];
@@ -29,7 +28,7 @@ let problems = 0;
     if (j == config[i].length) {
       i++;
       j = 1;
-      // log('finish');
+      // goto next
     }
 
     if (i == config.length) {
