@@ -64,6 +64,9 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 2 1 4 6 7 AND
 ```
 
+### Circuit Assembler
+To create a new circuit, write a macro with existing circuits as its gates and run the [macro-circuit-assembler](https://github.com/wyatt-howe/macro-circuit-assembler/tree/casm) in `casm/casm.js`.
+
 ## Running Tests
 
 All of the built-in test vectors can be verified in `npm test`.  Communcations between the server, garbler and evaluator are automated.  You do not need to already have a server running – tests are run over port 3001.
@@ -77,17 +80,14 @@ For example to test an equal-to-zero computation with the zero vector, write:
 node demo/test/suite/test.js zero_equal.txt '["00000000","00000000","1"]'
 ```
 
-Test cases (circuit name, test vector) for the circuits are configured in `demo/test/suite/config.json`.  Test vectors are written as `[input1, input2, output]` as shown above.
-
-### Circuit Assembler
-To create a new circuit, write a macro with existing circuits as its gates and run the [macro-circuit-assembler](https://github.com/wyatt-howe/macro-circuit-assembler/tree/casm) in `casm/casm.js`.
+Test cases (circuit name, test vector) for the circuits are configured in `test/suite/config.json`.  Test vectors are written as `[input1, input2, output]` as shown above.
 
 ## Capabilities
 
-JIGG is designed for semi-honest parties.  We support point-and-permute, free-XOR, free single-input gates, encryption from a random oracle (fixed-key XChaCha20).  The half-AND optimization is compatible but not yet supported.  The default label size is 128 bits and relies on JavaScript's Uint8Array class.  The [`simple-labels`](https://github.com/wyatt-howe/jigg/tree/simple-labels) branch demonstrates dynamically-sized labels ≤53 bits without using arrays.  Some potential improvements are listed in the to-do section.
+JIGG is designed for semi-honest parties, in either node, or the browser.  We support point-and-permute, free-XOR, free single-input gates, encryption from a random oracle (fixed-key XChaCha20).  The half-AND optimization is compatible but not yet supported.  The default label size is 128 bits and relies on JavaScript's Uint8Array class.  The [`simple-labels`](https://github.com/wyatt-howe/jigg/tree/simple-labels) branch demonstrates dynamically-sized labels ≤53 bits without using arrays.  Some potential improvements are listed in the to-do section.
 
 ## To Do
 - Change the current oblivious transfer to use ECC from libsodium
-- Encrypt communications between parties (also solvable with ECC)
+- Encrypt communications between parties (or use ECC)
 - Half AND gate optimization
 - Compress JSON intermediate messages
