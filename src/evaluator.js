@@ -121,9 +121,6 @@ Evaluator.prototype.finish = function () {
 
   // Receive decoded output states
   this.socket.get('results').then(function (results) {
-    if (this.circuitURL === "circuits/aes128.txt") {  // temporarily adjust circuit
-      results = results.reverse();
-    }
     that.callback(results.join(''));
   }.bind(this));
 };

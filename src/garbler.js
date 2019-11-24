@@ -164,9 +164,6 @@ Garbler.prototype.finish = function () {
     this.socket.give('results', results);
     that.log('results', results);
 
-    if (this.circuitURL === "circuits/aes128.txt") {  // temporarily adjust circuit
-      results = results.reverse();
-    }
     results = results.join('');
     that.callback(results);
   }.bind(this));

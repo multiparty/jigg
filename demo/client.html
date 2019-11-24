@@ -77,9 +77,6 @@
         input = jigg.hex2bin(input);
       }
       input = input.split('');
-      if (circuitURL === "circuits/aes128.txt") {  // temporarily adjust circuit
-        input = input.reverse();
-      }
       input = input.map(JSON.parse);
 
       const role = $('#partytype').val();
