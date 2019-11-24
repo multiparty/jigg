@@ -67,6 +67,8 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 ### Circuit Assembler
 To create a new circuit, write a macro with existing circuits as its gates and run the [macro-circuit-assembler](https://github.com/wyatt-howe/macro-circuit-assembler/tree/casm) with `npm run casm <path_to_macro> <output_path>`.
 
+<!--For example, `npm run-script casm circuits/macros/and8.casm circuits/and8.txt` assembles the 8-bit AND circuit.-->
+
 ## Running Tests
 
 All of the built-in test vectors can be verified in `npm test`.  Communcations between the server, garbler and evaluator are automated.  You do not need to already have a server running – tests are run over port 3001.
