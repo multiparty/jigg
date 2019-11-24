@@ -88,5 +88,6 @@ JIGG is designed for semi-honest parties.  We support point-and-permute, free-XO
 
 ## To Do
 - Change the current oblivious transfer to use ECC from libsodium
-- Encrypt communications between parties
+- Encrypt communications between parties (also solvable with ECC)
 - Half AND gate optimization
+- Compress JSON intermediate messages

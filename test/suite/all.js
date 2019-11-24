@@ -1,10 +1,10 @@
 // Read config file
 const fs = require('fs');
-const config = JSON.parse(fs.readFileSync('demo/test/suite/config.json', 'utf8'));
+const config = JSON.parse(fs.readFileSync('test/suite/config.json', 'utf8'));
 
 // Import the server and test party simulator
 const test = require('./test.js');
-const server = require('../../../server.js');
+const server = require('../../server.js');
 
 // Start the server
 server.open(3001);

@@ -9,7 +9,7 @@ function run(circuit, role, input) {
   const circuitURL = 'circuits/' + circuit;
 
   // include JIGG library
-  const { Garbler, Evaluator, bin2hex, hex2bin } = require('../../../src/jigg.js');
+  const { Garbler, Evaluator, bin2hex, hex2bin } = require('../../src/jigg.js');
 
   // application code
   input = hex2bin(input);

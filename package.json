@@ -17,7 +17,7 @@
     "eslint-plugin-requirejs": "^4.0.0"
   },
   "scripts": {
-    "test": "node demo/test/suite/all.js",
+    "test": "node test/suite/all.js",
     "build": "browserify src/jigg.js --debug --s jigg -o dist/jigg.js"
   },
   "repository": {
