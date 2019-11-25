@@ -34,7 +34,7 @@ node demo/party.js aes128.txt garbler 00000000000000000000000000000000  # messag
 We have a 64-bit Equal-to-Zero test (`circuits/zero_equal_64.txt`) in `circuits/` and several other circuits from the same [page](https://homes.esat.kuleuven.be/~nsmart/MPC/).  Circuits larger than ~6000 gates seem to hang the JS engine (sometimes only temporarily) and so are now forced to run in sequence to prevent this from occurring.
 
 There is now a SHA-256 demo at `sha256.html` and `client.html`.
-The boolean circuit for SHA has +100,000 gates, and by limiting the number of gates encrypted in parallel, JIGG is able to compute it in under a minute in the browser.  Test vectors are found [here](https://homes.esat.kuleuven.be/~nsmart/MPC/sha-256-test.txt) and in the `demo/test` folder.
+The boolean circuit for SHA has +100,000 gates, and by limiting the number of gates encrypted in parallel, JIGG is able to compute it in under a minute in the browser.  Test vectors are found [here](https://homes.esat.kuleuven.be/~nsmart/MPC/sha-256-test.txt) and in the `test/` folder.
 
 ### Circuit Format
 JIGG can evaluate a boolean circuit in either of the following formats:
@@ -65,7 +65,7 @@ As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsma
 ```
 
 ### Circuit Assembler
-To create a new circuit, write a macro with existing circuits as its gates and run the [macro-circuit-assembler](https://github.com/wyatt-howe/macro-circuit-assembler/tree/casm) in `npm run-script casm <path_to_macro> <output_path>`.
+To create a new circuit, write a macro with existing circuits as its gates and run the [macro-circuit-assembler](https://github.com/wyatt-howe/macro-circuit-assembler/tree/casm) with `npm run casm <path_to_macro> <output_path>`.
 
 <!--For example, `npm run-script casm circuits/macros/and8.casm circuits/and8.txt` assembles the 8-bit AND circuit.-->
 
@@ -75,11 +75,11 @@ All of the built-in test vectors can be verified in `npm test`.  Communcations b
 
 You may also access the test function directly, by running `test.js`.
 ```shell
-node demo/test/suite/test.js <circuit> <testvector>
+node test/suite/test.js <circuit> <testvector>
 ```
 For example to test an equal-to-zero computation with the zero vector, write:
 ```shell
-node demo/test/suite/test.js zero_equal.txt '["00000000","00000000","1"]'
+node test/suite/test.js zero_equal.txt '["00000000","00000000","1"]'
 ```
 
 Test cases (circuit name, test vector) for the circuits are configured in `test/suite/config.json`.  Test vectors are written as `[input1, input2, output]` as shown above.
