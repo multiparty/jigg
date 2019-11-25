@@ -8,6 +8,7 @@
     "express": "^4.17.1",
     "libsodium": "^0.7.5",
     "libsodium-wrappers": "^0.7.5",
+    "libsodium-wrappers-sumo": "^0.7.6",
     "node-fetch": "^2.6.0",
     "socket.io": "^2.2.0"
   },
