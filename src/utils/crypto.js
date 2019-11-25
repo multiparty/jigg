@@ -21,6 +21,17 @@ function random_oracle(m, t = 0) {
   ).subarray(0, bytes+1);  // back to the correct number of bytes
 }
 
+/*
+ *  Asymmetric cryptography functionalities
+ */
+function public_encrypt(plaintext, publicKey) {
+
+}
+
+function private_decrypt(ciphertext, privateKey) {
+
+}
+
 // Generic pairwise XOR for any indexed data structure
 function xor_array(a, b, l) {
   if (l == null) {

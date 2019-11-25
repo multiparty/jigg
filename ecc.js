@@ -1,11 +1,19 @@
 const sodium = require('libsodium-wrappers');
 
-function encrypt(m) {
-  return m;
+function encrypt(m, pk) {
+  let c = new Uint8Array(16);
+  for (var i = 0; i < 16; i++) {
+    c[i] = m[i] ^ pk[i];
+  }
+  return c;
 }
 
-function decrypt(c) {
-  return c;
+function decrypt(c, sk) {
+  let m = new Uint8Array(16);
+  for (var i = 0; i < 16; i++) {
+    m[i] = c[i] ^ sk[i];
+  }
+  return m;
 }
 
 function add(a, b) {
@@ -24,20 +32,30 @@ function sub(a, b) {
   return c;
 }
 
+function keygen() {
+  let pk = sodium.randombytes_buf(32);
+  let sk = pk;
+  return {publicKey: pk, privateKey: sk};
+}
+
 sodium.ready.then(function () {
+  let keypair = keygen();
+  let pk = keypair.publicKey;  // public key
+  let sk = keypair.privateKey;  // private (secret) key
+
   let m0 = new Uint8Array(16).fill(0);
   let m1 = new Uint8Array(16).fill(1);
   let x0 = sodium.randombytes_buf(16);
   let x1 = sodium.randombytes_buf(16);
-  // send x0, x1
+  // send x0, x1, pk
 
-  let c = 1;
+  let c = 0;
   let k = sodium.randombytes_buf(16);
-  let v = add(c ? x1 : x0, encrypt(k));
+  let v = add(c ? x1 : x0, encrypt(k, pk));
   // send v
 
-  let m0k = add(m0, decrypt(sub(v, x0)));
-  let m1k = add(m1, decrypt(sub(v, x1)));
+  let m0k = add(m0, decrypt(sub(v, x0), sk));
+  let m1k = add(m1, decrypt(sub(v, x1), sk));
   // send m0k, m1k
 
   let mc = sub(c ? m1k : m0k, k);
