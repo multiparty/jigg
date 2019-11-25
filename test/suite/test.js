@@ -5,7 +5,7 @@ global.fetch = require('node-fetch');
  *  Equivilant of running the following command:
  *  `node demo/party.js <circuit> <role> <input>`
  */
-function run(circuit, role, input) {
+function run(circuit, role, input, debug) {
   const circuitURL = 'circuits/' + circuit;
 
   // include JIGG library
@@ -30,10 +30,10 @@ function run(circuit, role, input) {
   // console.time('time');
   var promise = new Promise(function (resolve) {
     if (role === 'garbler') {
-      var garbler = new Garbler(circuitURL, input, callback.bind(this, resolve), progress, 0, 0, 3001, false);
+      var garbler = new Garbler(circuitURL, input, callback.bind(this, resolve), progress, 0, 0, 3001, debug);
       garbler.start();
     } else if (role === 'evaluator') {
-      var evaluator = new Evaluator(circuitURL, input, callback.bind(this, resolve), progress, 0, 0, 3001, false);
+      var evaluator = new Evaluator(circuitURL, input, callback.bind(this, resolve), progress, 0, 0, 3001, debug);
       evaluator.start();
     }
   });
@@ -44,7 +44,7 @@ function run(circuit, role, input) {
 /*
  *  Test a circuit's correctness for a known input-ouput pair
  */
-function test(circuit, testvector, server) {
+function test(circuit, testvector, server, debug) {
   // Load a test vector
   const input1 = testvector[0];
   const input2 = testvector[1];
@@ -52,13 +52,13 @@ function test(circuit, testvector, server) {
 
   if (server) {
     // Start the server
-    var server = require('../../../server.js');
+    var server = require('../../server.js');
     server.open(3001);
   }
 
   // Start the two parties
-  const garbler_out = run(circuit, 'garbler', input1);
-  const evaluator_out = run(circuit, 'evaluator', input2);
+  const garbler_out = run(circuit, 'garbler', input1, debug);
+  const evaluator_out = run(circuit, 'evaluator', input2, debug);
 
   // Compute the circuit and compare results
   return new Promise(function (resolve) {
@@ -83,7 +83,12 @@ function test(circuit, testvector, server) {
 
 module.exports = test;
 
-if (process.argv.length === 4) {
-  const log = console.log; console.log = Function();  // TEMPORARY anti-logging hack
-  test(process.argv[2], JSON.parse(process.argv[3]), true).then(log.bind(null, process.argv[2]));
+if (process.argv.length >= 4) {
+  const log = console.log;
+  let debug = true;
+  if (process.argv[4] != '-v') {
+    console.log = Function();  // TEMPORARY anti-logging hack
+    debug = false;
+  }
+  test(process.argv[2], JSON.parse(process.argv[3]), true, debug).then(log.bind(null, process.argv[2]));
 }
