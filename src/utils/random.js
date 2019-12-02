@@ -1,4 +1,3 @@
-//var sodium = require('../sodium.js');
 var Label = require('../lib/label.js');
 
 const bytes = 16;
