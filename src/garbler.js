@@ -66,8 +66,13 @@ function Garbler(circuitURL, input, callback, progress, parallel, throttle, port
  * @returns {Object} The labeled wires.
  */
 Garbler.prototype.generate_labels = function (circuit) {
-  var Wire = [null];
   const R = randomutils.random();  // R in {0, 1}^N.
+
+  // Initialize the data structure for labeled wires.  
+  var Wire = [null];
+  for (var i = 1; i <= circuit.wires; i++) {
+      Wire.push([]);
+  }
 
   for (var j = 0; j < circuit.input.length; j++) {
     var i = circuit.input[j];
@@ -80,7 +85,7 @@ Garbler.prototype.generate_labels = function (circuit) {
     Wire[i][0].pointer(point);
     Wire[i][1].pointer(1-point);
   }
-
+  
   for (var i = 0; i < circuit.gates; i++) {
     var gate = circuit.gate[i];
     var k;
@@ -116,9 +121,12 @@ Garbler.prototype.generate_labels = function (circuit) {
  * @param {number[]} wirein - The array of indices of the input wires
  * @param {number} wireout - The index of the output wire
  */
-Garbler.prototype.garble_gate = function (type, wirein, wireout) {
-  this.log('garble_gate', type, wirein, wireout);
-  var Wire = this.Wire;
+Garbler.prototype.garble_gate = function (type, wirein, wireout, Wire) {
+  if (this.log !== undefined && this.log != null) 
+    this.log('garble_gate', type, wirein, wireout);
+
+  if (Wire == null && this !== undefined && this != null)
+    Wire = this.Wire;
 
   const i = wirein[0];
   const j = (wirein.length === 2) ? wirein[1] : i;
@@ -145,6 +153,21 @@ Garbler.prototype.garble_gate = function (type, wirein, wireout) {
 };
 
 /**
+ * Garble all the gates (stateless version).
+ * @param {Object} circuit - The circuit in which to garble the gates.
+ * @param {Object} Wire - The labeled wire data structure.
+ * @returns {Object[]} The garbled gates.
+ */
+Garbler.prototype.garble_gates = function (circuit, Wire) {
+  var gates = [];
+  for (var i = 0; i < circuit.gates; i++) {
+    const gate = circuit.gate[i];
+    gates.push(this.garble_gate(gate.type, gate.wirein, gate.wireout, Wire));
+  }
+  return gates;
+};
+
+/**
  * Run the garbler on the circuit.
  */
 Garbler.prototype.start = function () {
@@ -161,9 +184,6 @@ Garbler.prototype.load_circuit = function () {
   promise.then(function (circuit) {
     that.log(this.circuitURL, circuit);
     that.circuit = circuit;
-    for (var i = 1; i <= circuit.wires; i++) {
-      that.Wire.push([]);
-    }
     that.init();
   });
 };
@@ -176,7 +196,7 @@ Garbler.prototype.init = function () {
   const inputs = (new Array(1)).concat(this.input).concat(new Array(this.input.length));
   this.log('input states', inputs);
 
-  // Generate labels and save them in this.Wire.
+  // Generate labels and save them in labeled wire data structure.
   this.Wire = this.generate_labels(this.circuit);
   this.log('Wire', Wire);
 
