@@ -58,6 +58,50 @@ function Evaluator(circuitURL, input, callback, progress, parallel, throttle, po
 }
 
 /**
+ * Decrypt a single garbled gate; the resulting label is stored automatically and also returned.
+ * @param {Object[]} gate - The array of all gates
+ * @param {string} type - The gate operation
+ * @param {number[]} wirein - The array of indices of the input wires
+ * @param {number} wireout - The index of the output wire
+ * @param {Object[]} Wire - The labeled wire data structure
+ */
+Evaluator.prototype.evaluate_gate = function (gate, type, wirein, wireout, Wire) {
+  if (this.log !== undefined && this.log != null) 
+    this.log('evaluate_gate', gate, wirein, wireout);
+
+  if (Wire == null && this !== undefined && this != null)
+    Wire = this.Wire;
+
+  const i = wirein[0];
+  const j = (wirein.length === 2) ? wirein[1] : i;
+  const k = (wireout != null) ? wireout : 0; // If null, just return decrypted.
+  const l = 2 * Wire[i].pointer() + Wire[j].pointer();
+
+  if (type === 'xor') {
+    Wire[k] = Wire[i].xor(Wire[j]);
+  } else if (type === 'not') {
+    Wire[k] = Wire[i];  // Already inverted.
+  } else if (type === 'and') {
+    Wire[k] = crypto.decrypt(Wire[i], Wire[j], k, Label(gate[l]));
+  }
+};
+
+/**
+ * Evaluate all the gates (stateless version).
+ * @param {Object} circuit - The circuit in which to garble the gates.
+ * @param {Object[]} Wire - The labeled wire data structure.
+ * @param {Object[]} ggates - The garbled gates.
+ * @returns {Object[]} The labeled wire data structure.
+ */
+Garbler.prototype.evaluate_gates = function (circuit, Wire, ggates) {
+  for (var i = 0; i < circuit.gates; i++) {
+    const gate = circuit.gate[i];
+    this.evaluate_gate(ggates[i], gate.type, gate.wirein, gate.wireout, Wire);
+  }
+  return Wire;
+};
+
+/**
  * Run the evaluator on the circuit.
  */
 Evaluator.prototype.start = function () {
@@ -166,30 +210,6 @@ Evaluator.prototype.finish = function () {
   this.socket.get('results').then(function (results) {
     that.callback(results.join(''));
   }.bind(this));
-};
-
-/**
- * Decrypt a single garbled gate; the resulting label is stored automatically and also returned.
- * @param {Object[]} gate - The array of all gates
- * @param {string} type - The gate operation
- * @param {number[]} wirein - The array of indices of the input wires
- * @param {number} wireout - The index of the output wire
- */
-Evaluator.prototype.evaluate_gate = function (gate, type, wirein, wireout) {
-  this.log('evaluate_gate', gate, wirein, wireout);
-
-  const i = wirein[0];
-  const j = (wirein.length === 2) ? wirein[1] : i;
-  const k = (wireout != null) ? wireout : 0;  // if null, just return decrypted
-  const l = 2 * this.Wire[i].pointer() + this.Wire[j].pointer();
-
-  if (type === 'xor') {
-    this.Wire[k] = this.Wire[i].xor(this.Wire[j]);
-  } else if (type === 'not') {
-    this.Wire[k] = this.Wire[i];  // already inverted
-  } else if (type === 'and') {
-    this.Wire[k] = crypto.decrypt(this.Wire[i], this.Wire[j], k, Label(gate[l]));
-  }
 };
 
 module.exports = Evaluator;
