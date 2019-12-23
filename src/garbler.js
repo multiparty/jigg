@@ -120,6 +120,7 @@ Garbler.prototype.generate_labels = function (circuit) {
  * @param {string} type - The gate operation
  * @param {number[]} wirein - The array of indices of the input wires
  * @param {number} wireout - The index of the output wire
+ * @param {Object[]} Wire - The labeled wire data structure
  */
 Garbler.prototype.garble_gate = function (type, wirein, wireout, Wire) {
   if (this.log !== undefined && this.log != null) 
@@ -260,7 +261,7 @@ Garbler.prototype.finish = function () {
       var states = that.Wire[that.circuit.output[i]].map(Label.prototype.stringify); // True and false labels.
       var value = states.map(function (e) {
         return e.substring(0, e.length-3)
-      }).indexOf(label.substring(0, label.length-3));  // Find which state the label represents.
+      }).indexOf(label.substring(0, label.length-3)); // Find which state the label represents.
       results.push(value);
     }
 
