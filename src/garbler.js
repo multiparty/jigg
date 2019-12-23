@@ -118,6 +118,7 @@ Garbler.prototype.generate_labels = function (circuit) {
  */
 Garbler.prototype.garble_gate = function (type, wirein, wireout) {
   this.log('garble_gate', type, wirein, wireout);
+  var Wire = this.Wire;
 
   const i = wirein[0];
   const j = (wirein.length === 2) ? wirein[1] : i;
@@ -130,10 +131,10 @@ Garbler.prototype.garble_gate = function (type, wirein, wireout) {
   } else {  // if (type === 'and') {
     var t = [0,0,0,1];
     return [
-      [crypto.encrypt(this.Wire[i][0], this.Wire[j][0], k, this.Wire[k][t[0]]).stringify(), (2 * this.Wire[i][0].pointer()) + this.Wire[j][0].pointer()],
-      [crypto.encrypt(this.Wire[i][0], this.Wire[j][1], k, this.Wire[k][t[1]]).stringify(), (2 * this.Wire[i][0].pointer()) + this.Wire[j][1].pointer()],
-      [crypto.encrypt(this.Wire[i][1], this.Wire[j][0], k, this.Wire[k][t[2]]).stringify(), (2 * this.Wire[i][1].pointer()) + this.Wire[j][0].pointer()],
-      [crypto.encrypt(this.Wire[i][1], this.Wire[j][1], k, this.Wire[k][t[3]]).stringify(), (2 * this.Wire[i][1].pointer()) + this.Wire[j][1].pointer()]
+      [crypto.encrypt(Wire[i][0], Wire[j][0], k, Wire[k][t[0]]).stringify(), (2 * Wire[i][0].pointer()) + Wire[j][0].pointer()],
+      [crypto.encrypt(Wire[i][0], Wire[j][1], k, Wire[k][t[1]]).stringify(), (2 * Wire[i][0].pointer()) + Wire[j][1].pointer()],
+      [crypto.encrypt(Wire[i][1], Wire[j][0], k, Wire[k][t[2]]).stringify(), (2 * Wire[i][1].pointer()) + Wire[j][0].pointer()],
+      [crypto.encrypt(Wire[i][1], Wire[j][1], k, Wire[k][t[3]]).stringify(), (2 * Wire[i][1].pointer()) + Wire[j][1].pointer()]
     ].sort(function (c1, c2) {  // point-and-permute
       return c1[1] - c2[1];
     }).map(function (c) {
