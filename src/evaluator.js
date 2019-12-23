@@ -26,14 +26,14 @@ const crypto = require('./utils/crypto.js');
 
 /**
  * Create a new evaluator party for the circuit at the given URL with the given input.
- * @param {string} circuitURL - circuit URL relative to server path
- * @param {Array<number>} input - the party's input as an array of bits
- * @param {resultCallback} callback - the function to apply to the result bit string
- * @param {progressCallback} callback - the function to log or display progress
- * @param {number} parallel - parallelization parameter
- * @param {number} throttle - throttling parameter
- * @param {number} port - the port to use for communications
- * @param {boolean} debug - debugging mode flag
+ * @param {string} circuitURL - Circuit URL relative to server path
+ * @param {Array<number>} input - The party's input as an array of bits
+ * @param {resultCallback} callback - The function to apply to the result bit string
+ * @param {progressCallback} callback - The function to log or display progress
+ * @param {number} parallel - Parallelization parameter
+ * @param {number} throttle - Throttling parameter
+ * @param {number} port - The port to use for communications
+ * @param {boolean} debug - Debugging mode flag
  * @constructor
  */
 function Evaluator(circuitURL, input, callback, progress, parallel, throttle, port, debug) {
