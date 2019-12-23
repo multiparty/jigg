@@ -1,3 +1,8 @@
+/**
+ * Garbler for garbled circuit protocol.
+ * @module evaluator
+ */
+
 const socket = require('./lib/socket.js');
 const Label = require('./lib/label.js');
 const parser = require('./lib/parser.js');
@@ -6,9 +11,30 @@ const randomutils = require('./utils/random.js');
 const crypto = require('./utils/crypto.js');
 
 /**
- * Create a new evaluator party for the circuit at the given url with the given input
+ * This callback handles the result bit string.
+ *
+ * @callback resultCallback
+ * @param {string} result - The result bit string to process.
+ */
+
+/**
+ * This callback logs or displays progress.
+ *
+ * @callback progressCallback
+ * @param {number} current - The progress so far (i.e., numerator).
+ * @param {number} total - The target total (i.e., the denominator).
+ */
+
+/**
+ * Create a new garbler party for the circuit at the given URL with the given input.
  * @param {string} circuitURL - circuit URL relative to server path
- * @param {Array<number>}input - the party's input as an array of bits
+ * @param {Array<number>} input - the party's input as an array of bits
+ * @param {resultCallback} callback - the function to apply to the result bit string
+ * @param {progressCallback} callback - the function to log or display progress
+ * @param {number} parallel - parallelization parameter
+ * @param {number} throttle - throttling parameter
+ * @param {number} port - the port to use for communications
+ * @param {boolean} debug - debugging mode flag
  * @constructor
  */
 function Garbler(circuitURL, input, callback, progress, parallel, throttle, port, debug) {
@@ -32,11 +58,17 @@ function Garbler(circuitURL, input, callback, progress, parallel, throttle, port
   }
 }
 
+/**
+ * Run the garbler on the circuit.
+ */
 Garbler.prototype.start = function () {
   this.socket.join('garbler');
   this.socket.hear('go').then(this.load_circuit.bind(this));
 };
 
+/**
+ * Parse and load the circuit, then initialize the garbler.
+ */
 Garbler.prototype.load_circuit = function () {
   const that = this;
 
@@ -52,22 +84,25 @@ Garbler.prototype.load_circuit = function () {
   });
 };
 
+/**
+ * Initialize the garbler.
+ */
 Garbler.prototype.init = function () {
-  // User input
+  // User input.
   const inputs = (new Array(1)).concat(this.input).concat(new Array(this.input.length));
   this.log('input states', inputs);
 
-  // Generate labels and save it in this.wire
+  // Generate labels and save them in this.wire.
   this.generate_labels();
 
-  // Give the evaluator the first half of the input labels
+  // Give the evaluator the first half of the input labels.
   for (var i = 0; i < this.circuit.input.length/2; i++) {
     var j = this.circuit.input[i];
     this.log('give Wire' + j, i, this.circuit.input, inputs[j], this.Wire[j][1], this.Wire[j][0], inputs[j] ? this.Wire[j][1] : this.Wire[j][0]);
     this.socket.give('Wire'+j, inputs[j] ? this.Wire[j][1] : this.Wire[j][0]);
   }
 
-  // Use oblivious transfer for the second half of the input labels
+  // Use oblivious transfer for the second half of the input labels.
   for (i = this.circuit.input.length/2; i < this.circuit.input.length; i++) {
     j = this.circuit.input[i];
     this.log('transfer for Wire' + j);
@@ -77,7 +112,10 @@ Garbler.prototype.init = function () {
   this.garble(0);
 };
 
-// Generate labels and encode each state of every wire with a randomly generated label
+/**
+ * Generate labels and encode each state of every wire
+ * with a randomly generated label.
+ */
 Garbler.prototype.generate_labels = function () {
   const R = randomutils.random();  // R in {0, 1}^N
   for (var j = 0; j < this.circuit.input.length; j++) {
@@ -121,8 +159,12 @@ Garbler.prototype.generate_labels = function () {
   this.log('Wire', this.Wire);
 };
 
+/**
+ * Garble all the gates (with optional throttling).
+ * @param {number} start - The gate index at which to begin/continue garbling.
+ */
 Garbler.prototype.garble = function (start) {
-  // Garble all gates
+  // Garble all gates.
   for (var i = start; i < start + this.parallel && i < this.circuit.gates; i++) {
     const gate = this.circuit.gate[i];
     this.gates[i] = this.garble_gate(gate.type, gate.wirein, gate.wireout);
@@ -143,6 +185,9 @@ Garbler.prototype.garble = function (start) {
   }
 };
 
+/**
+ * Give garbled gates to evaluator, decode output, and run callback on results.
+ */
 Garbler.prototype.finish = function () {
   const that = this;
 
@@ -169,9 +214,11 @@ Garbler.prototype.finish = function () {
   }.bind(this));
 };
 
-/*
- *  Encrypt a single gate
- *  Input and output wires must have labels at this point.
+/**
+ * Encrypt a single gate; input and output wires must have labels at this point.
+ * @param {string} type - The gate operation
+ * @param {number[]} wirein - The array of indices of the input wires
+ * @param {number} wireout - The index of the output wire
  */
 Garbler.prototype.garble_gate = function (type, wirein, wireout) {
   this.log('garble_gate', type, wirein, wireout);

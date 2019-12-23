@@ -1,3 +1,8 @@
+/**
+ * Evaluator for garbled circuit protocol.
+ * @module evaluator
+ */
+
 const socket = require('./lib/socket.js');
 const Label = require('./lib/label.js');
 const parser = require('./lib/parser.js');
@@ -5,14 +10,36 @@ const OT = require('./lib/ot.js');
 const crypto = require('./utils/crypto.js');
 
 /**
- * Create a new evaluator party for the circuit at the given url with the given input
+ * This callback handles the result bit string.
+ *
+ * @callback resultCallback
+ * @param {string} result - The result bit string to process.
+ */
+
+/**
+ * This callback logs or displays progress.
+ *
+ * @callback progressCallback
+ * @param {number} current - The progress so far (i.e., numerator).
+ * @param {number} total - The target total (i.e., the denominator).
+ */
+
+/**
+ * Create a new evaluator party for the circuit at the given URL with the given input.
  * @param {string} circuitURL - circuit URL relative to server path
- * @param {Array<number>}input - the party's input as an array of bits
+ * @param {Array<number>} input - the party's input as an array of bits
+ * @param {resultCallback} callback - the function to apply to the result bit string
+ * @param {progressCallback} callback - the function to log or display progress
+ * @param {number} parallel - parallelization parameter
+ * @param {number} throttle - throttling parameter
+ * @param {number} port - the port to use for communications
+ * @param {boolean} debug - debugging mode flag
  * @constructor
  */
 function Evaluator(circuitURL, input, callback, progress, parallel, throttle, port, debug) {
   this.Wire = [null];
   this.circuitURL = circuitURL;
+  this.circuit = undefined;
   this.input = input;
   this.callback = callback;
   this.parallel = parallel == null ? 30 : parallel;
@@ -30,11 +57,17 @@ function Evaluator(circuitURL, input, callback, progress, parallel, throttle, po
   }
 }
 
+/**
+ * Run the evaluator on the circuit.
+ */
 Evaluator.prototype.start = function () {
   this.socket.join('evaluator');
   this.socket.hear('go').then(this.load_circuit.bind(this));
 };
 
+/**
+ * Parse and load the circuit, then initialize the evaluator.
+ */
 Evaluator.prototype.load_circuit = function () {
   const that = this;
 
@@ -49,28 +82,31 @@ Evaluator.prototype.load_circuit = function () {
   });
 };
 
+/**
+ * Initialize the evaluator.
+ */
 Evaluator.prototype.init = function () {
   const that = this;
 
-  // Total input
+  // Total input.
   const input = (new Array(1 + this.input.length)).concat(this.input);
 
-  // All required message promises to evaluate
-  var messages = [this.socket.get('gates')];  // Promise to the garbled gates
+  // All required message promises to evaluate.
+  var messages = [this.socket.get('gates')];  // Promise to the garbled gates.
 
-  // Promises to each of the garbler's input labels
+  // Promises to each of the garbler's input labels.
   for (var i = 0; i < this.circuit.input.length / 2; i++) {
     this.log('listen for Wire', this.circuit.input[i]);
     messages.push(this.socket.get('Wire' + this.circuit.input[i]));
   }
 
-  // Promises to each of the evaluator's input labels
+  // Promises to each of the evaluator's input labels.
   for (i = this.circuit.input.length / 2; i < this.circuit.input.length; i++) {
     this.log('obliviousT ask for wire', this.circuit.input[i], 'with value', input[this.circuit.input[i]]);
     messages.push(this.OT.receive(input[this.circuit.input[i]]));
   }
 
-  // Wait until all messages are received
+  // Wait until all messages are received.
   Promise.all(messages).then(function (msg) {
     that.log('msg', msg);
 
@@ -85,6 +121,10 @@ Evaluator.prototype.init = function () {
   });
 };
 
+/**
+ * Evaluate all the gates (with optional throttling).
+ * @param {number} start - The gate index at which to begin/continue evaluating.
+ */
 Evaluator.prototype.evaluate = function (start) {
   for (var i = start; i < start + this.parallel && i < this.circuit.gates; i++) {
     const gate = this.circuit.gate[i];
@@ -106,11 +146,14 @@ Evaluator.prototype.evaluate = function (start) {
   }
 };
 
+/**
+ * Give wires back to garbler, receive decoded output states, and run callback on results.
+ */
 Evaluator.prototype.finish = function () {
   const that = this;
 
-  // Collect all output wires' labels
-  // and send them back to the garbler for decoding
+  // Collect all output wires' labels and send
+  // them back to the garbler for decoding.
   var evaluation = {};
   for (var i = 0; i < this.circuit.output.length; i++) {
     var j = this.circuit.output[i];
@@ -119,15 +162,18 @@ Evaluator.prototype.finish = function () {
   }
   this.socket.give('evaluation', evaluation);
 
-  // Receive decoded output states
+  // Receive decoded output states.
   this.socket.get('results').then(function (results) {
     that.callback(results.join(''));
   }.bind(this));
 };
 
-/*
- *  Decrypt a single garbled gate
- *  The resultant label is stored automatically and also returned
+/**
+ * Decrypt a single garbled gate; the resulting label is stored automatically and also returned.
+ * @param {Object[]} gate - The array of all gates
+ * @param {string} type - The gate operation
+ * @param {number[]} wirein - The array of indices of the input wires
+ * @param {number} wireout - The index of the output wire
  */
 Evaluator.prototype.evaluate_gate = function (gate, type, wirein, wireout) {
   this.log('evaluate_gate', gate, wirein, wireout);
