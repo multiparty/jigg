@@ -69,5 +69,6 @@ function circuit_load_bristol(path, port) {
 }
 
 module.exports = {
+  circuit_parse_bristol: circuit_parse_bristol,
   circuit_load_bristol: circuit_load_bristol
 };

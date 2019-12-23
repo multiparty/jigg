@@ -1,9 +1,8 @@
 # JIGG
-JavaScript implementation of garbled gates and 2PC boolean circuit protocols
+JavaScript implementation of garbled gates and 2PC boolean circuit protocols.
 
 ## Installation and Setup
-
-The entirety of this project is written in JavaScript.  Running the server requires [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/) (both installed via `yum install nodejs npm` or `brew install npm` on macOS), and [Socket.IO](https://socket.io/) and [libsodium](https://www.npmjs.com/package/libsodium).
+The entirety of this project is written in JavaScript. Running the server requires [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/) (both installed via `yum install nodejs npm` or `brew install npm` on macOS), [Socket.IO](https://socket.io/), and [libsodium](https://www.npmjs.com/package/libsodium).
 
 Run `npm` to install all JIGG dependencies:
 ```shell
@@ -11,21 +10,20 @@ npm install
 ```
 
 ## Running the Prototype
-
 Start the communications server from server.js with the command below and optionally specify a port number such as:
 ```shell
 node server 3000
 ```
 
 ### As a Browser Party
-Parties can go to `http://localhost:port/` in a web browser supporting JavaScript to begin communications.  This is strictly a 2-party protocol at the moment.
+Parties can go to `http://localhost:port/` in a web browser supporting JavaScript to begin communications.  This is strictly a two-party protocol at the moment.
 
 ### As a Node.js Party
 Connect a new party in Node.js by running:
 ```shell
 node demo/party.js <circuit> <role> <b16-input>
 ```
-For example to join an AES-128 computation as the garbler, write:
+For example to join an AES-128 computation as the garbler, run:
 ```shell
 node demo/party.js aes128.txt garbler 00000000000000000000000000000000  # message in base 16
 ```
@@ -37,9 +35,7 @@ There is now a SHA-256 demo at `sha256.html` and `client.html`.
 The boolean circuit for SHA has +100,000 gates, and by limiting the number of gates encrypted in parallel, JIGG is able to compute it in under a minute in the browser.  Test vectors are found [here](https://homes.esat.kuleuven.be/~nsmart/MPC/sha-256-test.txt) and in the `test/` folder.
 
 ### Circuit Format
-JIGG can evaluate a boolean circuit in either of the following formats:
-
-In JavaScript as a circuit object
+JIGG can evaluate a boolean circuit in either of two formats. It supports a custom JSON circuit format:
 ```javascript
 const circuit = {
   wires: 8, gates: 4,
@@ -53,7 +49,7 @@ const circuit = {
 };
 ```
 
-As a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsmart/MPC/) [Format](https://homes.esat.kuleuven.be/~nsmart/MPC/old-circuits.html)' which is supported by several compiled MPC libraries such as [SCALE-MAMBA](https://homes.esat.kuleuven.be/~nsmart/SCALE/).
+It can also parse a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsmart/MPC/) [Format](https://homes.esat.kuleuven.be/~nsmart/MPC/old-circuits.html)' which is supported by several compiled MPC libraries such as [SCALE-MAMBA](https://homes.esat.kuleuven.be/~nsmart/SCALE/).
 ```ada
 4 8
 1 4
@@ -71,7 +67,14 @@ To create a new circuit, write a macro with existing circuits as its gates and r
 
 ## Running Tests
 
-All of the built-in test vectors can be verified in `npm test`.  Communcations between the server, garbler and evaluator are automated.  You do not need to already have a server running – tests are run over port 3001.
+### Unit Tests
+Unit tests can be run using [mocha](https://mochajs.org/):
+```shell
+mocha test
+```
+
+### End-to-end Tests
+All of the built-in test vectors can be verified in `npm test`.  Communications between the server, garbler and evaluator are automated.  You do not need to already have a server running; tests are run over port 3001.
 
 You may also access the test function directly, by running `test.js`.
 ```shell
@@ -85,7 +88,6 @@ node test/suite/test.js zero_equal.txt '["00000000","00000000","1"]'
 Test cases (circuit name, test vector) for the circuits are configured in `test/suite/config.json`.  Test vectors are written as `[input1, input2, output]` as shown above.
 
 ## Capabilities
-
 JIGG is designed for semi-honest parties, in either node, or the browser.  We support point-and-permute, free-XOR, free single-input gates, encryption from a random oracle (fixed-key XChaCha20).  The half-AND optimization is compatible but not yet supported.  The default label size is 128 bits and relies on JavaScript's Uint8Array class.  The [`simple-labels`](https://github.com/wyatt-howe/jigg/tree/simple-labels) branch demonstrates dynamically-sized labels ≤53 bits without using arrays.  Some potential improvements are listed in the to-do section.
 
 ## To Do

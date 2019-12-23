@@ -15,7 +15,9 @@
   "devDependencies": {
     "browserify": "^16.5.0",
     "eslint": "^5.16.0",
-    "eslint-plugin-requirejs": "^4.0.0"
+    "eslint-plugin-requirejs": "^4.0.0",
+    "chai": "^4.2.0",
+    "mocha": "^4.0.1"
   },
   "scripts": {
     "test": "node test/suite/all.js",
