@@ -7,7 +7,7 @@
  * Convert a hexadecimal base string to a binary base string
  * (e.g., 'ABC' |-> '101010111100').
  * @param {string} hex - The hexadecimal representation.
- * @return {string} The binary representation.
+ * @returns {string} The binary representation.
  */
 const table16 = {
   0: '0000', 1: '0001', 2: '0010', 3: '0011',
@@ -27,7 +27,7 @@ function hex2bin(hex) {
  * Convert a binary base string to a hexadecimal base string
  * (e.g., '101010111100' |-> 'ABC').
  * @param {string} bin - The binary representation.
- * @return {string} The hexadecimal representation.
+ * @returns {string} The hexadecimal representation.
  */
 const table2 = {
   '0000': '0', '0001': '1', '0010': '2', '0011': '3',

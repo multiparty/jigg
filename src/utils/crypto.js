@@ -13,7 +13,7 @@ const bytes = 8;
  * @param {string} b - ...
  * @param {string} t - ...
  * @param {string} m - ...
- * @return {string} The encrypted result.
+ * @returns {string} The encrypted result.
  */
 function encrypt(a, b, t, m) {
   // console.log('a', a, '\nb', b, '\nt', t, '\nm', m);
@@ -26,7 +26,7 @@ const decrypt = encrypt;
  * Fixed-key 1-block cipher as the Random Oracle.
  * @param {string} m - ...
  * @param {string} t - ...
- * @return {string} ...
+ * @returns {string} ...
  */
 function random_oracle(m, t = 0) {
   return sodium.crypto_secretbox_easy(
@@ -41,7 +41,7 @@ function random_oracle(m, t = 0) {
  * @param {Array} a - First input to XOR.
  * @param {Array} b - Second input to XOR.
  * @param {number} l - Length of inputs.
- * @return {Array} Result of XOR operation in inputs.
+ * @returns {Array} Result of XOR operation on inputs.
  */
 function xor_array(a, b, l) {
   if (l == null) {

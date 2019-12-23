@@ -11,7 +11,7 @@ const labels = [];
 
 /**
  * Return a random bit.
- * @return {uint32_t} The random bit.
+ * @returns {uint32_t} The random bit.
  */
 function random_bit() {
   return sodium.randombytes_uniform(2);
@@ -20,7 +20,7 @@ function random_bit() {
 /**
  * Choose random number within bitLength bits without replacement.
  * @param {number} bitLength - The number of bits in value's representation.
- * @return {uint32_t} The random number.
+ * @returns {uint32_t} The random number.
  */
 function random_with_replacement(bitLength) {
   if (bitLength == null) {
@@ -39,7 +39,7 @@ function random_with_replacement(bitLength) {
  * Generate a new random unused label.
  * @param {number} length - The length of the label.
  * @param {number} bits - The number of bits in individual values.
- * @return {Label} The random label.
+ * @returns {Object} The random label as a Label object.
  */
 function random(length, bits) {
   if (length == null) {
@@ -60,7 +60,7 @@ function random(length, bits) {
 /**
  * Cryptographically shuffle array.
  * @param {Array} array - The length of the label.
- * @return {Array} The shuffled array.
+ * @returns {Array} The shuffled array.
  */
 function shuffle(array) {
   var r, tmp, i;
