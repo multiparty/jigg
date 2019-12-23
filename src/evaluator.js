@@ -93,7 +93,7 @@ Evaluator.prototype.evaluate_gate = function (gate, type, wirein, wireout, Wire)
  * @param {Object[]} ggates - The garbled gates.
  * @returns {Object[]} The labeled wire data structure.
  */
-Garbler.prototype.evaluate_gates = function (circuit, Wire, ggates) {
+Evaluator.prototype.evaluate_gates = function (circuit, Wire, ggates) {
   for (var i = 0; i < circuit.gates; i++) {
     const gate = circuit.gate[i];
     this.evaluate_gate(ggates[i], gate.type, gate.wirein, gate.wireout, Wire);
@@ -121,7 +121,6 @@ Evaluator.prototype.load_circuit = function () {
     for (var i = 1; i <= circuit.wires; i++) {
       that.Wire.push([]);
     }
-
     that.init();
   });
 };
