@@ -19,7 +19,7 @@ function random_bit() {
 
 /**
  * Choose random number within bitLength bits without replacement.
- * @param {int} bitLength - The number of bits in value's representation.
+ * @param {number} bitLength - The number of bits in value's representation.
  * @return {uint32_t} The random number.
  */
 function random_with_replacement(bitLength) {
@@ -37,8 +37,8 @@ function random_with_replacement(bitLength) {
 
 /**
  * Generate a new random unused label.
- * @param {int} length - The length of the label.
- * @param {int} bits - The number of bits in individual values.
+ * @param {number} length - The length of the label.
+ * @param {number} bits - The number of bits in individual values.
  * @return {Label} The random label.
  */
 function random(length, bits) {

@@ -40,7 +40,7 @@ function random_oracle(m, t = 0) {
  * Generic element-wise XOR for any indexed data structure
  * @param {Array} a - First input to XOR.
  * @param {Array} b - Second input to XOR.
- * @param {int} l - Length of inputs.
+ * @param {number} l - Length of inputs.
  * @return {Array} Result of XOR operation in inputs.
  */
 function xor_array(a, b, l) {
