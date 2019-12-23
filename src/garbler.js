@@ -38,7 +38,7 @@ const crypto = require('./utils/crypto.js');
  * @constructor
  */
 function Garbler(circuitURL, input, callback, progress, parallel, throttle, port, debug) {
-  this.Wire = [null];
+  this.Wire = undefined;
   this.gates = [];
   this.circuitURL = circuitURL;
   this.circuit = undefined;
@@ -58,6 +58,57 @@ function Garbler(circuitURL, input, callback, progress, parallel, throttle, port
     this.parallel = Number.MAX_VALUE;
   }
 }
+
+/**
+ * Generate labels and encode each state of every wire
+ * with a randomly generated label.
+ * @param {Object} circuit - The circuit for which to generate labels.
+ * @returns {Object} The labeled wires.
+ */
+Garbler.prototype.generate_labels = function (circuit) {
+  var Wire = [null];
+  const R = randomutils.random();  // R in {0, 1}^N.
+
+  for (var j = 0; j < circuit.input.length; j++) {
+    var i = circuit.input[j];
+
+    var label = randomutils.random();
+    Wire[i][0] = label;
+    Wire[i][1] = label.xor(R);
+
+    var point = randomutils.random_bit();
+    Wire[i][0].pointer(point);
+    Wire[i][1].pointer(1-point);
+  }
+
+  for (var i = 0; i < circuit.gates; i++) {
+    var gate = circuit.gate[i];
+    var k;
+    if (gate.type === 'xor') {
+      var a = Wire[gate.wirein[0]][0];
+      var b = Wire[gate.wirein[1]][0];
+      k = gate.wireout;
+
+      Wire[k][0] = a.xor(b).point(a.pointer() ^ b.pointer());
+      Wire[k][1] = a.xor(b).xor(R).point(a.pointer() ^ b.pointer() ^ 1);
+    } else if (gate.type === 'and') {
+      k = gate.wireout;
+
+      var key = randomutils.random();
+      point = randomutils.random_bit();
+
+      Wire[k][0] = key.point(point);
+      Wire[k][1] = key.xor(R).point(point ^ 1);
+    } else if (gate.type === 'not') {
+      Wire[gate.wireout][0] = Wire[gate.wirein[0]][1];
+      Wire[gate.wireout][1] = Wire[gate.wirein[0]][0];
+    } else {
+      throw new Error('Unsupported gate type \''+gate.type+'\'');
+    }
+  }
+
+  return Wire;
+};
 
 /**
  * Run the garbler on the circuit.
@@ -91,8 +142,9 @@ Garbler.prototype.init = function () {
   const inputs = (new Array(1)).concat(this.input).concat(new Array(this.input.length));
   this.log('input states', inputs);
 
-  // Generate labels and save them in this.wire.
-  this.generate_labels();
+  // Generate labels and save them in this.Wire.
+  this.Wire = this.generate_labels(this.circuit);
+  this.log('Wire', Wire);
 
   // Give the evaluator the first half of the input labels.
   for (var i = 0; i < this.circuit.input.length/2; i++) {
@@ -109,54 +161,6 @@ Garbler.prototype.init = function () {
   }
 
   this.garble(0);
-};
-
-/**
- * Generate labels and encode each state of every wire
- * with a randomly generated label.
- */
-Garbler.prototype.generate_labels = function () {
-  const R = randomutils.random();  // R in {0, 1}^N.
-
-  for (var j = 0; j < this.circuit.input.length; j++) {
-    var i = this.circuit.input[j];
-
-    var label = randomutils.random();
-    this.Wire[i][0] = label;
-    this.Wire[i][1] = label.xor(R);
-
-    var point = randomutils.random_bit();
-    this.Wire[i][0].pointer(point);
-    this.Wire[i][1].pointer(1-point);
-  }
-
-  for (var i = 0; i < this.circuit.gates; i++) {
-    var gate = this.circuit.gate[i];
-    var k;
-    if (gate.type === 'xor') {
-      var a = this.Wire[gate.wirein[0]][0];
-      var b = this.Wire[gate.wirein[1]][0];
-      k = gate.wireout;
-
-      this.Wire[k][0] = a.xor(b).point(a.pointer() ^ b.pointer());
-      this.Wire[k][1] = a.xor(b).xor(R).point(a.pointer() ^ b.pointer() ^ 1);
-    } else if (gate.type === 'and') {
-      k = gate.wireout;
-
-      var key = randomutils.random();
-      point = randomutils.random_bit();
-
-      this.Wire[k][0] = key.point(point);
-      this.Wire[k][1] = key.xor(R).point(point ^ 1);
-    } else if (gate.type === 'not') {
-      this.Wire[gate.wireout][0] = this.Wire[gate.wirein[0]][1];
-      this.Wire[gate.wireout][1] = this.Wire[gate.wirein[0]][0];
-    } else {
-      throw new Error('Unsupported gate type \''+gate.type+'\'');
-    }
-  }
-
-  this.log('Wire', this.Wire);
 };
 
 /**
