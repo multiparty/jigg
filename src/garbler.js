@@ -41,6 +41,7 @@ function Garbler(circuitURL, input, callback, progress, parallel, throttle, port
   this.Wire = [null];
   this.gates = [];
   this.circuitURL = circuitURL;
+  this.circuit = undefined;
   this.input = input;
   this.callback = callback;
   this.parallel = parallel == null ? 30 : parallel;
@@ -71,7 +72,6 @@ Garbler.prototype.start = function () {
  */
 Garbler.prototype.load_circuit = function () {
   const that = this;
-
   var promise = parser.circuit_load_bristol(this.circuitURL, this.socket.port);
   promise.then(function (circuit) {
     that.log(this.circuitURL, circuit);
@@ -79,7 +79,6 @@ Garbler.prototype.load_circuit = function () {
     for (var i = 1; i <= circuit.wires; i++) {
       that.Wire.push([]);
     }
-
     that.init();
   });
 };
@@ -103,7 +102,7 @@ Garbler.prototype.init = function () {
   }
 
   // Use oblivious transfer for the second half of the input labels.
-  for (i = this.circuit.input.length/2; i < this.circuit.input.length; i++) {
+  for (var i = this.circuit.input.length/2; i < this.circuit.input.length; i++) {
     j = this.circuit.input[i];
     this.log('transfer for Wire' + j);
     this.OT.send(this.Wire[j][0], this.Wire[j][1]);
@@ -117,7 +116,8 @@ Garbler.prototype.init = function () {
  * with a randomly generated label.
  */
 Garbler.prototype.generate_labels = function () {
-  const R = randomutils.random();  // R in {0, 1}^N
+  const R = randomutils.random();  // R in {0, 1}^N.
+
   for (var j = 0; j < this.circuit.input.length; j++) {
     var i = this.circuit.input[j];
 
@@ -130,7 +130,7 @@ Garbler.prototype.generate_labels = function () {
     this.Wire[i][1].pointer(1-point);
   }
 
-  for (i = 0; i < this.circuit.gates; i++) {
+  for (var i = 0; i < this.circuit.gates; i++) {
     var gate = this.circuit.gate[i];
     var k;
     if (gate.type === 'xor') {
@@ -191,18 +191,18 @@ Garbler.prototype.garble = function (start) {
 Garbler.prototype.finish = function () {
   const that = this;
 
-  // Give the garbled gates to evaluator
+  // Give the garbled gates to evaluator.
   this.socket.give('gates', JSON.stringify(this.gates));
 
-  // Get output labels and decode them back to their original values
+  // Get output labels and decode them back to their original values.
   this.socket.get('evaluation').then(function (evaluation) {
     var results = [];
     for (var i = 0; i < that.circuit.output.length; i++) {
-      var label = evaluation[that.circuit.output[i]];  // wire output label
-      var states = that.Wire[that.circuit.output[i]].map(Label.prototype.stringify);  // true and false labels
+      var label = evaluation[that.circuit.output[i]]; // Wire output label.
+      var states = that.Wire[that.circuit.output[i]].map(Label.prototype.stringify); // True and false labels.
       var value = states.map(function (e) {
         return e.substring(0, e.length-3)
-      }).indexOf(label.substring(0, label.length-3));  // find which state the label represents
+      }).indexOf(label.substring(0, label.length-3));  // Find which state the label represents.
       results.push(value);
     }
 
@@ -228,7 +228,7 @@ Garbler.prototype.garble_gate = function (type, wirein, wireout) {
   const k = wireout;
 
   if (type === 'xor') {
-    return 'xor';  // free xor - encrypt nothing
+    return 'xor';  // Free XOR - encrypt nothing.
   } else if (type === 'not') {
     return 'not';
   } else {  // if (type === 'and') {
@@ -244,7 +244,7 @@ Garbler.prototype.garble_gate = function (type, wirein, wireout) {
       return c = c[0];
     });
   }
-  // --Define any other gates here--
+  // Define cases for any other gate types here.
 };
 
 module.exports = Garbler;
