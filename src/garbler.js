@@ -111,6 +111,39 @@ Garbler.prototype.generate_labels = function (circuit) {
 };
 
 /**
+ * Encrypt a single gate; input and output wires must have labels at this point.
+ * @param {string} type - The gate operation
+ * @param {number[]} wirein - The array of indices of the input wires
+ * @param {number} wireout - The index of the output wire
+ */
+Garbler.prototype.garble_gate = function (type, wirein, wireout) {
+  this.log('garble_gate', type, wirein, wireout);
+
+  const i = wirein[0];
+  const j = (wirein.length === 2) ? wirein[1] : i;
+  const k = wireout;
+
+  if (type === 'xor') {
+    return 'xor';  // Free XOR - encrypt nothing.
+  } else if (type === 'not') {
+    return 'not';
+  } else {  // if (type === 'and') {
+    var t = [0,0,0,1];
+    return [
+      [crypto.encrypt(this.Wire[i][0], this.Wire[j][0], k, this.Wire[k][t[0]]).stringify(), (2 * this.Wire[i][0].pointer()) + this.Wire[j][0].pointer()],
+      [crypto.encrypt(this.Wire[i][0], this.Wire[j][1], k, this.Wire[k][t[1]]).stringify(), (2 * this.Wire[i][0].pointer()) + this.Wire[j][1].pointer()],
+      [crypto.encrypt(this.Wire[i][1], this.Wire[j][0], k, this.Wire[k][t[2]]).stringify(), (2 * this.Wire[i][1].pointer()) + this.Wire[j][0].pointer()],
+      [crypto.encrypt(this.Wire[i][1], this.Wire[j][1], k, this.Wire[k][t[3]]).stringify(), (2 * this.Wire[i][1].pointer()) + this.Wire[j][1].pointer()]
+    ].sort(function (c1, c2) {  // point-and-permute
+      return c1[1] - c2[1];
+    }).map(function (c) {
+      return c = c[0];
+    });
+  }
+  // Define cases for any other gate types here.
+};
+
+/**
  * Run the garbler on the circuit.
  */
 Garbler.prototype.start = function () {
@@ -216,39 +249,6 @@ Garbler.prototype.finish = function () {
     results = results.join('');
     that.callback(results);
   }.bind(this));
-};
-
-/**
- * Encrypt a single gate; input and output wires must have labels at this point.
- * @param {string} type - The gate operation
- * @param {number[]} wirein - The array of indices of the input wires
- * @param {number} wireout - The index of the output wire
- */
-Garbler.prototype.garble_gate = function (type, wirein, wireout) {
-  this.log('garble_gate', type, wirein, wireout);
-
-  const i = wirein[0];
-  const j = (wirein.length === 2) ? wirein[1] : i;
-  const k = wireout;
-
-  if (type === 'xor') {
-    return 'xor';  // Free XOR - encrypt nothing.
-  } else if (type === 'not') {
-    return 'not';
-  } else {  // if (type === 'and') {
-    var t = [0,0,0,1];
-    return [
-      [crypto.encrypt(this.Wire[i][0], this.Wire[j][0], k, this.Wire[k][t[0]]).stringify(), (2 * this.Wire[i][0].pointer()) + this.Wire[j][0].pointer()],
-      [crypto.encrypt(this.Wire[i][0], this.Wire[j][1], k, this.Wire[k][t[1]]).stringify(), (2 * this.Wire[i][0].pointer()) + this.Wire[j][1].pointer()],
-      [crypto.encrypt(this.Wire[i][1], this.Wire[j][0], k, this.Wire[k][t[2]]).stringify(), (2 * this.Wire[i][1].pointer()) + this.Wire[j][0].pointer()],
-      [crypto.encrypt(this.Wire[i][1], this.Wire[j][1], k, this.Wire[k][t[3]]).stringify(), (2 * this.Wire[i][1].pointer()) + this.Wire[j][1].pointer()]
-    ].sort(function (c1, c2) {  // point-and-permute
-      return c1[1] - c2[1];
-    }).map(function (c) {
-      return c = c[0];
-    });
-  }
-  // Define cases for any other gate types here.
 };
 
 module.exports = Garbler;
