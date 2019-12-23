@@ -1,3 +1,13 @@
+/**
+ * Socket-based communications functions.
+ * @module lib/socket
+ */
+
+/**
+ * Create a communication object.
+ * @param {number} port - The port to use.
+ * @returns {Object} The I/O object.
+ */
 const io = function(port) {
   port = port == null ? 3000 : port;
   var socket = require('socket.io-client')('http://localhost:'+port, {forceNew: true});
@@ -75,6 +85,13 @@ const io = function(port) {
   };
 }
 
+/**
+ * Obtain data from specified URL.
+ * @param {string} path - The URL path to use for the request.
+ * @param {string} type - Type of response to unwrap
+ * @param {number} port - The port to use.
+ * @returns {Object} The I/O object.
+ */
 const geturl = function(path, type, port) {
   return new Promise(function (resolve) {
     fetch('http://localhost:' + (port == null ? 3000 : port) + '/' + path).then(function (response) {

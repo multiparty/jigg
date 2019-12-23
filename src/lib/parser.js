@@ -1,3 +1,8 @@
+/**
+ * Functions for loading Bristol Fashion circuit definitions.
+ * @module lib/parser
+ */
+
 'use strict';
 
 const socket = require('./socket.js');
@@ -5,6 +10,11 @@ const socket = require('./socket.js');
 const bytes = 16;
 const types = {'AND': 'and', 'XOR': 'xor', 'INV': 'not'};
 
+/**
+ * Parse a circuit represented using Bristol Fashion format.
+ * @param {string} raw - The circuit specification in Bristol Fashion.
+ * @returns {Object} The circuit represented as JSON.
+ */
 function circuit_parse_bristol(raw) {
   var circuit = {
     wires: 0, gates: 0,
@@ -44,6 +54,12 @@ function circuit_parse_bristol(raw) {
   return circuit;
 }
 
+/**
+ * Obtain circuit from the specific URL.
+ * @param {string} path - The URL path.
+ * @param {number} port - The port to use.
+ * @returns {Promise} Promise object that represents the circuit object.
+ */
 function circuit_load_bristol(path, port) {
   return new Promise(function (resolve) {
     socket.geturl(path, 'text', port).then(function (txt) {

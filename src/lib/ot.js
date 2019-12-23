@@ -1,14 +1,27 @@
+/**
+ * Oblivious transfer (OT) functionality.
+ * @module lib/parser
+ */
+
+/**
+ * Create a communication object that uses OT.
+ * @param {Object} socket - The socket to use for communications.
+ * @returns {Object} The OT-based I/O object.
+ */
 const init = function(socket) {
   const crypto = require('../utils/crypto.js');
   const Label = require('./label.js');
 
   const bytes = 8;
 
-  /*
-  *  Oblivious Transfer primitive
-  *  Sender calls send(a, b)
-  *  Receiver calls receive(c) and gets c?a:b
-  */
+  /**
+   * Oblivious transfer sending primitive:
+   *   sender calls send(a, b);
+   *   receiver calls receive(c) and gets c?a:b.
+   * @param {Array} a - The first argument.
+   * @param {Array} b - The second argument.
+   * @returns {Promise} Promise object that executes action.
+   */
   const send = function(a, b) {
     var msg_id = socket.nextid();
     socket.call('oblv', {msg_id: msg_id, length: bytes + 1});
@@ -31,6 +44,13 @@ const init = function(socket) {
     });
   }
 
+  /**
+   * Oblivious transfer receiving primitive:
+   *   sender calls send(a, b);
+   *   receiver calls receive(c) and gets c?a:b.
+   * @param {boolean} c - The criteria parameter.
+   * @returns {Promise} Promise object that executes action.
+   */
   const receive = function(c) {
     var msg_id = socket.nextid();
     socket.call('oblv', {msg_id: msg_id, length: bytes + 1});
