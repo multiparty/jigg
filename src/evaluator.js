@@ -37,7 +37,7 @@ const crypto = require('./utils/crypto.js');
  * @constructor
  */
 function Evaluator(circuitURL, input, callback, progress, parallel, throttle, port, debug) {
-  this.Wire = [null];
+  this.Wire = undefined;
   this.circuitURL = circuitURL;
   this.circuit = undefined;
   this.input = input;
@@ -118,9 +118,13 @@ Evaluator.prototype.load_circuit = function () {
   var promise = parser.circuit_load_bristol(this.circuitURL, this.socket.port);
   promise.then(function (circuit) {
     that.circuit = circuit;
+
+    // Initialize the data structure for labeled wires.
+    that.Wire = [null];
     for (var i = 1; i <= circuit.wires; i++) {
       that.Wire.push([]);
     }
+
     that.init();
   });
 };
