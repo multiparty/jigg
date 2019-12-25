@@ -38,7 +38,6 @@ const OT = require('./lib/ot.js');
  * @constructor
  */
 function Evaluator(circuitURL, input, callback, progress, parallel, throttle, port, debug) {
-  this.wiresToLabels = undefined;
   this.circuitURL = circuitURL;
   this.input = input;
   this.callback = callback;
@@ -70,10 +69,8 @@ Evaluator.prototype.start = function () {
  */
 Evaluator.prototype.load_circuit = function () {
   const that = this;
-
   var promise = circuit.circuit_load_bristol(this.circuitURL, this.socket.port);
   promise.then(function (circuit) {
-    that.wiresToLabels = garble.initializeWiresToLabels(circuit);
     that.init(circuit);
   });
 };
@@ -86,6 +83,9 @@ Evaluator.prototype.init = function (circuit) {
 
   // Total input.
   const input = (new Array(1 + this.input.length)).concat(this.input);
+
+  // Mapping from each wire index to two labels.
+  var wiresToLabels = garble.initializeWiresToLabels(circuit);
 
   // All required message promises to evaluate.
   var messages = [this.socket.get('gates')]; // Promise to the garbled gates.
@@ -109,11 +109,11 @@ Evaluator.prototype.init = function (circuit) {
     var garbledGates = JSON.parse(msg[0]);
     for (i = 0; i < circuit.input.length; i++) {
       var j = circuit.input[i];
-      that.wiresToLabels[j] = Label(msg[j]);
-      that.log('Wire', j, that.wiresToLabels);
+      wiresToLabels[j] = Label(msg[j]);
+      that.log('Wire', j, wiresToLabels);
     }
 
-    that.evaluate(circuit, garbledGates, 0);
+    that.evaluate(circuit, garbledGates, wiresToLabels, 0);
   });
 };
 
@@ -121,32 +121,32 @@ Evaluator.prototype.init = function (circuit) {
  * Evaluate all the garbled gates (with optional throttling).
  * @param {number} start - The gate index at which to begin/continue evaluating.
  */
-Evaluator.prototype.evaluate = function (circuit, garbledGates, start) {
+Evaluator.prototype.evaluate = function (circuit, garbledGates, wiresToLabels, start) {
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
     const gate = circuit.gate[i];
     this.log('evaluate_gate', garbledGates[i], gate.wirein, gate.wireout);
-    evaluate.evaluateGate(garbledGates[i], gate.type, gate.wirein, gate.wireout, this.wiresToLabels);
+    evaluate.evaluateGate(garbledGates[i], gate.type, gate.wirein, gate.wireout, wiresToLabels);
   }
 
   start += this.parallel;
   this.progress(Math.min(start, circuit.gates), circuit.gates);
 
   if (start >= circuit.gates) { // done
-    this.finish(circuit);
+    this.finish(circuit, wiresToLabels);
     return;
   }
 
   if (this.throttle > 0) {
-    setTimeout(this.evaluate.bind(this, circuit, garbledGates, start), this.throttle);
+    setTimeout(this.evaluate.bind(this, circuit, garbledGates, wiresToLabels, start), this.throttle);
   } else {
-    this.evaluate(circuit, garbledGates, start);
+    this.evaluate(circuit, garbledGates, wiresToLabels, start);
   }
 };
 
 /**
  * Give wires back to garbler, receive decoded output states, and run callback on results.
  */
-Evaluator.prototype.finish = function (circuit) {
+Evaluator.prototype.finish = function (circuit, wiresToLabels) {
   const that = this;
 
   // Collect all output wires' labels and send
@@ -154,8 +154,8 @@ Evaluator.prototype.finish = function (circuit) {
   var evaluation = {};
   for (var i = 0; i < circuit.output.length; i++) {
     var j = circuit.output[i];
-    evaluation[j] = this.wiresToLabels[j].stringify();
-    this.log('j', j, this.wiresToLabels[j]);
+    evaluation[j] = wiresToLabels[j].stringify();
+    this.log('j', j, wiresToLabels[j]);
   }
   this.socket.give('evaluation', evaluation);
 
