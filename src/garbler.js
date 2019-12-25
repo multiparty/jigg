@@ -123,9 +123,6 @@ Garbler.prototype.generate_labels = function (circuit) {
  * @param {Object[]} Wire - The labeled wire data structure
  */
 Garbler.prototype.garble_gate = function (type, wirein, wireout, Wire) {
-  if (this.log !== undefined && this.log != null) 
-    this.log('garble_gate', type, wirein, wireout);
-
   if (Wire == null && this !== undefined && this != null)
     Wire = this.Wire;
 
@@ -225,6 +222,7 @@ Garbler.prototype.garble = function (circuit, start) {
   // Garble all gates.
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
     const gate = circuit.gate[i];
+    this.log('garble_gate', gate.type, gate.wirein, gate.wireout);
     this.gates[i] = this.garble_gate(gate.type, gate.wirein, gate.wireout);
   }
 

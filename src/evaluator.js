@@ -72,16 +72,13 @@ Evaluator.prototype.initialize_labels = function (circuit) {
 
 /**
  * Decrypt a single garbled gate; the resulting label is stored automatically and also returned.
- * @param {Object[]} gate - The array of all gates
+ * @param {Object} garbledGate - The garbled gate to evaluate
  * @param {string} type - The gate operation
  * @param {number[]} wirein - The array of indices of the input wires
  * @param {number} wireout - The index of the output wire
  * @param {Object[]} Wire - The labeled wire data structure
  */
-Evaluator.prototype.evaluate_gate = function (gate, type, wirein, wireout, Wire) {
-  if (this.log !== undefined && this.log != null) 
-    this.log('evaluate_gate', gate, wirein, wireout);
-
+Evaluator.prototype.evaluate_gate = function (garbledGate, type, wirein, wireout, Wire) {
   if (Wire == null && this !== undefined && this != null)
     Wire = this.Wire;
 
@@ -95,7 +92,7 @@ Evaluator.prototype.evaluate_gate = function (gate, type, wirein, wireout, Wire)
   } else if (type === 'not') {
     Wire[k] = Wire[i];  // Already inverted.
   } else if (type === 'and') {
-    Wire[k] = crypto.decrypt(Wire[i], Wire[j], k, Label(gate[l]));
+    Wire[k] = crypto.decrypt(Wire[i], Wire[j], k, Label(garbledGate[l]));
   }
 };
 
@@ -103,13 +100,13 @@ Evaluator.prototype.evaluate_gate = function (gate, type, wirein, wireout, Wire)
  * Evaluate all the gates (stateless version).
  * @param {Object} circuit - The circuit in which to garble the gates.
  * @param {Object[]} Wire - The labeled wire data structure.
- * @param {Object[]} ggates - The garbled gates.
+ * @param {Object[]} garbledGates - The garbled gates.
  * @returns {Object[]} The labeled wire data structure.
  */
-Evaluator.prototype.evaluate_gates = function (circuit, Wire, ggates) {
+Evaluator.prototype.evaluate_gates = function (circuit, Wire, garbledGates) {
   for (var i = 0; i < circuit.gates; i++) {
     const gate = circuit.gate[i];
-    this.evaluate_gate(ggates[i], gate.type, gate.wirein, gate.wireout, Wire);
+    this.evaluate_gate(garbledGates[i], gate.type, gate.wirein, gate.wireout, Wire);
   }
   return Wire;
 };
@@ -181,6 +178,7 @@ Evaluator.prototype.init = function (circuit) {
 Evaluator.prototype.evaluate = function (circuit, garbledGates, start) {
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
     const gate = circuit.gate[i];
+    this.log('evaluate_gate', garbledGates[i], gate.wirein, gate.wireout);
     this.evaluate_gate(garbledGates[i], gate.type, gate.wirein, gate.wireout);
   }
 
