@@ -58,6 +58,19 @@ function Evaluator(circuitURL, input, callback, progress, parallel, throttle, po
 }
 
 /**
+ * Initialize the data structure for labeled wires.
+ * @param {Object} circuit - The circuit for which to generate labels.
+ * @returns {Object} The labeled wires.
+ */
+Evaluator.prototype.initialize_labels = function (circuit) {
+  var Wire = [null];
+  for (var i = 0; i < circuit.wires; i++) {
+    Wire.push([]);
+  }
+  return Wire;
+};
+
+/**
  * Decrypt a single garbled gate; the resulting label is stored automatically and also returned.
  * @param {Object[]} gate - The array of all gates
  * @param {string} type - The gate operation
@@ -118,13 +131,7 @@ Evaluator.prototype.load_circuit = function () {
   var promise = parser.circuit_load_bristol(this.circuitURL, this.socket.port);
   promise.then(function (circuit) {
     that.circuit = circuit;
-
-    // Initialize the data structure for labeled wires.
-    that.Wire = [null];
-    for (var i = 1; i <= circuit.wires; i++) {
-      that.Wire.push([]);
-    }
-
+    that.Wire = that.initialize_labels(circuit);
     that.init();
   });
 };
