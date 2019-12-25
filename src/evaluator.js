@@ -84,9 +84,6 @@ Evaluator.prototype.init = function (circuit) {
   // Total input.
   const input = (new Array(1 + this.input.length)).concat(this.input);
 
-  // Mapping from each wire index to two labels.
-  var wiresToLabels = garble.initializeWiresToLabels(circuit);
-
   // All required message promises to evaluate.
   var messages = [this.socket.get('gates')]; // Promise to the garbled gates.
 
@@ -103,13 +100,14 @@ Evaluator.prototype.init = function (circuit) {
   }
 
   // Wait until all messages are received.
-  Promise.all(messages).then(function (msg) {
-    that.log('msg', msg);
+  Promise.all(messages).then(function (messages) {
+    that.log('messages', messages);
 
-    var garbledGates = JSON.parse(msg[0]);
+    var garbledGates = JSON.parse(messages[0]);
+    var wiresToLabels = garble.initializeWiresToLabels(circuit);
     for (i = 0; i < circuit.input.length; i++) {
       var j = circuit.input[i];
-      wiresToLabels[j] = Label(msg[j]);
+      wiresToLabels[j] = Label(messages[j]);
       that.log('Wire', j, wiresToLabels);
     }
 
