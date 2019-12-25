@@ -58,19 +58,6 @@ function Evaluator(circuitURL, input, callback, progress, parallel, throttle, po
 }
 
 /**
- * Initialize the data structure for labeled wires.
- * @param {Object} circuit - The circuit for which to generate labels
- * @returns {Object[]} Mapping from each wire index to two labels
- */
-Evaluator.prototype.initialize_labels = function (circuit) {
-  var wiresToLabels = [null];
-  for (var i = 0; i < circuit.wires; i++) {
-    wiresToLabels.push([]);
-  }
-  return wiresToLabels;
-};
-
-/**
  * Run the evaluator on the circuit.
  */
 Evaluator.prototype.start = function () {
@@ -86,7 +73,7 @@ Evaluator.prototype.load_circuit = function () {
 
   var promise = circuit.circuit_load_bristol(this.circuitURL, this.socket.port);
   promise.then(function (circuit) {
-    that.Wire = that.initialize_labels(circuit);
+    that.wiresToLabels = garble.initializeWiresToLabels(circuit);
     that.init(circuit);
   });
 };
@@ -122,8 +109,8 @@ Evaluator.prototype.init = function (circuit) {
     var garbledGates = JSON.parse(msg[0]);
     for (i = 0; i < circuit.input.length; i++) {
       var j = circuit.input[i];
-      that.Wire[j] = Label(msg[j]);
-      that.log('Wire', j, that.Wire);
+      that.wiresToLabels[j] = Label(msg[j]);
+      that.log('Wire', j, that.wiresToLabels);
     }
 
     that.evaluate(circuit, garbledGates, 0);
@@ -138,7 +125,7 @@ Evaluator.prototype.evaluate = function (circuit, garbledGates, start) {
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
     const gate = circuit.gate[i];
     this.log('evaluate_gate', garbledGates[i], gate.wirein, gate.wireout);
-    evaluate.evaluateGate(garbledGates[i], gate.type, gate.wirein, gate.wireout, this.Wire);
+    evaluate.evaluateGate(garbledGates[i], gate.type, gate.wirein, gate.wireout, this.wiresToLabels);
   }
 
   start += this.parallel;
@@ -167,8 +154,8 @@ Evaluator.prototype.finish = function (circuit) {
   var evaluation = {};
   for (var i = 0; i < circuit.output.length; i++) {
     var j = circuit.output[i];
-    evaluation[j] = this.Wire[j].stringify();
-    this.log('j', j, this.Wire[j]);
+    evaluation[j] = this.wiresToLabels[j].stringify();
+    this.log('j', j, this.wiresToLabels[j]);
   }
   this.socket.give('evaluation', evaluation);
 

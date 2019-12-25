@@ -10,6 +10,19 @@ const randomutils = require('./utils/random.js');
 const crypto = require('./utils/crypto.js');
 
 /**
+ * Initialize the data structure for labeled wires.
+ * @param {Object} circuit - The circuit for which to generate labels
+ * @returns {Object[]} Mapping from each wire index to two labels
+ */
+function initializeWiresToLabels(circuit) {
+  var wiresToLabels = [null];
+  for (var i = 0; i < circuit.wires; i++) {
+    wiresToLabels.push([]);
+  }
+  return wiresToLabels;
+}
+
+/**
  * Generate labels and encode each state of every wire
  * with a randomly generated label.
  * @param {Object} circuit - The circuit for which to generate labels
@@ -113,6 +126,7 @@ function garbleGates(circuit, wiresToLabels) {
 }
 
 module.exports = {
+  initializeWiresToLabels: initializeWiresToLabels,
   generateWiresToLabels: generateWiresToLabels,
   garbleGate: garbleGate,
   garbleGates: garbleGates

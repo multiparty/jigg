@@ -467,7 +467,7 @@ global.sodium = require('libsodium-wrappers');
       messages.push(send[i][input_E[circuit.input[i]]]);
     }
 
-    var Wire_E = Evaluator.prototype.initialize_labels(circuit);
+    var Wire_E = garble.initializeWiresToLabels(circuit);
     for (var i = 0 ; i < circuit.input.length; i++) {
       var j = circuit.input[i];
       Wire_E[j] = Label(messages[j]);
