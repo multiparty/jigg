@@ -144,7 +144,7 @@ Garbler.prototype.garble_gate = function (type, wirein, wireout, Wire) {
       [crypto.encrypt(Wire[i][0], Wire[j][1], k, Wire[k][t[1]]).stringify(), (2 * Wire[i][0].pointer()) + Wire[j][1].pointer()],
       [crypto.encrypt(Wire[i][1], Wire[j][0], k, Wire[k][t[2]]).stringify(), (2 * Wire[i][1].pointer()) + Wire[j][0].pointer()],
       [crypto.encrypt(Wire[i][1], Wire[j][1], k, Wire[k][t[3]]).stringify(), (2 * Wire[i][1].pointer()) + Wire[j][1].pointer()]
-    ].sort(function (c1, c2) {  // point-and-permute
+    ].sort(function (c1, c2) {  // Point-and-permute.
       return c1[1] - c2[1];
     }).map(function (c) {
       return c = c[0];
@@ -203,7 +203,7 @@ Garbler.prototype.init = function () {
 
   // Give the evaluator the first half of the input labels.
   for (var i = 0; i < this.circuit.input.length/2; i++) {
-    var j = this.circuit.input[i];
+    var j = this.circuit.input[i]; // Index of ith input gate.
     this.log('give Wire' + j, i, this.circuit.input, inputs[j], this.Wire[j][1], this.Wire[j][0], inputs[j] ? this.Wire[j][1] : this.Wire[j][0]);
     this.socket.give('Wire'+j, inputs[j] ? this.Wire[j][1] : this.Wire[j][0]);
   }
