@@ -1,3 +1,8 @@
+/**
+ * Main library container module.
+ * @module src/jigg
+ */
+
 const Garbler = require('./garbler.js');
 const Evaluator = require('./evaluator.js');
 const hexutils = require('./utils/hexutils');

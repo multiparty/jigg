@@ -1,11 +1,11 @@
 /**
  * Evaluator for garbled circuit protocol.
- * @module evaluator
+ * @module src/evaluator
  */
 
+const circuit = require('./circuit.js');
 const socket = require('./lib/socket.js');
 const Label = require('./lib/label.js');
-const parser = require('./lib/parser.js');
 const OT = require('./lib/ot.js');
 const crypto = require('./utils/crypto.js');
 
@@ -127,7 +127,7 @@ Evaluator.prototype.start = function () {
 Evaluator.prototype.load_circuit = function () {
   const that = this;
 
-  var promise = parser.circuit_load_bristol(this.circuitURL, this.socket.port);
+  var promise = circuit.circuit_load_bristol(this.circuitURL, this.socket.port);
   promise.then(function (circuit) {
     that.Wire = that.initialize_labels(circuit);
     that.init(circuit);

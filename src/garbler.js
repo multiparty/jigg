@@ -1,11 +1,11 @@
 /**
  * Garbler for garbled circuit protocol.
- * @module evaluator
+ * @module src/garbler
  */
 
+const circuit = require('./circuit.js');
 const socket = require('./lib/socket.js');
 const Label = require('./lib/label.js');
-const parser = require('./lib/parser.js');
 const OT = require('./lib/ot.js');
 const randomutils = require('./utils/random.js');
 const crypto = require('./utils/crypto.js');
@@ -180,7 +180,7 @@ Garbler.prototype.start = function () {
  */
 Garbler.prototype.load_circuit = function () {
   const that = this;
-  var promise = parser.circuit_load_bristol(this.circuitURL, this.socket.port);
+  var promise = circuit.circuit_load_bristol(this.circuitURL, this.socket.port);
   promise.then(function (circuit) {
     that.log(this.circuitURL, circuit);
     that.init(circuit);

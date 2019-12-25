@@ -1,7 +1,7 @@
 var assert = require('assert');
 var expect = require('chai').expect;
 
-var parser = require('../src/lib/parser');
+var circuit = require('../src/circuit');
 const Label = require('../src/lib/label.js');
 const {Garbler, Evaluator, bin2hex, hex2bin} = require('../src/jigg');
 
@@ -405,8 +405,8 @@ var add32_json = {
 describe('parser', function() {
   describe('#circuit_parse_bristol()', function () {
     it('circuit_parse_bristol', function() {
-      expect(parser.circuit_parse_bristol(and4_bristol)).to.eql(and4_json);
-      expect(parser.circuit_parse_bristol(add32_bristol)).to.eql(add32_json);
+      expect(circuit.circuit_parse_bristol(and4_bristol)).to.eql(and4_json);
+      expect(circuit.circuit_parse_bristol(add32_bristol)).to.eql(add32_json);
     });
   });
 });
@@ -437,31 +437,23 @@ global.sodium = require('libsodium-wrappers');
     var circuit = add32_json;
 
     var Wire_G = Garbler.prototype.generate_labels(circuit);
-    //console.log(Wire_G);
     var ggates = Garbler.prototype.garble_gates(circuit, Wire_G);
-    //console.log(ggates);
-    var Wire_E = Evaluator.prototype.initialize_labels(circuit);
-    //console.log(Wire_E);
 
     const input_G = (new Array(1)).concat(input1).concat(new Array(input1.length));
-    const input_E = (new Array(1 + input2.length)).concat(input2);
-    //console.log(input_E);
-
     var give = {};
     var send = {};
-
     // Give the evaluator the first half of the input labels.
     for (var i = 0; i < circuit.input.length/2; i++) {
       var j = circuit.input[i]; // Index of ith input gate.
       give['Wire'+j] = Wire_G[j][(input_G[j] == 0) ? 0 : 1];
     }
-
     // Use oblivious transfer for the second half of the input labels.
     for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
       var j = circuit.input[i]; // Index of ith input gate.
       send[i] = [Wire_G[j][0], Wire_G[j][1]];
     }
 
+    const input_E = (new Array(1 + input2.length)).concat(input2);
     var messages = [null];
     // Each of the garbler's input labels.
     for (var i = 0; i < circuit.input.length / 2; i++)
@@ -471,13 +463,13 @@ global.sodium = require('libsodium-wrappers');
       messages.push(send[i][input_E[circuit.input[i]]]);
     }
 
+    var Wire_E = Evaluator.prototype.initialize_labels(circuit);
     for (var i = 0 ; i < circuit.input.length; i++) {
       var j = circuit.input[i];
       Wire_E[j] = Label(messages[j]);
     }
 
     var Wire_E2 = Evaluator.prototype.evaluate_gates(circuit, Wire_E, ggates);
-    //console.log(Wire_E2);
     var evaluation = {};
     for (var i = 0; i < circuit.output.length; i++) {
       var j = circuit.output[i];
@@ -487,10 +479,8 @@ global.sodium = require('libsodium-wrappers');
     var results = [];
     for (var i = 0; i < circuit.output.length; i++) {
       var label = evaluation[circuit.output[i]]; // Wire output label.
-      //console.log(label);
       var states = Wire_G[circuit.output[i]].map(Label.prototype.stringify); // True and false labels.
-      //console.log(states);
-      var value = states.map(function (e) { return e.substring(0, e.length-3) }).indexOf(label.substring(0, label.length-3)); // Find which state the label represents.
+      var value = states.map(function (e) { return e.substring(0, e.length-3); }).indexOf(label.substring(0, label.length-3)); // Find which state the label represents.
       results.push(value);
     }
     console.log(results.join(''));
