@@ -1,6 +1,6 @@
 /**
  * Cryptographic utility functions.
- * @module utils/crypto
+ * @module src/utils/crypto
  */
 
 //const sodium = require('../sodium.js');

@@ -1,6 +1,6 @@
 /**
  * Oblivious transfer (OT) functionality.
- * @module lib/parser
+ * @module src/lib/parser
  */
 
 /**

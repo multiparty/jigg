@@ -1,6 +1,6 @@
 /**
  * Socket-based communications functions.
- * @module lib/socket
+ * @module src/lib/socket
  */
 
 /**

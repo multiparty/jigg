@@ -1,6 +1,6 @@
 /**
  * Cryptographically-suitable utility functions for random operations.
- * @module utils/random
+ * @module src/utils/random
  */
 
 //var sodium = require('../sodium.js');

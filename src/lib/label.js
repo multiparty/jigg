@@ -1,6 +1,6 @@
 /**
  * Garbled circuit label data structure.
- * @module lib/label
+ * @module src/lib/label
  */
 
 const crypto = require('../utils/crypto.js');
