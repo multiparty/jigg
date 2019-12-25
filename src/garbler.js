@@ -87,7 +87,7 @@ Garbler.prototype.init = function (circuit) {
   this.log('input states', inputs);
 
   // Generate labels and save them in labeled wire data structure.
-  this.Wire = garble.generateWiresLabeled(circuit);
+  this.Wire = garble.generateWiresToLabels(circuit);
   this.log('Wire', Wire);
 
   // Give the evaluator the first half of the input labels.
@@ -99,7 +99,7 @@ Garbler.prototype.init = function (circuit) {
 
   // Use oblivious transfer for the second half of the input labels.
   for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
-    j = circuit.input[i];
+    var j = circuit.input[i];
     this.log('transfer for Wire' + j);
     this.OT.send(this.Wire[j][0], this.Wire[j][1]);
   }

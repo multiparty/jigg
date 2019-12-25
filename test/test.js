@@ -439,7 +439,7 @@ global.sodium = require('libsodium-wrappers');
     input2 = "00000000000000000000000000001010".split('');
     var circuit = add32_json;
 
-    var Wire_G = garble.generateWiresLabeled(circuit);
+    var Wire_G = garble.generateWiresToLabels(circuit);
     var ggates = garble.garbleGates(circuit, Wire_G);
     //console.log(ggates);
     
