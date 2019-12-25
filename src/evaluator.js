@@ -39,7 +39,6 @@ const crypto = require('./utils/crypto.js');
 function Evaluator(circuitURL, input, callback, progress, parallel, throttle, port, debug) {
   this.Wire = undefined;
   this.circuitURL = circuitURL;
-  this.circuit = undefined;
   this.input = input;
   this.callback = callback;
   this.parallel = parallel == null ? 30 : parallel;
@@ -130,16 +129,15 @@ Evaluator.prototype.load_circuit = function () {
 
   var promise = parser.circuit_load_bristol(this.circuitURL, this.socket.port);
   promise.then(function (circuit) {
-    that.circuit = circuit;
     that.Wire = that.initialize_labels(circuit);
-    that.init();
+    that.init(circuit);
   });
 };
 
 /**
  * Initialize the evaluator.
  */
-Evaluator.prototype.init = function () {
+Evaluator.prototype.init = function (circuit) {
   const that = this;
 
   // Total input.
@@ -149,15 +147,15 @@ Evaluator.prototype.init = function () {
   var messages = [this.socket.get('gates')];  // Promise to the garbled gates.
 
   // Promises to each of the garbler's input labels.
-  for (var i = 0; i < this.circuit.input.length / 2; i++) {
-    this.log('listen for Wire', this.circuit.input[i]);
-    messages.push(this.socket.get('Wire' + this.circuit.input[i]));
+  for (var i = 0; i < circuit.input.length / 2; i++) {
+    this.log('listen for Wire', circuit.input[i]);
+    messages.push(this.socket.get('Wire' + circuit.input[i]));
   }
 
   // Promises to each of the evaluator's input labels.
-  for (i = this.circuit.input.length / 2; i < this.circuit.input.length; i++) {
-    this.log('obliviousT ask for wire', this.circuit.input[i], 'with value', input[this.circuit.input[i]]);
-    messages.push(this.OT.receive(input[this.circuit.input[i]]));
+  for (var i = circuit.input.length / 2; i < circuit.input.length; i++) {
+    this.log('obliviousT ask for wire', circuit.input[i], 'with value', input[circuit.input[i]]);
+    messages.push(this.OT.receive(input[circuit.input[i]]));
   }
 
   // Wait until all messages are received.
@@ -165,13 +163,13 @@ Evaluator.prototype.init = function () {
     that.log('msg', msg);
 
     that.gates = JSON.parse(msg[0]);
-    for (i = 0; i < that.circuit.input.length; i++) {
-      var j = that.circuit.input[i];
+    for (i = 0; i < circuit.input.length; i++) {
+      var j = circuit.input[i];
       that.Wire[j] = Label(msg[j]);
       that.log('Wire', j, that.Wire);
     }
 
-    that.evaluate(0);
+    that.evaluate(circuit, 0);
   });
 };
 
@@ -179,38 +177,38 @@ Evaluator.prototype.init = function () {
  * Evaluate all the gates (with optional throttling).
  * @param {number} start - The gate index at which to begin/continue evaluating.
  */
-Evaluator.prototype.evaluate = function (start) {
-  for (var i = start; i < start + this.parallel && i < this.circuit.gates; i++) {
-    const gate = this.circuit.gate[i];
+Evaluator.prototype.evaluate = function (circuit, start) {
+  for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
+    const gate = circuit.gate[i];
     this.evaluate_gate(this.gates[i], gate.type, gate.wirein, gate.wireout);
   }
 
   start += this.parallel;
-  this.progress(Math.min(start, this.circuit.gates), this.circuit.gates);
+  this.progress(Math.min(start, circuit.gates), circuit.gates);
 
-  if (start >= this.circuit.gates) { // done
-    this.finish();
+  if (start >= circuit.gates) { // done
+    this.finish(circuit);
     return;
   }
 
   if (this.throttle > 0) {
-    setTimeout(this.evaluate.bind(this, start), this.throttle);
+    setTimeout(this.evaluate.bind(this, circuit, start), this.throttle);
   } else {
-    this.evaluate(start);
+    this.evaluate(circuit, start);
   }
 };
 
 /**
  * Give wires back to garbler, receive decoded output states, and run callback on results.
  */
-Evaluator.prototype.finish = function () {
+Evaluator.prototype.finish = function (circuit) {
   const that = this;
 
   // Collect all output wires' labels and send
   // them back to the garbler for decoding.
   var evaluation = {};
-  for (var i = 0; i < this.circuit.output.length; i++) {
-    var j = this.circuit.output[i];
+  for (var i = 0; i < circuit.output.length; i++) {
+    var j = circuit.output[i];
     evaluation[j] = this.Wire[j].stringify();
     this.log('j', j, this.Wire[j]);
   }

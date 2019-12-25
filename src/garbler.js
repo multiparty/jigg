@@ -41,7 +41,6 @@ function Garbler(circuitURL, input, callback, progress, parallel, throttle, port
   this.Wire = undefined;
   this.gates = [];
   this.circuitURL = circuitURL;
-  this.circuit = undefined;
   this.input = input;
   this.callback = callback;
   this.parallel = parallel == null ? 30 : parallel;
@@ -184,70 +183,69 @@ Garbler.prototype.load_circuit = function () {
   var promise = parser.circuit_load_bristol(this.circuitURL, this.socket.port);
   promise.then(function (circuit) {
     that.log(this.circuitURL, circuit);
-    that.circuit = circuit;
-    that.init();
+    that.init(circuit);
   });
 };
 
 /**
  * Initialize the garbler.
  */
-Garbler.prototype.init = function () {
+Garbler.prototype.init = function (circuit) {
   // User input.
   const inputs = (new Array(1)).concat(this.input).concat(new Array(this.input.length));
   this.log('input states', inputs);
 
   // Generate labels and save them in labeled wire data structure.
-  this.Wire = this.generate_labels(this.circuit);
+  this.Wire = this.generate_labels(circuit);
   this.log('Wire', Wire);
 
   // Give the evaluator the first half of the input labels.
-  for (var i = 0; i < this.circuit.input.length/2; i++) {
-    var j = this.circuit.input[i]; // Index of ith input gate.
-    this.log('give Wire' + j, i, this.circuit.input, inputs[j], this.Wire[j][1], this.Wire[j][0], inputs[j] ? this.Wire[j][1] : this.Wire[j][0]);
+  for (var i = 0; i < circuit.input.length/2; i++) {
+    var j = circuit.input[i]; // Index of ith input gate.
+    this.log('give Wire' + j, i, circuit.input, inputs[j], this.Wire[j][1], this.Wire[j][0], inputs[j] ? this.Wire[j][1] : this.Wire[j][0]);
     this.socket.give('Wire'+j, inputs[j] ? this.Wire[j][1] : this.Wire[j][0]);
   }
 
   // Use oblivious transfer for the second half of the input labels.
-  for (var i = this.circuit.input.length/2; i < this.circuit.input.length; i++) {
-    j = this.circuit.input[i];
+  for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
+    j = circuit.input[i];
     this.log('transfer for Wire' + j);
     this.OT.send(this.Wire[j][0], this.Wire[j][1]);
   }
 
-  this.garble(0);
+  this.garble(circuit, 0);
 };
 
 /**
  * Garble all the gates (with optional throttling).
  * @param {number} start - The gate index at which to begin/continue garbling.
  */
-Garbler.prototype.garble = function (start) {
+Garbler.prototype.garble = function (circuit, start) {
   // Garble all gates.
-  for (var i = start; i < start + this.parallel && i < this.circuit.gates; i++) {
-    const gate = this.circuit.gate[i];
+  for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
+    const gate = circuit.gate[i];
     this.gates[i] = this.garble_gate(gate.type, gate.wirein, gate.wireout);
   }
 
   start += this.parallel;
-  this.progress(Math.min(start, this.circuit.gates), this.circuit.gates);
+  this.progress(Math.min(start, circuit.gates), circuit.gates);
 
-  if (start >= this.circuit.gates) {
-    this.finish();
+  if (start >= circuit.gates) {
+    this.finish(circuit);
     return;
   }
 
   if (this.throttle > 0) {
-    setTimeout(this.garble.bind(this, start), this.throttle);
+    setTimeout(this.garble.bind(this, circuit, start), this.throttle);
   } else {
-    this.garble(start);
+    this.garble(circuit, start);
   }
 };
 
 /**
  * Give garbled gates to evaluator, decode output, and run callback on results.
  */
-Garbler.prototype.finish = function () {
+Garbler.prototype.finish = function (circuit) {
   const that = this;
 
   // Give the garbled gates to evaluator.
@@ -256,9 +254,9 @@ Garbler.prototype.finish = function () {
   // Get output labels and decode them back to their original values.
   this.socket.get('evaluation').then(function (evaluation) {
     var results = [];
-    for (var i = 0; i < that.circuit.output.length; i++) {
-      var label = evaluation[that.circuit.output[i]]; // Wire output label.
-      var states = that.Wire[that.circuit.output[i]].map(Label.prototype.stringify); // True and false labels.
+    for (var i = 0; i < circuit.output.length; i++) {
+      var label = evaluation[circuit.output[i]]; // Wire output label.
+      var states = that.Wire[circuit.output[i]].map(Label.prototype.stringify); // True and false labels.
       var value = states.map(function (e) {
         return e.substring(0, e.length-3)
       }).indexOf(label.substring(0, label.length-3)); // Find which state the label represents.
