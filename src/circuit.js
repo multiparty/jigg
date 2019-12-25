@@ -5,10 +5,39 @@
 
 'use strict';
 
+const gate = require('./gate.js');
 const socket = require('./lib/socket.js');
 
 const bytes = 16;
-const types = {'AND': 'and', 'XOR': 'xor', 'INV': 'not'};
+
+/**
+ * Create a new circuit data structure instance.
+ * @param {number} wires - The number of wires in the circuit
+ * @param {number} gates - The number of gates in the circuit
+ * @param {number[]} input - The input wires for the entire circuit
+ * @param {number[]} output - The output wires for the entire circuit
+ * @param {Object[]} gate - The array of gates in the circuit
+ * @constructor
+ */
+function Circuit(wires, gates, input, output, gate) {
+  this.wires = wires == null ? 0 : wires;
+  this.gates = gates == null ? 0 : gates;
+  this.input = input == null ? [] : input;
+  this.output = output == null ? [] : output;
+  this.gate = gate == null ? [] : gate;
+}
+
+/**
+ * Return a circuit data structure instance as a JSON object.
+ * @returns {Object} Circuit data structure instance as a JSON object
+ */
+Circuit.prototype.toJSON = function () {
+  return {
+    wires: this.wires, gates: this.gates,
+    input: this.input, output: this.output,
+    gate: this.gate.map(function (g) { return g.toJSON(); })
+  };
+};
 
 /**
  * Parse a raw string representation of a circuit that uses the
@@ -17,11 +46,7 @@ const types = {'AND': 'and', 'XOR': 'xor', 'INV': 'not'};
  * @returns {Object} The circuit represented as JSON.
  */
 function circuit_parse_bristol(raw) {
-  var circuit = {
-    wires: 0, gates: 0,
-    input: [], output: [],
-    gate: []
-  };
+  var circuit = new Circuit();
 
   const rows = raw.split('\n').map(function (ln) { return ln.split(' '); });
   circuit.gates = +rows[0][0];
@@ -42,14 +67,14 @@ function circuit_parse_bristol(raw) {
   // Parse the individual gates.
   for (var row = 3; row < circuit.gates+3; row++) {
     var tokens = rows[row];
-    var gate = {wirein: [], wireout: undefined, type: 'unknown'};
-    gate.wirein = [1 + (+tokens[2])];
+    var gate_new = new gate.Gate();
+    gate_new.wirein = [1 + (+tokens[2])];
     if (parseInt(tokens[0]) === 2) {
-      gate.wirein.push(1 + (+tokens[3]));
+      gate_new.wirein.push(1 + (+tokens[3]));
     }
-    gate.wireout = 1 + (+tokens[2 + (+tokens[0])]);
-    gate.type = types[tokens[3 + (+tokens[0])]];
-    circuit.gate.push(gate);
+    gate_new.wireout = 1 + (+tokens[2 + (+tokens[0])]);
+    gate_new.type = gate.types[tokens[3 + (+tokens[0])]];
+    circuit.gate.push(gate_new);
   }
 
   return circuit;
@@ -70,6 +95,7 @@ function circuit_load_bristol(path, port) {
 }
 
 module.exports = {
+  Circuit: Circuit,
   circuit_parse_bristol: circuit_parse_bristol,
   circuit_load_bristol: circuit_load_bristol
 };

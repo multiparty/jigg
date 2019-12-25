@@ -3,6 +3,7 @@
  * @module src/evaluator
  */
 
+const gate = require('./gate.js');
 const circuit = require('./circuit.js');
 const socket = require('./lib/socket.js');
 const Label = require('./lib/label.js');
@@ -144,7 +145,7 @@ Evaluator.prototype.init = function (circuit) {
   const input = (new Array(1 + this.input.length)).concat(this.input);
 
   // All required message promises to evaluate.
-  var messages = [this.socket.get('gates')];  // Promise to the garbled gates.
+  var messages = [this.socket.get('gates')]; // Promise to the garbled gates.
 
   // Promises to each of the garbler's input labels.
   for (var i = 0; i < circuit.input.length / 2; i++) {
@@ -162,25 +163,25 @@ Evaluator.prototype.init = function (circuit) {
   Promise.all(messages).then(function (msg) {
     that.log('msg', msg);
 
-    that.gates = JSON.parse(msg[0]);
+    var garbledGates = JSON.parse(msg[0]);
     for (i = 0; i < circuit.input.length; i++) {
       var j = circuit.input[i];
       that.Wire[j] = Label(msg[j]);
       that.log('Wire', j, that.Wire);
     }
 
-    that.evaluate(circuit, 0);
+    that.evaluate(circuit, garbledGates, 0);
   });
 };
 
 /**
- * Evaluate all the gates (with optional throttling).
+ * Evaluate all the garbled gates (with optional throttling).
  * @param {number} start - The gate index at which to begin/continue evaluating.
  */
-Evaluator.prototype.evaluate = function (circuit, start) {
+Evaluator.prototype.evaluate = function (circuit, garbledGates, start) {
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
     const gate = circuit.gate[i];
-    this.evaluate_gate(this.gates[i], gate.type, gate.wirein, gate.wireout);
+    this.evaluate_gate(garbledGates[i], gate.type, gate.wirein, gate.wireout);
   }
 
   start += this.parallel;
@@ -192,9 +193,9 @@ Evaluator.prototype.evaluate = function (circuit, start) {
   }
 
   if (this.throttle > 0) {
-    setTimeout(this.evaluate.bind(this, circuit, start), this.throttle);
+    setTimeout(this.evaluate.bind(this, circuit, garbledGates, start), this.throttle);
   } else {
-    this.evaluate(circuit, start);
+    this.evaluate(circuit, garbledGates, start);
   }
 };
 

@@ -3,6 +3,7 @@
  * @module src/garbler
  */
 
+const gate = require('./gate.js');
 const circuit = require('./circuit.js');
 const socket = require('./lib/socket.js');
 const Label = require('./lib/label.js');

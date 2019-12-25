@@ -1,7 +1,8 @@
 var assert = require('assert');
 var expect = require('chai').expect;
 
-var circuit = require('../src/circuit');
+const gate = require('../src/gate.js');
+const circuit = require('../src/circuit.js');
 const Label = require('../src/lib/label.js');
 const {Garbler, Evaluator, bin2hex, hex2bin} = require('../src/jigg');
 
@@ -405,8 +406,8 @@ var add32_json = {
 describe('parser', function() {
   describe('#circuit_parse_bristol()', function () {
     it('circuit_parse_bristol', function() {
-      expect(circuit.circuit_parse_bristol(and4_bristol)).to.eql(and4_json);
-      expect(circuit.circuit_parse_bristol(add32_bristol)).to.eql(add32_json);
+      expect(circuit.circuit_parse_bristol(and4_bristol).toJSON()).to.eql(and4_json);
+      expect(circuit.circuit_parse_bristol(add32_bristol).toJSON()).to.eql(add32_json);
     });
   });
 });
@@ -438,7 +439,8 @@ global.sodium = require('libsodium-wrappers');
 
     var Wire_G = Garbler.prototype.generate_labels(circuit);
     var ggates = Garbler.prototype.garble_gates(circuit, Wire_G);
-
+    //console.log(ggates);
+    
     const input_G = (new Array(1)).concat(input1).concat(new Array(input1.length));
     var give = {};
     var send = {};
