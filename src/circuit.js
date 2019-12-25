@@ -1,17 +1,18 @@
 /**
- * Functions for loading Bristol Fashion circuit definitions.
- * @module lib/parser
+ * Circuit data structure and associated functions.
+ * @module src/circuit
  */
 
 'use strict';
 
-const socket = require('./socket.js');
+const socket = require('./lib/socket.js');
 
 const bytes = 16;
 const types = {'AND': 'and', 'XOR': 'xor', 'INV': 'not'};
 
 /**
- * Parse a circuit represented using Bristol Fashion format.
+ * Parse a raw string representation of a circuit that uses the
+ * Bristol Fashion format into a circuit data structure.
  * @param {string} raw - The circuit specification in Bristol Fashion.
  * @returns {Object} The circuit represented as JSON.
  */
