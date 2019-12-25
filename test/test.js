@@ -4,6 +4,8 @@ var expect = require('chai').expect;
 const gate = require('../src/gate.js');
 const circuit = require('../src/circuit.js');
 const Label = require('../src/lib/label.js');
+const garble = require('../src/garble.js');
+const evaluate = require('../src/evaluate.js');
 const {Garbler, Evaluator, bin2hex, hex2bin} = require('../src/jigg');
 
 var and4_bristol = "3 7\n4 1\n1 1\n2 1 0 1 4 AND\n2 1 2 3 5 AND\n2 1 4 5 6 AND";
@@ -437,8 +439,8 @@ global.sodium = require('libsodium-wrappers');
     input2 = "00000000000000000000000000001010".split('');
     var circuit = add32_json;
 
-    var Wire_G = Garbler.prototype.generate_labels(circuit);
-    var ggates = Garbler.prototype.garble_gates(circuit, Wire_G);
+    var Wire_G = garble.generateWiresLabeled(circuit);
+    var ggates = garble.garbleGates(circuit, Wire_G);
     //console.log(ggates);
     
     const input_G = (new Array(1)).concat(input1).concat(new Array(input1.length));
@@ -471,7 +473,7 @@ global.sodium = require('libsodium-wrappers');
       Wire_E[j] = Label(messages[j]);
     }
 
-    var Wire_E2 = Evaluator.prototype.evaluate_gates(circuit, Wire_E, ggates);
+    var Wire_E2 = evaluate.evaluateGates(circuit, Wire_E, ggates);
     var evaluation = {};
     for (var i = 0; i < circuit.output.length; i++) {
       var j = circuit.output[i];
