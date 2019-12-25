@@ -38,7 +38,7 @@ const OT = require('./lib/ot.js');
  * @constructor
  */
 function Evaluator(circuitURL, input, callback, progress, parallel, throttle, port, debug) {
-  this.Wire = undefined;
+  this.wiresToLabels = undefined;
   this.circuitURL = circuitURL;
   this.input = input;
   this.callback = callback;
@@ -59,15 +59,15 @@ function Evaluator(circuitURL, input, callback, progress, parallel, throttle, po
 
 /**
  * Initialize the data structure for labeled wires.
- * @param {Object} circuit - The circuit for which to generate labels.
- * @returns {Object} The labeled wires.
+ * @param {Object} circuit - The circuit for which to generate labels
+ * @returns {Object[]} Mapping from each wire index to two labels
  */
 Evaluator.prototype.initialize_labels = function (circuit) {
-  var Wire = [null];
+  var wiresToLabels = [null];
   for (var i = 0; i < circuit.wires; i++) {
-    Wire.push([]);
+    wiresToLabels.push([]);
   }
-  return Wire;
+  return wiresToLabels;
 };
 
 /**

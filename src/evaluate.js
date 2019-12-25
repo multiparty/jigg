@@ -14,36 +14,36 @@ const crypto = require('./utils/crypto.js');
  * @param {string} type - The gate operation
  * @param {number[]} wirein - The array of indices of the input wires
  * @param {number} wireout - The index of the output wire
- * @param {Object[]} Wire - The labeled wire data structure
+ * @param {Object[]} wiresToLabels - Mapping from each wire index to two labels
  */
-function evaluateGate(garbledGate, type, wirein, wireout, Wire) {
+function evaluateGate(garbledGate, type, wirein, wireout, wiresToLabels) {
   const i = wirein[0];
   const j = (wirein.length === 2) ? wirein[1] : i;
   const k = (wireout != null) ? wireout : 0; // If null, just return decrypted.
-  const l = 2 * Wire[i].pointer() + Wire[j].pointer();
+  const l = 2 * wiresToLabels[i].pointer() + wiresToLabels[j].pointer();
 
   if (type === 'xor') {
-    Wire[k] = Wire[i].xor(Wire[j]);
+    wiresToLabels[k] = wiresToLabels[i].xor(wiresToLabels[j]);
   } else if (type === 'not') {
-    Wire[k] = Wire[i];  // Already inverted.
+    wiresToLabels[k] = wiresToLabels[i];  // Already inverted.
   } else if (type === 'and') {
-    Wire[k] = crypto.decrypt(Wire[i], Wire[j], k, Label(garbledGate[l]));
+    wiresToLabels[k] = crypto.decrypt(wiresToLabels[i], wiresToLabels[j], k, Label(garbledGate[l]));
   }
 }
 
 /**
  * Evaluate all the gates (stateless version).
- * @param {Object} circuit - The circuit in which to garble the gates.
- * @param {Object[]} Wire - The labeled wire data structure.
- * @param {Object[]} garbledGates - The garbled gates.
- * @returns {Object[]} The labeled wire data structure.
+ * @param {Object} circuit - The circuit in which to garble the gates
+ * @param {Object[]} wiresToLabels - The labeled wire data structure
+ * @param {Object[]} garbledGates - The garbled gates
+ * @returns {Object[]} Mapping from each wire index to two labels
  */
-function evaluateGates(circuit, Wire, garbledGates) {
+function evaluateGates(circuit, wiresToLabels, garbledGates) {
   for (var i = 0; i < circuit.gates; i++) {
     const gate = circuit.gate[i];
-    this.evaluateGate(garbledGates[i], gate.type, gate.wirein, gate.wireout, Wire);
+    this.evaluateGate(garbledGates[i], gate.type, gate.wirein, gate.wireout, wiresToLabels);
   }
-  return Wire;
+  return wiresToLabels;
 }
 
 module.exports = {
