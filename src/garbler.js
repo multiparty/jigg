@@ -3,13 +3,13 @@
  * @module src/garbler
  */
 
+const Label = require('./lib/label.js');
 const gate = require('./gate.js');
 const circuit = require('./circuit.js');
-const socket = require('./lib/socket.js');
-const Label = require('./lib/label.js');
-const OT = require('./lib/ot.js');
 const randomutils = require('./utils/random.js');
 const crypto = require('./utils/crypto.js');
+const socket = require('./lib/socket.js');
+const OT = require('./lib/ot.js');
 
 /**
  * This callback handles the result bit string.
@@ -123,9 +123,6 @@ Garbler.prototype.generate_labels = function (circuit) {
  * @param {Object[]} Wire - The labeled wire data structure
  */
 Garbler.prototype.garble_gate = function (type, wirein, wireout, Wire) {
-  if (Wire == null && this !== undefined && this != null)
-    Wire = this.Wire;
-
   const i = wirein[0];
   const j = (wirein.length === 2) ? wirein[1] : i;
   const k = wireout;
@@ -157,12 +154,12 @@ Garbler.prototype.garble_gate = function (type, wirein, wireout, Wire) {
  * @returns {Object[]} The garbled gates.
  */
 Garbler.prototype.garble_gates = function (circuit, Wire) {
-  var gates = [];
+  var garbledGates = [];
   for (var i = 0; i < circuit.gates; i++) {
     const gate = circuit.gate[i];
-    gates.push(this.garble_gate(gate.type, gate.wirein, gate.wireout, Wire));
+    garbledGates.push(this.garble_gate(gate.type, gate.wirein, gate.wireout, Wire));
   }
-  return gates;
+  return garbledGates;
 };
 
 /**
@@ -223,7 +220,7 @@ Garbler.prototype.garble = function (circuit, start) {
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
     const gate = circuit.gate[i];
     this.log('garble_gate', gate.type, gate.wirein, gate.wireout);
-    this.gates[i] = this.garble_gate(gate.type, gate.wirein, gate.wireout);
+    this.gates[i] = this.garble_gate(gate.type, gate.wirein, gate.wireout, this.Wire);
   }
 
   start += this.parallel;

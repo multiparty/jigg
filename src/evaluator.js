@@ -3,12 +3,12 @@
  * @module src/evaluator
  */
 
+const Label = require('./lib/label.js');
 const gate = require('./gate.js');
 const circuit = require('./circuit.js');
-const socket = require('./lib/socket.js');
-const Label = require('./lib/label.js');
-const OT = require('./lib/ot.js');
 const crypto = require('./utils/crypto.js');
+const socket = require('./lib/socket.js');
+const OT = require('./lib/ot.js');
 
 /**
  * This callback handles the result bit string.
@@ -79,9 +79,6 @@ Evaluator.prototype.initialize_labels = function (circuit) {
  * @param {Object[]} Wire - The labeled wire data structure
  */
 Evaluator.prototype.evaluate_gate = function (garbledGate, type, wirein, wireout, Wire) {
-  if (Wire == null && this !== undefined && this != null)
-    Wire = this.Wire;
-
   const i = wirein[0];
   const j = (wirein.length === 2) ? wirein[1] : i;
   const k = (wireout != null) ? wireout : 0; // If null, just return decrypted.
@@ -179,7 +176,7 @@ Evaluator.prototype.evaluate = function (circuit, garbledGates, start) {
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
     const gate = circuit.gate[i];
     this.log('evaluate_gate', garbledGates[i], gate.wirein, gate.wireout);
-    this.evaluate_gate(garbledGates[i], gate.type, gate.wirein, gate.wireout);
+    this.evaluate_gate(garbledGates[i], gate.type, gate.wirein, gate.wireout, this.Wire);
   }
 
   start += this.parallel;
