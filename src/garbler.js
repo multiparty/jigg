@@ -33,7 +33,7 @@ const OT = require('./comm/ot.js');
  * @param {progressCallback} callback - The function to log or display progress
  * @param {number} parallel - Parallelization parameter
  * @param {number} throttle - Throttling parameter
- * @param {number} port - The port to use for communications
+ * @param {number} port - Port to use for communications
  * @param {boolean} debug - Debugging mode flag
  * @constructor
  */
@@ -93,14 +93,12 @@ Garbler.prototype.init = function (circuit) {
   // Give the evaluator the first half of the input labels.
   for (var i = 0; i < circuit.input.length/2; i++) {
     var j = circuit.input[i]; // Index of ith input gate.
-    this.log('give Wire' + j, i, circuit.input, inputs[j], wiresToLabels[j][1], wiresToLabels[j][0], inputs[j] ? wiresToLabels[j][1] : wiresToLabels[j][0]);
     this.socket.give('Wire'+j, wiresToLabels[j][(inputs[j] == 0) ? 0 : 1]);
   }
 
   // Use oblivious transfer for the second half of the input labels.
   for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
     var j = circuit.input[i];
-    this.log('transfer for Wire' + j);
     this.OT.send(wiresToLabels[j][0], wiresToLabels[j][1]);
   }
 

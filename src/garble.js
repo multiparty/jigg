@@ -126,8 +126,7 @@ function sendInputWireToLabelsMap(channel, circuit, wireToLabels, input) {
 
     // Use oblivious transfer for the second half of the input labels.
     for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
-      var j = circuit.input[i]; // Index of ith input gate.
-      channel.sendOblivious([wireToLabels[j][0], wireToLabels[j][1]]);
+      channel.sendOblivious(wireToLabels[circuit.input[i]]); // Note this is a pair.
     }
 }
 

@@ -33,7 +33,7 @@ const OT = require('./comm/ot.js');
  * @param {progressCallback} callback - The function to log or display progress
  * @param {number} parallel - Parallelization parameter
  * @param {number} throttle - Throttling parameter
- * @param {number} port - The port to use for communications
+ * @param {number} port - Port to use for communications
  * @param {boolean} debug - Debugging mode flag
  * @constructor
  */
@@ -111,35 +111,35 @@ Evaluator.prototype.init = function (circuit) {
  * Evaluate all the garbled gates (with optional throttling).
  * @param {Object} circuit - Original circuit
  * @param {Object} garbledGates - Ordered collection of garbled gates
- * @param {Object[]} wiresToLabels - Mapping from gate indices to labels
+ * @param {Object[]} wireToLabels - Mapping from gate indices to labels
  * @param {number} start - Gate index at which to begin/continue evaluating
  */
-Evaluator.prototype.evaluate = function (circuit, garbledGates, wiresToLabels, start) {
+Evaluator.prototype.evaluate = function (circuit, garbledGates, wireToLabels, start) {
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
-    evaluate.evaluateGate(circuit.gate[i], garbledGates.get(i), wiresToLabels);
+    evaluate.evaluateGate(circuit.gate[i], garbledGates.get(i), wireToLabels);
   }
 
   start += this.parallel;
   this.progress(Math.min(start, circuit.gates), circuit.gates);
 
   if (start >= circuit.gates) {
-    this.finish(circuit, wiresToLabels);
+    this.finish(circuit, wireToLabels);
     return;
   }
 
   if (this.throttle > 0) {
-    setTimeout(this.evaluate.bind(this, circuit, garbledGates, wiresToLabels, start), this.throttle);
+    setTimeout(this.evaluate.bind(this, circuit, garbledGates, wireToLabels, start), this.throttle);
   } else {
-    this.evaluate(circuit, garbledGates, wiresToLabels, start);
+    this.evaluate(circuit, garbledGates, wireToLabels, start);
   }
 };
 
 /**
  * Give wires back to garbler, receive decoded output states, and run callback on results.
  * @param {Object} circuit - Original circuit
- * @param {Object[]} wiresToLabels - Mapping from gate indices to labels
+ * @param {Object[]} wireToLabels - Mapping from gate indices to labels
  */
-Evaluator.prototype.finish = function (circuit, wiresToLabels) {
+Evaluator.prototype.finish = function (circuit, wireToLabels) {
   const that = this;
 
   // Collect all output wires' labels and send
@@ -147,7 +147,7 @@ Evaluator.prototype.finish = function (circuit, wiresToLabels) {
   var evaluation = {};
   for (var i = 0; i < circuit.output.length; i++) {
     var j = circuit.output[i];
-    evaluation[j] = wiresToLabels[j].stringify();
+    evaluation[j] = wireToLabels[j].stringify();
   }
   this.socket.give('evaluation', evaluation);
 
