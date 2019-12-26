@@ -4,10 +4,8 @@
  */
 
 //var sodium = require('../sodium.js');
-var label = require('../data/label.js');
 
 const bytes = 16;
-const labels = [];
 
 /**
  * Return a random bit.
@@ -36,31 +34,9 @@ function random_with_replacement(bitLength) {
 }
 
 /**
- * Generate a new random unused label.
- * @param {number} length - The length of the label.
- * @param {number} bits - The number of bits in individual values.
- * @returns {Object} The random label as a Label object.
- */
-function random(length, bits) {
-  if (length == null) {
-    length = bytes;
-  }
-  if (bits == null) {
-    bits = 8;
-  }
-
-  var l = new label.Label();
-  for (var i = 0; i < length; i++) {
-    l[i] = random_with_replacement(bits);
-  }
-  labels.unshift(l.toString());
-  return (labels.lastIndexOf(l.toString()) === 0)? l : random(length);
-}
-
-/**
  * Cryptographically shuffle array.
- * @param {Array} array - The length of the label.
- * @returns {Array} The shuffled array.
+ * @param {Array} array - Length of the label.
+ * @returns {Array} Shuffled array.
  */
 function shuffle(array) {
   var r, tmp, i;
@@ -78,6 +54,7 @@ function shuffle(array) {
 
 module.exports = {
   shuffle: shuffle,
-  random: random,
-  random_bit: random_bit
+  random_bit: random_bit,
+  random_with_replacement: random_with_replacement,
+  bytes: bytes
 };

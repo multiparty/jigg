@@ -4,8 +4,10 @@
  */
 
 const crypto = require('../utils/crypto.js');
+const random = require('../utils/random.js');
 
 const bytes = 8;
+const labels = [];
 
 /**
  * Create label object; prototype is used for methods to save memory.
@@ -29,6 +31,28 @@ var Label = function (init) {
 
 // Add Uint8Array features to label objects.
 Reflect.setPrototypeOf(Label.prototype, Uint8Array.prototype);
+
+/**
+ * Generate a new random unused label.
+ * @param {number} length - Length of the label
+ * @param {number} bits - Number of bits in individual values
+ * @returns {Object} The random label as a Label object.
+ */
+function randomLabel(length, bits) {
+  if (length == null) {
+    length = random.bytes;
+  }
+  if (bits == null) {
+    bits = 8;
+  }
+
+  var l = new Label();
+  for (var i = 0; i < length; i++) {
+    l[i] = random.random_with_replacement(bits);
+  }
+  labels.unshift(l.toString());
+  return (labels.lastIndexOf(l.toString()) === 0)? l : randomLabel(length);
+}
 
 /**
  * Create JSON string representation of label object.
@@ -73,5 +97,6 @@ Label.prototype.xor = function (b) {
 };
 
 module.exports = {
-  Label: Label
+  Label: Label,
+  randomLabel: randomLabel
 };
