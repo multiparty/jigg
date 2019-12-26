@@ -78,6 +78,7 @@ Garbler.prototype.load_circuit = function () {
 
 /**
  * Initialize the garbler.
+ * @param {Object} circuit - The circuit in which to garble the gates
  */
 Garbler.prototype.init = function (circuit) {
   // User input.
@@ -108,7 +109,10 @@ Garbler.prototype.init = function (circuit) {
 
 /**
  * Garble all the gates (with optional throttling).
- * @param {number} start - The gate index at which to begin/continue garbling.
+ * @param {Object} circuit - The circuit in which to garble the gates
+ * @param {Object[]} garbledGates - Array for the garbled gates
+ * @param {Object[]} wiresToLabels - Mapping from gate indices to labels
+ * @param {number} start - The gate index at which to begin/continue garbling
  */
 Garbler.prototype.garble = function (circuit, garbledGates, wiresToLabels, start) {
   // Garble all gates.
@@ -133,6 +137,9 @@ Garbler.prototype.garble = function (circuit, garbledGates, wiresToLabels, start
 
 /**
  * Give garbled gates to evaluator, decode output, and run callback on results.
+ * @param {Object} circuit - The circuit in which to garble the gates
+ * @param {Object[]} garbledGates - Array for the garbled gates
+ * @param {Object[]} wiresToLabels - Mapping from gate indices to labels
  */
 Garbler.prototype.finish = function (circuit, garbledGates, wiresToLabels) {
   const that = this;

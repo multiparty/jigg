@@ -28,7 +28,7 @@ const OT = require('./lib/ot.js');
 /**
  * Create a new evaluator party for the circuit at the given URL with the given input.
  * @param {string} circuitURL - Circuit URL relative to server path
- * @param {Array<number>} input - The party's input as an array of bits
+ * @param {number[]} input - The party's input as an array of bits
  * @param {resultCallback} callback - The function to apply to the result bit string
  * @param {progressCallback} callback - The function to log or display progress
  * @param {number} parallel - Parallelization parameter
@@ -77,6 +77,7 @@ Evaluator.prototype.load_circuit = function () {
 
 /**
  * Initialize the evaluator.
+ * @param {Object} circuit - The original circuit
  */
 Evaluator.prototype.init = function (circuit) {
   const that = this;
@@ -117,13 +118,14 @@ Evaluator.prototype.init = function (circuit) {
 
 /**
  * Evaluate all the garbled gates (with optional throttling).
- * @param {number} start - The gate index at which to begin/continue evaluating.
+ * @param {Object} circuit - The original circuit
+ * @param {Object[]} garbledGates - The set of garbled gates
+ * @param {Object[]} wiresToLabels - Mapping from gate indices to labels
+ * @param {number} start - The gate index at which to begin/continue evaluating
  */
 Evaluator.prototype.evaluate = function (circuit, garbledGates, wiresToLabels, start) {
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
-    const gate = circuit.gate[i];
-    this.log('evaluate_gate', garbledGates[i], gate.wirein, gate.wireout);
-    evaluate.evaluateGate(garbledGates[i], gate.type, gate.wirein, gate.wireout, wiresToLabels);
+    evaluate.evaluateGate(circuit.gate[i], garbledGates[i], wiresToLabels);
   }
 
   start += this.parallel;
@@ -143,6 +145,8 @@ Evaluator.prototype.evaluate = function (circuit, garbledGates, wiresToLabels, s
 
 /**
  * Give wires back to garbler, receive decoded output states, and run callback on results.
+ * @param {Object} circuit - The original circuit
+ * @param {Object[]} wiresToLabels - Mapping from gate indices to labels
  */
 Evaluator.prototype.finish = function (circuit, wiresToLabels) {
   const that = this;
