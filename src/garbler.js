@@ -113,9 +113,7 @@ Garbler.prototype.init = function (circuit) {
 Garbler.prototype.garble = function (circuit, garbledGates, wiresToLabels, start) {
   // Garble all gates.
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
-    const gate = circuit.gate[i];
-    this.log('garble_gate', gate.type, gate.wirein, gate.wireout);
-    garbledGates[i] = garble.garbleGate(gate.type, gate.wirein, gate.wireout, wiresToLabels);
+    garbledGates[i] = garble.garbleGate(circuit.gate[i], wiresToLabels);
   }
 
   start += this.parallel;

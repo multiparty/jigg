@@ -48,7 +48,7 @@ function generateWiresToLabels(circuit) {
     wiresToLabels[i][0].pointer(point);
     wiresToLabels[i][1].pointer(1-point);
   }
-  
+
   for (var i = 0; i < circuit.gates; i++) {
     var gate = circuit.gate[i];
     var k;
@@ -80,21 +80,19 @@ function generateWiresToLabels(circuit) {
 
 /**
  * Encrypt a single gate; input and output wires must have labels at this point.
- * @param {string} type - The gate operation
- * @param {number[]} wirein - The array of indices of the input wires
- * @param {number} wireout - The index of the output wire
+ * @param {Object} gate - The gate to garble
  * @param {Object[]} wiresToLabels - Mapping from each wire index to two labels
  */
-function garbleGate(type, wirein, wireout, wsToLs) {
-  const i = wirein[0];
-  const j = (wirein.length === 2) ? wirein[1] : i;
-  const k = wireout;
+function garbleGate(gate, wsToLs) {
+  const i = gate.wirein[0];
+  const j = (gate.wirein.length === 2) ? gate.wirein[1] : i;
+  const k = gate.wireout;
 
-  if (type === 'xor') {
-    return 'xor';  // Free XOR - encrypt nothing.
-  } else if (type === 'not') {
+  if (gate.type === 'xor') {
+    return 'xor';  // Free XOR; encrypt nothing.
+  } else if (gate.type === 'not') {
     return 'not';
-  } else {  // if (type === 'and') {
+  } else {  // if (gate.type === 'and') {
     var t = [0,0,0,1];
     return [
       [crypto.encrypt(wsToLs[i][0], wsToLs[j][0], k, wsToLs[k][t[0]]).stringify(), (2 * wsToLs[i][0].pointer()) + wsToLs[j][0].pointer()],
@@ -119,8 +117,7 @@ function garbleGate(type, wirein, wireout, wsToLs) {
 function garbleGates(circuit, wiresToLabels) {
   var garbledGates = [];
   for (var i = 0; i < circuit.gates; i++) {
-    const gate = circuit.gate[i];
-    garbledGates.push(this.garbleGate(gate.type, gate.wirein, gate.wireout, wiresToLabels));
+    garbledGates.push(garbleGate(circuit.gate[i], wiresToLabels));
   }
   return garbledGates;
 }
