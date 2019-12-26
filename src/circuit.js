@@ -73,7 +73,7 @@ function circuit_parse_bristol(raw) {
       gate_new.wirein.push(1 + (+tokens[3]));
     }
     gate_new.wireout = 1 + (+tokens[2 + (+tokens[0])]);
-    gate_new.type = gate.types[tokens[3 + (+tokens[0])]];
+    gate_new.type = gate.bristolOpToIGG[tokens[3 + (+tokens[0])]];
     circuit.gate.push(gate_new);
   }
 
