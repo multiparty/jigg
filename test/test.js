@@ -4,6 +4,7 @@ var expect = require('chai').expect;
 const gate = require('../src/data/gate.js');
 const circuit = require('../src/data/circuit.js');
 const label = require('../src/data/label.js');
+const channel = require('../src/comm/channel.js');
 const garble = require('../src/garble.js');
 const evaluate = require('../src/evaluate.js');
 const {Garbler, Evaluator, bin2hex, hex2bin} = require('../src/jigg');
@@ -435,35 +436,36 @@ global.sodium = require('libsodium-wrappers');
     //input2 = "11".split('');
     //var circuit = and4_json;
     
-    input1 = "00000000000000000000000000000101".split('');
-    input2 = "00000000000000000000000000001010".split('');
+    input1 = "00100000000000000000000000000101".split('');
+    input2 = "01000000000000000000000000001010".split('');
     var circuit = add32_json;
 
     var wsToLs_G = garble.generateWiresToLabels(circuit);
     var garbledGates = garble.garbleGates(circuit, wsToLs_G);
-    
+
     const input_G = (new Array(1)).concat(input1).concat(new Array(input1.length));
-    var give = {};
-    var send = {};
+    var comm = new channel.ChannelSimulated();
     // Give the evaluator the first half of the input labels.
     for (var i = 0; i < circuit.input.length/2; i++) {
       var j = circuit.input[i]; // Index of ith input gate.
-      give['Wire'+j] = wsToLs_G[j][(input_G[j] == 0) ? 0 : 1];
+      comm.sendDirect('Wire'+j, wsToLs_G[j][((input_G[j] == 0) ? 0 : 1)]);
     }
     // Use oblivious transfer for the second half of the input labels.
     for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
       var j = circuit.input[i]; // Index of ith input gate.
-      send[i] = [wsToLs_G[j][0], wsToLs_G[j][1]];
+      comm.sendOblivious([wsToLs_G[j][0], wsToLs_G[j][1]]);
     }
+    comm.sendDirect('garbledGates', JSON.stringify(garbledGates.toJSON()));
 
     const input_E = (new Array(1 + input2.length)).concat(input2);
-    var messages = [JSON.stringify(garbledGates.toJSON())];
+    var messages = [comm.receiveDirect('garbledGates')];
     // Each of the garbler's input labels.
-    for (var i = 0; i < circuit.input.length / 2; i++)
-      messages.push(give['Wire' + circuit.input[i]]);
+    for (var i = 0; i < circuit.input.length / 2; i++) {
+      messages.push(comm.receiveDirect('Wire' + circuit.input[i]));
+    }
     // Promises to each of the evaluator's input labels.
     for (var i = circuit.input.length / 2; i < circuit.input.length; i++) {
-      messages.push(send[i][input_E[circuit.input[i]]]);
+      messages.push(comm.receiveOblivious(input_E[circuit.input[i]]));
     }
 
     var [garbledGates_E, wToL_E] = evaluate.processMessages(circuit, messages);
@@ -482,7 +484,6 @@ global.sodium = require('libsodium-wrappers');
       results.push(value);
     }
     console.log(results.join(''));
-
 });
 
 })(); // End async() for libsodium.
