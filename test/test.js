@@ -443,23 +443,13 @@ global.sodium = require('libsodium-wrappers');
 
     var wToLs_G = garble.generateWiresToLabels(circuit);
     var garbledGates = garble.garbleGates(circuit, wToLs_G);
-
     garble.sendInputWireToLabelsMap(comm, circuit, wToLs_G, input1);
     comm.sendDirect('garbledGates', JSON.stringify(garbledGates.toJSON()));
 
-    const input_E = (new Array(1 + input2.length)).concat(input2);
-    var messages = [comm.receiveDirect('garbledGates')];
-    // Each of the garbler's input labels.
-    for (var i = 0; i < circuit.input.length / 2; i++) {
-      messages.push(comm.receiveDirect('Wire' + circuit.input[i]));
-    }
-    // Promises to each of the evaluator's input labels.
-    for (var i = circuit.input.length / 2; i < circuit.input.length; i++) {
-      messages.push(comm.receiveOblivious(input_E[circuit.input[i]]));
-    }
-
+    var messages = evaluate.receiveMessages(comm, circuit, input2);
     var [garbledGates_E, wToL_E] = evaluate.processMessages(circuit, messages);
     var wToL_E2 = evaluate.evaluateGates(circuit, wToL_E, garbledGates_E);
+
     var evaluation = {};
     for (var i = 0; i < circuit.output.length; i++) {
       var j = circuit.output[i];
