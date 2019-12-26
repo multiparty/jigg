@@ -38,6 +38,15 @@ function GarbledGate(values) {
 }
 
 /**
+ * Get the value of the garbled gate at the specified index.
+ * @param {number} index - The index of the desired value
+ * @returns {string} The value at the specified index
+ */
+GarbledGate.prototype.get = function (index) {
+  return this.values[index];
+};
+
+/**
  * Return a gate data structure instance as a JSON object.
  * @returns {Object} Gate data structure instance as a JSON object
  */
@@ -47,7 +56,7 @@ GarbledGate.prototype.toJSON = function () {
 
 /**
  * Create an ordered collection of garbled gates.
- * @param {Object[]} [garbledGates=[]] - The array of garbled gates.
+ * @param {Object[]} [garbledGates=[]] - The array of garbled gates
  * @constructor
  */
 function GarbledGates(garbledGates) {
@@ -58,17 +67,53 @@ function GarbledGates(garbledGates) {
 
 /**
  * Add a garbled gate to the ordered collection of garbled gates.
+ * @param {Object} garbledGate - The garbled gate to add
  */
 GarbledGates.prototype.add = function (garbledGate) {
   this.garbledGates.push(garbledGate);
 };
 
 /**
+ * Allocate space for the number of garbled gates in the collection.
+ * @param {number} number - The expected number of gates
+ */
+GarbledGates.prototype.allocate = function (number) {
+  this.garbledGates = Array(number);
+};
+
+/**
+ * Insert a gate into a specific entry in the collection.
+ * @param {number} index - The index at which to insert the supplied gate
+ * @param {Object} garbledGate - The garbled gate to insert
+ */
+GarbledGates.prototype.insert = function (index, garbledGate) {
+  this.garbledGates[index] = garbledGate;
+};
+
+/**
+ * Retrieve the garbled gate at the specified index.
+ * @param {number} index - The index of the desired gate
+ * @param {Object} garbledGate - The gate at the specified index
+ */
+GarbledGates.prototype.get = function (index) {
+  return this.garbledGates[index];
+};
+
+/**
  * Return garbled gates as a JSON object.
- * @returns {Object[]} The array of gates, with each gate as JSON.
+ * @returns {Object[]} The array of gates, with each gate as JSON
  */
 GarbledGates.prototype.toJSON = function () {
   return this.garbledGates.map(function (g) { return g.toJSON(); })
+};
+
+/**
+ * Build an ordered collection of garbled gates from its JSON representation.
+ * @param {Object[]} json - The array of gates, with each gate as JSON
+ * @returns {Object} The ordered collection of garbled gates
+ */
+GarbledGates.prototype.fromJSON = function (json) {
+  return new GarbledGates(json.map(function (vs) { return new GarbledGate(vs); }));
 };
 
 module.exports = {

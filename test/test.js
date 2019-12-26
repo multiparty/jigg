@@ -440,8 +440,7 @@ global.sodium = require('libsodium-wrappers');
     var circuit = add32_json;
 
     var Wire_G = garble.generateWiresToLabels(circuit);
-    var ggates = garble.garbleGates(circuit, Wire_G);
-    //console.log(ggates);
+    var garbledGates = garble.garbleGates(circuit, Wire_G);
     
     const input_G = (new Array(1)).concat(input1).concat(new Array(input1.length));
     var give = {};
@@ -473,7 +472,7 @@ global.sodium = require('libsodium-wrappers');
       Wire_E[j] = Label(messages[j]);
     }
 
-    var Wire_E2 = evaluate.evaluateGates(circuit, Wire_E, ggates);
+    var Wire_E2 = evaluate.evaluateGates(circuit, Wire_E, garbledGates);
     var evaluation = {};
     for (var i = 0; i < circuit.output.length; i++) {
       var j = circuit.output[i];
