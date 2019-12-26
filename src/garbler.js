@@ -86,7 +86,7 @@ Garbler.prototype.init = function (circuit) {
   this.log('input states', inputs);
 
   // Generate labels and save them in labeled wire data structure.
-  var wiresToLabels = garble.generateWiresToLabels(circuit);
+  var wiresToLabels = garble.generateWireToLabelsMap(circuit);
   var garbledGates = new gate.GarbledGates();
   garbledGates.allocate(circuit.gates);
 

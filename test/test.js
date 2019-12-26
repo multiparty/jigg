@@ -442,7 +442,7 @@ global.sodium = require('libsodium-wrappers');
     var circuit = add32_json;
     var comm = new channel.ChannelSimulated();
 
-    var wToLs_G = garble.generateWiresToLabels(circuit);
+    var wToLs_G = garble.generateWireToLabelsMap(circuit);
     var garbledGates = garble.garbleGates(circuit, wToLs_G);
     garble.sendInputWireToLabelsMap(comm, circuit, wToLs_G, input1);
     comm.sendDirect('garbledGates', JSON.stringify(garbledGates.toJSON()));

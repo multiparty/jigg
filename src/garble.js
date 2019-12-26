@@ -12,11 +12,11 @@ const crypto = require('./utils/crypto.js');
 
 /**
  * Generate labels and encode each state of every wire
- * with a randomly generated label.
+ * with a randomly generated label pair.
  * @param {Object} circuit - Circuit for which to generate labels
  * @returns {Object[]} Mapping from each wire index to two labels
  */
-function generateWiresToLabels(circuit) {
+function generateWireToLabelsMap(circuit) {
   const R = label.randomLabel();  // R in {0, 1}^N.
   var wireToLabels = wireToLabelsMap.initializeWireToLabelsMap(circuit);
 
@@ -121,17 +121,20 @@ function sendInputWireToLabelsMap(channel, circuit, wireToLabels, input) {
     // Send the evaluator the first half of the input labels directly.
     for (var i = 0; i < circuit.input.length/2; i++) {
       var j = circuit.input[i]; // Index of ith input gate.
-      channel.sendDirect('Wire'+j, wireToLabels[j][((inputPair[j] == 0) ? 0 : 1)]);
+      channel.sendDirect('Wire'+j, wireToLabels[j][((inputPair[j] == 0) ? 0 : 1)].stringify());
     }
 
     // Use oblivious transfer for the second half of the input labels.
     for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
-      channel.sendOblivious(wireToLabels[circuit.input[i]]); // Note this is a pair.
+      channel.sendOblivious([
+        wireToLabels[circuit.input[i]][0], 
+        wireToLabels[circuit.input[i]][1]
+      ]);
     }
 }
 
 module.exports = {
-  generateWiresToLabels: generateWiresToLabels,
+  generateWireToLabelsMap: generateWireToLabelsMap,
   garbleGate: garbleGate,
   garbleGates: garbleGates,
   sendInputWireToLabelsMap: sendInputWireToLabelsMap
