@@ -439,8 +439,8 @@ global.sodium = require('libsodium-wrappers');
     input2 = "00000000000000000000000000001010".split('');
     var circuit = add32_json;
 
-    var Wire_G = garble.generateWiresToLabels(circuit);
-    var garbledGates = garble.garbleGates(circuit, Wire_G);
+    var wsToLs_G = garble.generateWiresToLabels(circuit);
+    var garbledGates = garble.garbleGates(circuit, wsToLs_G);
     
     const input_G = (new Array(1)).concat(input1).concat(new Array(input1.length));
     var give = {};
@@ -448,16 +448,16 @@ global.sodium = require('libsodium-wrappers');
     // Give the evaluator the first half of the input labels.
     for (var i = 0; i < circuit.input.length/2; i++) {
       var j = circuit.input[i]; // Index of ith input gate.
-      give['Wire'+j] = Wire_G[j][(input_G[j] == 0) ? 0 : 1];
+      give['Wire'+j] = wsToLs_G[j][(input_G[j] == 0) ? 0 : 1];
     }
     // Use oblivious transfer for the second half of the input labels.
     for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
       var j = circuit.input[i]; // Index of ith input gate.
-      send[i] = [Wire_G[j][0], Wire_G[j][1]];
+      send[i] = [wsToLs_G[j][0], wsToLs_G[j][1]];
     }
 
     const input_E = (new Array(1 + input2.length)).concat(input2);
-    var messages = [null];
+    var messages = [JSON.stringify(garbledGates.toJSON())];
     // Each of the garbler's input labels.
     for (var i = 0; i < circuit.input.length / 2; i++)
       messages.push(give['Wire' + circuit.input[i]]);
@@ -466,23 +466,18 @@ global.sodium = require('libsodium-wrappers');
       messages.push(send[i][input_E[circuit.input[i]]]);
     }
 
-    var Wire_E = garble.initializeWiresToLabels(circuit);
-    for (var i = 0 ; i < circuit.input.length; i++) {
-      var j = circuit.input[i];
-      Wire_E[j] = label.Label(messages[j]);
-    }
-
-    var Wire_E2 = evaluate.evaluateGates(circuit, Wire_E, garbledGates);
+    var [garbledGates_E, wToL_E] = evaluate.processMessages(circuit, messages);
+    var wToL_E2 = evaluate.evaluateGates(circuit, wToL_E, garbledGates_E);
     var evaluation = {};
     for (var i = 0; i < circuit.output.length; i++) {
       var j = circuit.output[i];
-      evaluation[j] = Wire_E2[j].stringify();
+      evaluation[j] = wToL_E2[j].stringify();
     }
 
     var results = [];
     for (var i = 0; i < circuit.output.length; i++) {
       var labelNew = evaluation[circuit.output[i]]; // Wire output label.
-      var states = Wire_G[circuit.output[i]].map(label.Label.prototype.stringify); // True and false labels.
+      var states = wsToLs_G[circuit.output[i]].map(label.Label.prototype.stringify); // True and false labels.
       var value = states.map(function (e) { return e.substring(0, e.length-3); }).indexOf(labelNew.substring(0, labelNew.length-3)); // Find which state the label represents.
       results.push(value);
     }

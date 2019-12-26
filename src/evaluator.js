@@ -47,7 +47,7 @@ function Evaluator(circuitURL, input, callback, progress, parallel, throttle, po
   this.socket = socket.io(port == null ? 3000 : port);
   this.OT = OT(this.socket);
   this.debug = debug;
-  this.log = this.debug? function () {
+  this.log = this.debug ? function () {
     console.log.apply(console, ['Evaluator', ...arguments]);
   } : new Function();
 
@@ -102,17 +102,8 @@ Evaluator.prototype.init = function (circuit) {
 
   // Wait until all messages are received.
   Promise.all(messages).then(function (messages) {
-    that.log('messages', messages);
-
-    var garbledGates = gate.GarbledGates.prototype.fromJSON(JSON.parse(messages[0]));
-    var wiresToLabels = garble.initializeWiresToLabels(circuit);
-    for (i = 0; i < circuit.input.length; i++) {
-      var j = circuit.input[i];
-      wiresToLabels[j] = label.Label(messages[j]);
-      that.log('Wire', j, wiresToLabels);
-    }
-
-    that.evaluate(circuit, garbledGates, wiresToLabels, 0);
+    var [garbledGates, wireToLabel] = evaluate.processMessages(circuit, messages);
+    that.evaluate(circuit, garbledGates, wireToLabel, 0);
   });
 };
 
@@ -131,7 +122,7 @@ Evaluator.prototype.evaluate = function (circuit, garbledGates, wiresToLabels, s
   start += this.parallel;
   this.progress(Math.min(start, circuit.gates), circuit.gates);
 
-  if (start >= circuit.gates) { // done
+  if (start >= circuit.gates) {
     this.finish(circuit, wiresToLabels);
     return;
   }
@@ -157,7 +148,6 @@ Evaluator.prototype.finish = function (circuit, wiresToLabels) {
   for (var i = 0; i < circuit.output.length; i++) {
     var j = circuit.output[i];
     evaluation[j] = wiresToLabels[j].stringify();
-    this.log('j', j, wiresToLabels[j]);
   }
   this.socket.give('evaluation', evaluation);
 

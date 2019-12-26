@@ -1,12 +1,29 @@
 /**
- * Stateless evaluation functions for garbled circuit protocol.
+ * Stateless evaluation functions for garbled circuits protocol.
  * @module src/evaluate
  */
 
 const gate = require('./data/gate.js');
 const circuit = require('./data/circuit.js');
 const label = require('./data/label.js');
+const garble = require('./garble.js');
 const crypto = require('./utils/crypto.js');
+
+/**
+ * Process garbled gates and wire label information received from garbler.
+ * @param {Object} circuit - Circuit being evaluated
+ * @param {Object[]} messages - Array of messages from garbler
+ * @returns {Object[]} Pair containing the received gates and wire-to-label map
+ */
+function processMessages(circuit, messages) {
+  var garbledGates = gate.GarbledGates.prototype.fromJSON(JSON.parse(messages[0]));
+  var wireToLabel = garble.initializeWiresToLabels(circuit);
+  for (var i = 0; i < circuit.input.length; i++) {
+    var j = circuit.input[i];
+    wireToLabel[j] = label.Label(messages[j]);
+  }
+  return [garbledGates, wireToLabel];
+}
 
 /**
  * Decrypt a single garbled gate; the resulting label is stored automatically and also returned.
@@ -44,6 +61,7 @@ function evaluateGates(circuit, wiresToLabels, garbledGates) {
 }
 
 module.exports = {
+  processMessages: processMessages,
   evaluateGate: evaluateGate,
   evaluateGates: evaluateGates
 };
