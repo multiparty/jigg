@@ -439,22 +439,12 @@ global.sodium = require('libsodium-wrappers');
     input1 = "00100000000000000000000000000101".split('');
     input2 = "01000000000000000000000000001010".split('');
     var circuit = add32_json;
-
-    var wsToLs_G = garble.generateWiresToLabels(circuit);
-    var garbledGates = garble.garbleGates(circuit, wsToLs_G);
-
-    const input_G = (new Array(1)).concat(input1).concat(new Array(input1.length));
     var comm = new channel.ChannelSimulated();
-    // Give the evaluator the first half of the input labels.
-    for (var i = 0; i < circuit.input.length/2; i++) {
-      var j = circuit.input[i]; // Index of ith input gate.
-      comm.sendDirect('Wire'+j, wsToLs_G[j][((input_G[j] == 0) ? 0 : 1)]);
-    }
-    // Use oblivious transfer for the second half of the input labels.
-    for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
-      var j = circuit.input[i]; // Index of ith input gate.
-      comm.sendOblivious([wsToLs_G[j][0], wsToLs_G[j][1]]);
-    }
+
+    var wToLs_G = garble.generateWiresToLabels(circuit);
+    var garbledGates = garble.garbleGates(circuit, wToLs_G);
+
+    garble.sendInputWireToLabelsMap(comm, circuit, wToLs_G, input1);
     comm.sendDirect('garbledGates', JSON.stringify(garbledGates.toJSON()));
 
     const input_E = (new Array(1 + input2.length)).concat(input2);
@@ -479,7 +469,7 @@ global.sodium = require('libsodium-wrappers');
     var results = [];
     for (var i = 0; i < circuit.output.length; i++) {
       var labelNew = evaluation[circuit.output[i]]; // Wire output label.
-      var states = wsToLs_G[circuit.output[i]].map(label.Label.prototype.stringify); // True and false labels.
+      var states = wToLs_G[circuit.output[i]].map(label.Label.prototype.stringify); // True and false labels.
       var value = states.map(function (e) { return e.substring(0, e.length-3); }).indexOf(labelNew.substring(0, labelNew.length-3)); // Find which state the label represents.
       results.push(value);
     }

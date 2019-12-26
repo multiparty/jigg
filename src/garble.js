@@ -119,9 +119,33 @@ function garbleGates(circuit, wiresToLabels) {
   return garbledGates;
 }
 
+/**
+ * Send mapping from input wires to their label pairs.
+ * @param {Object} channel - Communication channel to use
+ * @param {Object} circuit - Circuit being evaluated
+ * @param {Object[]} wireToLabels - Mapping from each wire index to two labels
+ * @param {number[]} input - Input being used by this party (first or left-hand input)
+ * @param {Object[]} messages - Array of messages from garbler
+ */
+function sendInputWireToLabelsMap(channel, circuit, wireToLabels, input) {
+    const inputPair = (new Array(1)).concat(input).concat(new Array(input.length));
+
+    // Send the evaluator the first half of the input labels directly.
+    for (var i = 0; i < circuit.input.length/2; i++) {
+      var j = circuit.input[i]; // Index of ith input gate.
+      channel.sendDirect('Wire'+j, wireToLabels[j][((inputPair[j] == 0) ? 0 : 1)]);
+    }
+
+    // Use oblivious transfer for the second half of the input labels.
+    for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
+      var j = circuit.input[i]; // Index of ith input gate.
+      channel.sendOblivious([wireToLabels[j][0], wireToLabels[j][1]]);
+    }
+}
+
 module.exports = {
-  initializeWiresToLabels: initializeWiresToLabels,
   generateWiresToLabels: generateWiresToLabels,
   garbleGate: garbleGate,
-  garbleGates: garbleGates
+  garbleGates: garbleGates,
+  sendInputWireToLabelsMap: sendInputWireToLabelsMap
 };
