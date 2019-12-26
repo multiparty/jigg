@@ -30,12 +30,7 @@ function initializeWiresToLabels(circuit) {
  */
 function generateWiresToLabels(circuit) {
   const R = randomutils.random();  // R in {0, 1}^N.
-
-  // Initialize the data structure for labeled wires.  
-  var wiresToLabels = [null];
-  for (var i = 1; i <= circuit.wires; i++) {
-      wiresToLabels.push([]);
-  }
+  var wiresToLabels = initializeWiresToLabels(circuit);
 
   for (var j = 0; j < circuit.input.length; j++) {
     var i = circuit.input[j];
