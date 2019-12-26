@@ -1,6 +1,6 @@
 /**
  * Gate (normal and garbled) data structure and associated functions.
- * @module src/gate
+ * @module src/data/gate
  */
 
 'use strict';

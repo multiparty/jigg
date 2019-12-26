@@ -4,7 +4,7 @@
  */
 
 //var sodium = require('../sodium.js');
-var Label = require('../lib/label.js');
+var Label = require('../data/label.js');
 
 const bytes = 16;
 const labels = [];

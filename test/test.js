@@ -1,9 +1,9 @@
 var assert = require('assert');
 var expect = require('chai').expect;
 
-const gate = require('../src/gate.js');
-const circuit = require('../src/circuit.js');
-const Label = require('../src/lib/label.js');
+const gate = require('../src/data/gate.js');
+const circuit = require('../src/data/circuit.js');
+const Label = require('../src/data/label.js');
 const garble = require('../src/garble.js');
 const evaluate = require('../src/evaluate.js');
 const {Garbler, Evaluator, bin2hex, hex2bin} = require('../src/jigg');

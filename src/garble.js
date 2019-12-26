@@ -3,9 +3,9 @@
  * @module src/garble
  */
 
-const Label = require('./lib/label.js');
-const gate = require('./gate.js');
-const circuit = require('./circuit.js');
+const gate = require('./data/gate.js');
+const circuit = require('./data/circuit.js');
+const Label = require('./data/label.js');
 const randomutils = require('./utils/random.js');
 const crypto = require('./utils/crypto.js');
 
