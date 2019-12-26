@@ -5,7 +5,7 @@
 
 const gate = require('./data/gate.js');
 const circuit = require('./data/circuit.js');
-const Label = require('./data/label.js');
+const label = require('./data/label.js');
 const evaluate = require('./evaluate.js');
 const socket = require('./lib/socket.js');
 const OT = require('./lib/ot.js');
@@ -108,7 +108,7 @@ Evaluator.prototype.init = function (circuit) {
     var wiresToLabels = garble.initializeWiresToLabels(circuit);
     for (i = 0; i < circuit.input.length; i++) {
       var j = circuit.input[i];
-      wiresToLabels[j] = Label(messages[j]);
+      wiresToLabels[j] = label.Label(messages[j]);
       that.log('Wire', j, wiresToLabels);
     }
 

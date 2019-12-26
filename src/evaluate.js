@@ -5,7 +5,7 @@
 
 const gate = require('./data/gate.js');
 const circuit = require('./data/circuit.js');
-const Label = require('./data/label.js');
+const label = require('./data/label.js');
 const crypto = require('./utils/crypto.js');
 
 /**
@@ -25,7 +25,7 @@ function evaluateGate(gate, garbledGate, wiresToLabels) {
   } else if (gate.type === 'not') {
     wiresToLabels[k] = wiresToLabels[i];  // Already inverted.
   } else if (gate.type === 'and') {
-    wiresToLabels[k] = crypto.decrypt(wiresToLabels[i], wiresToLabels[j], k, Label(garbledGate.get(l)));
+    wiresToLabels[k] = crypto.decrypt(wiresToLabels[i], wiresToLabels[j], k, label.Label(garbledGate.get(l)));
   }
 }
 

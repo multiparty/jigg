@@ -5,7 +5,7 @@
 
 const gate = require('./data/gate.js');
 const circuit = require('./data/circuit.js');
-const Label = require('./data/label.js');
+const label = require('./data/label.js');
 const randomutils = require('./utils/random.js');
 const crypto = require('./utils/crypto.js');
 
@@ -35,9 +35,9 @@ function generateWiresToLabels(circuit) {
   for (var j = 0; j < circuit.input.length; j++) {
     var i = circuit.input[j];
 
-    var label = randomutils.random();
-    wiresToLabels[i][0] = label;
-    wiresToLabels[i][1] = label.xor(R);
+    var labelNew = randomutils.random();
+    wiresToLabels[i][0] = labelNew;
+    wiresToLabels[i][1] = labelNew.xor(R);
 
     var point = randomutils.random_bit();
     wiresToLabels[i][0].pointer(point);

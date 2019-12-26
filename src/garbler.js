@@ -5,7 +5,7 @@
 
 const gate = require('./data/gate.js');
 const circuit = require('./data/circuit.js');
-const Label = require('./data/label.js');
+const label = require('./data/label.js');
 const garble = require('./garble.js');
 const socket = require('./lib/socket.js');
 const OT = require('./lib/ot.js');
@@ -151,11 +151,11 @@ Garbler.prototype.finish = function (circuit, garbledGates, wiresToLabels) {
   this.socket.get('evaluation').then(function (evaluation) {
     var results = [];
     for (var i = 0; i < circuit.output.length; i++) {
-      var label = evaluation[circuit.output[i]]; // Wire output label.
-      var states = wiresToLabels[circuit.output[i]].map(Label.prototype.stringify); // True and false labels.
+      var labelNew = evaluation[circuit.output[i]]; // Wire output label.
+      var states = wiresToLabels[circuit.output[i]].map(label.Label.prototype.stringify); // True and false labels.
       var value = states.map(function (e) {
         return e.substring(0, e.length-3)
-      }).indexOf(label.substring(0, label.length-3)); // Find which state the label represents.
+      }).indexOf(labelNew.substring(0, labelNew.length-3)); // Find which state the label represents.
       results.push(value);
     }
 

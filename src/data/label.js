@@ -72,4 +72,6 @@ Label.prototype.xor = function (b) {
   return crypto.xor_array(this, b, this.length);
 };
 
-module.exports = Label;
+module.exports = {
+  Label: Label
+};

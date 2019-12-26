@@ -3,7 +3,7 @@ var expect = require('chai').expect;
 
 const gate = require('../src/data/gate.js');
 const circuit = require('../src/data/circuit.js');
-const Label = require('../src/data/label.js');
+const label = require('../src/data/label.js');
 const garble = require('../src/garble.js');
 const evaluate = require('../src/evaluate.js');
 const {Garbler, Evaluator, bin2hex, hex2bin} = require('../src/jigg');
@@ -469,7 +469,7 @@ global.sodium = require('libsodium-wrappers');
     var Wire_E = garble.initializeWiresToLabels(circuit);
     for (var i = 0 ; i < circuit.input.length; i++) {
       var j = circuit.input[i];
-      Wire_E[j] = Label(messages[j]);
+      Wire_E[j] = label.Label(messages[j]);
     }
 
     var Wire_E2 = evaluate.evaluateGates(circuit, Wire_E, garbledGates);
@@ -481,9 +481,9 @@ global.sodium = require('libsodium-wrappers');
 
     var results = [];
     for (var i = 0; i < circuit.output.length; i++) {
-      var label = evaluation[circuit.output[i]]; // Wire output label.
-      var states = Wire_G[circuit.output[i]].map(Label.prototype.stringify); // True and false labels.
-      var value = states.map(function (e) { return e.substring(0, e.length-3); }).indexOf(label.substring(0, label.length-3)); // Find which state the label represents.
+      var labelNew = evaluation[circuit.output[i]]; // Wire output label.
+      var states = Wire_G[circuit.output[i]].map(label.Label.prototype.stringify); // True and false labels.
+      var value = states.map(function (e) { return e.substring(0, e.length-3); }).indexOf(labelNew.substring(0, labelNew.length-3)); // Find which state the label represents.
       results.push(value);
     }
     console.log(results.join(''));

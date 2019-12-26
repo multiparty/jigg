@@ -4,7 +4,7 @@
  */
 
 //var sodium = require('../sodium.js');
-var Label = require('../data/label.js');
+var label = require('../data/label.js');
 
 const bytes = 16;
 const labels = [];
@@ -49,7 +49,7 @@ function random(length, bits) {
     bits = 8;
   }
 
-  var l = new Label();
+  var l = new label.Label();
   for (var i = 0; i < length; i++) {
     l[i] = random_with_replacement(bits);
   }
