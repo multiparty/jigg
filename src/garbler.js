@@ -149,8 +149,8 @@ Garbler.prototype.finish = function (circuit, garbledGates, wiresToLabels) {
   this.socket.get('evaluation').then(function (evaluation) {
     var results = [];
     for (var i = 0; i < circuit.output.length; i++) {
-      var labelNew = evaluation[circuit.output[i]]; // Wire output label.
-      var states = wiresToLabels[circuit.output[i]].map(label.Label.prototype.stringify); // True and false labels.
+      var labelNew = label.Label.prototype.fromJSON(evaluation[circuit.output[i]]).compactString(); // Wire output label.
+      var states = wiresToLabels[circuit.output[i]].map(label.Label.prototype.compactString); // True and false labels.
       var value = states.map(function (e) {
         return e.substring(0, e.length-3)
       }).indexOf(labelNew.substring(0, labelNew.length-3)); // Find which state the label represents.

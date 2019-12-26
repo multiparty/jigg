@@ -454,15 +454,15 @@ global.sodium = require('libsodium-wrappers');
     var outputWireToLabels_E = new wireToLabelsMap.WireToLabelsMap();
     for (var i = 0; i < circuit.output.length; i++) {
       var j = circuit.output[i];
-      outputWireToLabels_E.set(j, wToL_E2[j].stringify());
+      outputWireToLabels_E.set(j, wToL_E2[j]);
     }
     comm.sendDirect('outputWireToLabels', JSON.stringify(outputWireToLabels_E.toJSON()));
 
     var outputWireToLabels_G = JSON.parse(comm.receiveDirect('outputWireToLabels'));
     var results = [];
     for (var i = 0; i < circuit.output.length; i++) {
-      var labelNew = outputWireToLabels_G[circuit.output[i]]; // Wire output label.
-      var states = wToLs_G[circuit.output[i]].map(label.Label.prototype.stringify); // True and false labels.
+      var labelNew = label.Label.prototype.fromJSON(outputWireToLabels_G[circuit.output[i]]).compactString(); // Wire output label.
+      var states = wToLs_G[circuit.output[i]].map(label.Label.prototype.compactString); // True and false labels.
       var value = states.map(function (e) { return e.substring(0, e.length-3); }).indexOf(labelNew.substring(0, labelNew.length-3)); // Find which state the label represents.
       results.push(value);
     }

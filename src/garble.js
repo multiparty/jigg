@@ -79,10 +79,10 @@ function garbleGate(gateFromCircuit, wToLs) {
   } else {  // if (gateFromCircuit.type === 'and') {
     var t = [0,0,0,1];
     var values = [
-      [crypto.encrypt(wToLs[i][0], wToLs[j][0], k, wToLs[k][t[0]]).stringify(), (2 * wToLs[i][0].pointer()) + wToLs[j][0].pointer()],
-      [crypto.encrypt(wToLs[i][0], wToLs[j][1], k, wToLs[k][t[1]]).stringify(), (2 * wToLs[i][0].pointer()) + wToLs[j][1].pointer()],
-      [crypto.encrypt(wToLs[i][1], wToLs[j][0], k, wToLs[k][t[2]]).stringify(), (2 * wToLs[i][1].pointer()) + wToLs[j][0].pointer()],
-      [crypto.encrypt(wToLs[i][1], wToLs[j][1], k, wToLs[k][t[3]]).stringify(), (2 * wToLs[i][1].pointer()) + wToLs[j][1].pointer()]
+      [crypto.encrypt(wToLs[i][0], wToLs[j][0], k, wToLs[k][t[0]]).compactString(), (2 * wToLs[i][0].pointer()) + wToLs[j][0].pointer()],
+      [crypto.encrypt(wToLs[i][0], wToLs[j][1], k, wToLs[k][t[1]]).compactString(), (2 * wToLs[i][0].pointer()) + wToLs[j][1].pointer()],
+      [crypto.encrypt(wToLs[i][1], wToLs[j][0], k, wToLs[k][t[2]]).compactString(), (2 * wToLs[i][1].pointer()) + wToLs[j][0].pointer()],
+      [crypto.encrypt(wToLs[i][1], wToLs[j][1], k, wToLs[k][t[3]]).compactString(), (2 * wToLs[i][1].pointer()) + wToLs[j][1].pointer()]
     ];
     values = values.sort(function (c1, c2) {  // Point-and-permute.
       return c1[1] - c2[1];

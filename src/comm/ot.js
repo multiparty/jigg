@@ -37,7 +37,7 @@ const init = function(socket) {
           const f0 = crypto.xor_array(a, e ? r1 : r0);
           const f1 = crypto.xor_array(b, e ? r0 : r1);
 
-          socket.give('f' + msg_id, '[' + f0.stringify() + ',' + f1.stringify() + ']');
+          socket.give('f' + msg_id, '[' + f0.compactString() + ',' + f1.compactString() + ']');
           resolve();
         });
       });

@@ -55,11 +55,11 @@ function randomLabel(length, bits) {
 }
 
 /**
- * Create JSON string representation of label object.
- * @param {Object} l - The label object to turn into a JSON string
- * @returns {string} JSON representation of label in string format
+ * Create compact string representation of label object.
+ * @param {Object} l - The label object to turn into a compact string
+ * @returns {string} Compact string representation of label
  */
-Label.prototype.stringify = function (l = this) {
+Label.prototype.compactString = function (l = this) {
   var json = '[';
   for (var i = 0; i < l.length - 1; i++) {
     json += l[i] + ',';
@@ -82,12 +82,12 @@ Label.prototype.toJSON = function (label = this) {
 };
 
 /**
- * Build a label from a string representation.
- * @param {string} raw - String representing a label
- * @returns {Object} Label represented by the string
+ * Build a label from a JSON representation.
+ * @param {number[]} labelAsArrayOfNumbers - Array representation of label
+ * @returns {Object} Label object
  */
-Label.prototype.fromString = function (raw) {
-  return JSON.parse(raw);
+Label.prototype.fromJSON = function (labelAsArrayOfNumbers) {
+  return Label(labelAsArrayOfNumbers);
 };
 
 /**

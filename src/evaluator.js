@@ -147,7 +147,7 @@ Evaluator.prototype.finish = function (circuit, wireToLabels) {
   var evaluation = {};
   for (var i = 0; i < circuit.output.length; i++) {
     var j = circuit.output[i];
-    evaluation[j] = wireToLabels[j].stringify();
+    evaluation[j] = wireToLabels[j].compactString();
   }
   this.socket.give('evaluation', evaluation);
 
