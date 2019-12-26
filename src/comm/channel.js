@@ -85,6 +85,12 @@ function ChannelSimulated() {
  * @param {string} value - Value to send under the specified key
  */
 ChannelSimulated.prototype.sendDirect = function (key, value) {
+  // We always send the string version of any data
+  // structure over the channel.
+  if (!(typeof(value) === 'string')) {
+    throw new Error('Only string values should be sent directly over channel');
+  }
+
   this.direct[key] = value;
 };
 
