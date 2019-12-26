@@ -12,11 +12,11 @@ const bytes = 16;
 
 /**
  * Create a new circuit data structure instance.
- * @param {number} wires - The number of wires in the circuit
- * @param {number} gates - The number of gates in the circuit
- * @param {number[]} input - The input wires for the entire circuit
- * @param {number[]} output - The output wires for the entire circuit
- * @param {Object[]} gate - The array of gates in the circuit
+ * @param {number} wires - Number of wires in the circuit
+ * @param {number} gates - Number of gates in the circuit
+ * @param {number[]} input - Input wires for the entire circuit
+ * @param {number[]} output - Output wires for the entire circuit
+ * @param {Object[]} gate - Array of gates in the circuit
  * @constructor
  */
 function Circuit(wires, gates, input, output, gate) {
@@ -42,8 +42,8 @@ Circuit.prototype.toJSON = function () {
 /**
  * Parse a raw string representation of a circuit that uses the
  * Bristol Fashion format into a circuit data structure.
- * @param {string} raw - The circuit specification in Bristol Fashion.
- * @returns {Object} The circuit represented as JSON.
+ * @param {string} raw - Circuit specification in Bristol Fashion.
+ * @returns {Object} Circuit represented as JSON
  */
 function circuit_parse_bristol(raw) {
   var circuit = new Circuit();
@@ -82,9 +82,9 @@ function circuit_parse_bristol(raw) {
 
 /**
  * Obtain circuit from the specific URL.
- * @param {string} path - The URL path.
- * @param {number} port - The port to use.
- * @returns {Promise} Promise object that represents the circuit object.
+ * @param {string} path - Path/URL
+ * @param {number} port - Port to use
+ * @returns {Promise} Promise object that represents the circuit object
  */
 function circuit_load_bristol(path, port) {
   return new Promise(function (resolve) {
