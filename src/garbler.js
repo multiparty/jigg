@@ -28,7 +28,7 @@ const OT = require('./lib/ot.js');
 /**
  * Create a new garbler party for the circuit at the given URL with the given input.
  * @param {string} circuitURL - Circuit URL relative to server path
- * @param {Array<number>} input - The party's input as an array of bits
+ * @param {number[]} input - The party's input as an array of bits
  * @param {resultCallback} callback - The function to apply to the result bit string
  * @param {progressCallback} callback - The function to log or display progress
  * @param {number} parallel - Parallelization parameter
@@ -78,7 +78,7 @@ Garbler.prototype.load_circuit = function () {
 
 /**
  * Initialize the garbler.
- * @param {Object} circuit - The circuit in which to garble the gates
+ * @param {Object} circuit - Circuit in which to garble the gates
  */
 Garbler.prototype.init = function (circuit) {
   // User input.
@@ -87,8 +87,8 @@ Garbler.prototype.init = function (circuit) {
 
   // Generate labels and save them in labeled wire data structure.
   var wiresToLabels = garble.generateWiresToLabels(circuit);
-  var garbledGates = Array(circuit.gates);
-  this.log('Wire', wiresToLabels);
+  var garbledGates = new gate.GarbledGates();
+  garbledGates.allocate(circuit.gates);
 
   // Give the evaluator the first half of the input labels.
   for (var i = 0; i < circuit.input.length/2; i++) {
@@ -109,15 +109,15 @@ Garbler.prototype.init = function (circuit) {
 
 /**
  * Garble all the gates (with optional throttling).
- * @param {Object} circuit - The circuit in which to garble the gates
- * @param {Object[]} garbledGates - Array for the garbled gates
+ * @param {Object} circuit - Circuit in which to garble the gates
+ * @param {Object} garbledGates - Ordered collection of garbled gates
  * @param {Object[]} wiresToLabels - Mapping from gate indices to labels
- * @param {number} start - The gate index at which to begin/continue garbling
+ * @param {number} start - Gate index at which to begin/continue garbling
  */
 Garbler.prototype.garble = function (circuit, garbledGates, wiresToLabels, start) {
   // Garble all gates.
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
-    garbledGates[i] = garble.garbleGate(circuit.gate[i], wiresToLabels);
+    garbledGates.insert(i, garble.garbleGate(circuit.gate[i], wiresToLabels));
   }
 
   start += this.parallel;
@@ -137,15 +137,15 @@ Garbler.prototype.garble = function (circuit, garbledGates, wiresToLabels, start
 
 /**
  * Give garbled gates to evaluator, decode output, and run callback on results.
- * @param {Object} circuit - The circuit in which to garble the gates
- * @param {Object[]} garbledGates - Array for the garbled gates
+ * @param {Object} circuit - Circuit in which to garble the gates
+ * @param {Object} garbledGates - Ordered collection of garbled gates
  * @param {Object[]} wiresToLabels - Mapping from gate indices to labels
  */
 Garbler.prototype.finish = function (circuit, garbledGates, wiresToLabels) {
   const that = this;
 
   // Give the garbled gates to evaluator.
-  this.socket.give('gates', JSON.stringify(garbledGates));
+  this.socket.give('garbledGates', JSON.stringify(garbledGates.toJSON()));
 
   // Get output labels and decode them back to their original values.
   this.socket.get('evaluation').then(function (evaluation) {

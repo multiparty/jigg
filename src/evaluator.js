@@ -77,7 +77,7 @@ Evaluator.prototype.load_circuit = function () {
 
 /**
  * Initialize the evaluator.
- * @param {Object} circuit - The original circuit
+ * @param {Object} circuit - Original circuit
  */
 Evaluator.prototype.init = function (circuit) {
   const that = this;
@@ -86,7 +86,7 @@ Evaluator.prototype.init = function (circuit) {
   const input = (new Array(1 + this.input.length)).concat(this.input);
 
   // All required message promises to evaluate.
-  var messages = [this.socket.get('gates')]; // Promise to the garbled gates.
+  var messages = [this.socket.get('garbledGates')]; // Promise to the garbled gates.
 
   // Promises to each of the garbler's input labels.
   for (var i = 0; i < circuit.input.length / 2; i++) {
@@ -104,7 +104,7 @@ Evaluator.prototype.init = function (circuit) {
   Promise.all(messages).then(function (messages) {
     that.log('messages', messages);
 
-    var garbledGates = JSON.parse(messages[0]);
+    var garbledGates = gate.GarbledGates.prototype.fromJSON(JSON.parse(messages[0]));
     var wiresToLabels = garble.initializeWiresToLabels(circuit);
     for (i = 0; i < circuit.input.length; i++) {
       var j = circuit.input[i];
@@ -118,14 +118,14 @@ Evaluator.prototype.init = function (circuit) {
 
 /**
  * Evaluate all the garbled gates (with optional throttling).
- * @param {Object} circuit - The original circuit
- * @param {Object[]} garbledGates - The set of garbled gates
+ * @param {Object} circuit - Original circuit
+ * @param {Object} garbledGates - Ordered collection of garbled gates
  * @param {Object[]} wiresToLabels - Mapping from gate indices to labels
- * @param {number} start - The gate index at which to begin/continue evaluating
+ * @param {number} start - Gate index at which to begin/continue evaluating
  */
 Evaluator.prototype.evaluate = function (circuit, garbledGates, wiresToLabels, start) {
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
-    evaluate.evaluateGate(circuit.gate[i], garbledGates[i], wiresToLabels);
+    evaluate.evaluateGate(circuit.gate[i], garbledGates.get(i), wiresToLabels);
   }
 
   start += this.parallel;
@@ -145,7 +145,7 @@ Evaluator.prototype.evaluate = function (circuit, garbledGates, wiresToLabels, s
 
 /**
  * Give wires back to garbler, receive decoded output states, and run callback on results.
- * @param {Object} circuit - The original circuit
+ * @param {Object} circuit - Original circuit
  * @param {Object[]} wiresToLabels - Mapping from gate indices to labels
  */
 Evaluator.prototype.finish = function (circuit, wiresToLabels) {
