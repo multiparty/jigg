@@ -13,8 +13,25 @@ const circuit = require('./circuit.js');
  * @constructor
  */
 function WireToLabelsMap() {
-  this.placeholder = null;
+  this.mapping = {};
 }
+
+/**
+ * Associate a wire index with a list of labels.
+ * @param {number} index - Index of wire to associate with labels
+ * @param {Object[]} labels - Array of one or two labels
+ */
+WireToLabelsMap.prototype.set = function (index, labels) {
+  this.mapping[index] = labels;
+};
+
+/**
+ * Return the data structure instance as a JSON object.
+ * @returns {Object} The data structure as a JSON object
+ */
+WireToLabelsMap.prototype.toJSON = function () {
+  return this.mapping;
+};
 
 /**
  * Initialize the data structure for labeled wires.
