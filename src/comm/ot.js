@@ -1,16 +1,16 @@
 /**
  * Oblivious transfer (OT) functionality.
- * @module src/lib/parser
+ * @module src/comm/parser
  */
 
 /**
  * Create a communication object that uses OT.
- * @param {Object} socket - The socket to use for communications.
- * @returns {Object} The OT-based I/O object.
+ * @param {Object} socket - Socket to use for communications
+ * @returns {Object} OT-based I/O object
  */
 const init = function(socket) {
   const crypto = require('../utils/crypto.js');
-  const Label = require('./label.js');
+  const label = require('../data/label.js');
 
   const bytes = 8;
 
@@ -18,9 +18,9 @@ const init = function(socket) {
    * Oblivious transfer sending primitive:
    *   sender calls send(a, b);
    *   receiver calls receive(c) and gets c?a:b.
-   * @param {Array} a - The first argument.
-   * @param {Array} b - The second argument.
-   * @returns {Promise} Promise object that executes action.
+   * @param {Array} a - First argument
+   * @param {Array} b - Second argument
+   * @returns {Promise} Promise object that executes action
    */
   const send = function(a, b) {
     var msg_id = socket.nextid();
@@ -48,8 +48,8 @@ const init = function(socket) {
    * Oblivious transfer receiving primitive:
    *   sender calls send(a, b);
    *   receiver calls receive(c) and gets c?a:b.
-   * @param {boolean} c - The criteria parameter.
-   * @returns {Promise} Promise object that executes action.
+   * @param {boolean} c - Criteria parameter
+   * @returns {Promise} Promise object that executes action
    */
   const receive = function(c) {
     var msg_id = socket.nextid();
@@ -68,8 +68,8 @@ const init = function(socket) {
           const f1 = f[1];
 
           const m_c = crypto.xor_array(r_d, c ? f1 : f0);
-          const label = Label(m_c);
-          resolve(label);
+          const labelNew = label.Label(m_c);
+          resolve(labelNew);
         });
       });
     });

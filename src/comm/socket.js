@@ -1,12 +1,12 @@
 /**
  * Socket-based communications functions.
- * @module src/lib/socket
+ * @module src/comm/socket
  */
 
 /**
  * Create a communication object.
- * @param {number} port - The port to use.
- * @returns {Object} The I/O object.
+ * @param {number} port - Port to use
+ * @returns {Object} I/O object.
  */
 const io = function(port) {
   port = port == null ? 3000 : port;
@@ -18,7 +18,7 @@ const io = function(port) {
   });
 
   /*
-  *  Listen from server
+  *  Listen from server.
   */
   const hear = function(tag) {
     return new Promise(function (resolve) {
@@ -29,14 +29,14 @@ const io = function(port) {
   }
 
   /*
-  *  Direct call to the server
+  *  Direct call to the server.
   */
   const call = function(tag, msg) {
     socket.emit(tag, msg);
   }
 
   /*
-  *  Get a string given by the other party
+  *  Get a string given by the other party.
   */
   const get = function(tag) {
     socket.emit('listening for', tag);
@@ -49,7 +49,7 @@ const io = function(port) {
   }
 
   /*
-  *  Give a string to the other party
+  *  Give a string to the other party.
   */
   const give = function(tag, msg) {
     if (msg != null && typeof(msg.stringify) === 'function') {
@@ -60,7 +60,7 @@ const io = function(port) {
   }
 
   /*
-  *  Connect to the server
+  *  Connect to the server.
   */
   const join = function(role) {
     // console.log('join', role);
@@ -87,10 +87,10 @@ const io = function(port) {
 
 /**
  * Obtain data from specified URL.
- * @param {string} path - The URL path to use for the request.
+ * @param {string} path - URL path to use for the request
  * @param {string} type - Type of response to unwrap
- * @param {number} port - The port to use.
- * @returns {Object} The I/O object.
+ * @param {number} port - Port to use
+ * @returns {Object} I/O object.
  */
 const geturl = function(path, type, port) {
   return new Promise(function (resolve) {

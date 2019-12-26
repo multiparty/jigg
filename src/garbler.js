@@ -7,8 +7,8 @@ const gate = require('./data/gate.js');
 const circuit = require('./data/circuit.js');
 const label = require('./data/label.js');
 const garble = require('./garble.js');
-const socket = require('./lib/socket.js');
-const OT = require('./lib/ot.js');
+const socket = require('./comm/socket.js');
+const OT = require('./comm/ot.js');
 
 /**
  * This callback handles the result bit string.
