@@ -5,6 +5,7 @@
 
 'use strict';
 
+const bits = require('./bits.js');
 const gate = require('./gate.js');
 const socket = require('../comm/socket.js');
 
@@ -42,10 +43,10 @@ Circuit.prototype.toJSON = function () {
 /**
  * Parse a raw string representation of a circuit that uses the
  * Bristol Fashion format into a circuit data structure.
- * @param {string} raw - Circuit specification in Bristol Fashion.
- * @returns {Object} Circuit represented as JSON
+ * @param {string} raw - Circuit specification in Bristol Fashion
+ * @returns {Object} Circuit data structure instance
  */
-function circuit_parse_bristol(raw) {
+Circuit.prototype.fromBristolFashion = function (raw) {
   var circuit = new Circuit();
 
   const rows = raw.split('\n').map(function (ln) { return ln.split(' '); });
@@ -81,6 +82,54 @@ function circuit_parse_bristol(raw) {
 }
 
 /**
+ * Directly evaluate a circuit on an input bit vector.
+ * @param {Object[]} inputs - Input bit vectors
+ * @returns {Object} Output bit vector
+ */
+Circuit.prototype.evaluate = function (inputs) {
+  
+  var c = this;
+  var wires = {};
+  
+  // Assign input bits to corresponding input wires.
+  var circuitInputWireIndex = 0;
+  for (var i = 0; i < inputs.length; i++) {
+    for (var j = 0; j < inputs[i].bits.length; j++) {
+      wires[c.input[circuitInputWireIndex]] = inputs[i].bits[j];
+      circuitInputWireIndex++;
+    }
+  }
+
+  // Evaluate the gates.
+  for (var i = 0; i < c.gates; i++) {
+    if (c.gate[i].type == 'and') {
+      wires[c.gate[i].wireout] =
+        ((wires[c.gate[i].wirein[0]] == 1) &&
+         (wires[c.gate[i].wirein[1]] == 1)) ?
+        1 : 0;
+    }
+    if (c.gate[i].type == 'xor') {
+      wires[c.gate[i].wireout] =
+        (wires[c.gate[i].wirein[0]] != wires[c.gate[i].wirein[1]]) ?
+        1 : 0;
+    }
+    if (c.gate[i].type == 'not') {
+      wires[c.gate[i].wireout] =
+        (wires[c.gate[i].wirein[0]] == 0) ?
+        1 : 0;
+    }
+  }
+
+  // Retrieve the output bits.
+  var outputBits = [];
+  for (var i = 0; i < c.output.length; i++) {
+    outputBits.push(wires[c.output[i]]);
+  }
+
+  return new bits.Bits(outputBits);
+}
+
+/**
  * Obtain circuit from the specific URL.
  * @param {string} path - Path/URL
  * @param {number} port - Port to use
@@ -89,13 +138,12 @@ function circuit_parse_bristol(raw) {
 function circuit_load_bristol(path, port) {
   return new Promise(function (resolve) {
     socket.geturl(path, 'text', port).then(function (txt) {
-      resolve(circuit_parse_bristol(txt));
+      resolve(Circuit.prototype.fromBristolFashion(txt));
     });
   });
 }
 
 module.exports = {
   Circuit: Circuit,
-  circuit_parse_bristol: circuit_parse_bristol,
   circuit_load_bristol: circuit_load_bristol
 };
