@@ -47,6 +47,7 @@ Bits.prototype.toString = function () {
  * @returns {Object} Random bit vector
  */
 function random(length, index) {
+  index = (index == null) ? 1 : index;
   var prime1 = 7518157;
   var primes2 = [
     1120211, 1193911, 1390931, 1761671, 3001003, 3321233, 3673763,
