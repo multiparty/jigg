@@ -49,7 +49,11 @@ Circuit.prototype.toJSON = function () {
 Circuit.prototype.fromBristolFashion = function (raw) {
   var circuit = new Circuit();
 
-  const rows = raw.split('\n').map(function (ln) { return ln.split(' '); });
+  var rows =
+    raw.split('\n').map(function (line) {
+      return line.split(' ')
+                 .map(function (tok) { return tok.trim(); });
+    });
   circuit.gates = +parseInt(rows[0][0]);
   circuit.wires = +parseInt(rows[0][1]);
 
