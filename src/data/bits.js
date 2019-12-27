@@ -40,6 +40,27 @@ Bits.prototype.toString = function () {
   return this.bits.join('');
 };
 
+/**
+ * Return a random (uniformly) bit vector of specified length
+ * @param {number} length - Length of bit vector
+ * @param {number} index - Seed index (for determinism)
+ * @returns {Object} Random bit vector
+ */
+function random(length, index) {
+  var prime1 = 7518157;
+  var primes2 = [
+    1120211, 1193911, 1390931, 1761671, 3001003, 3321233, 3673763,
+    3836383, 7069607, 7257527, 7632367, 9620269, 9809089, 9980899
+  ]
+  var base = index * length;
+  var bits = [];
+  for (var i = 0; i < length; i++) {
+    bits.push(((primes2[i % primes2.length] * (1 + i + base)) % prime1) % 2);
+  }
+  return new Bits(bits);  
+};
+
 module.exports = {
-  Bits: Bits
+  Bits: Bits,
+  random: random
 };

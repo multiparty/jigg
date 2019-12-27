@@ -409,32 +409,32 @@ var add32_json = {
 
 // The unit tests below do not require a cryptographic library.
 describe('parser', function() {
-  describe('#circuit_parse_bristol()', function () {
-    it('circuit_parse_bristol', function() {
-      expect(circuit.circuit_parse_bristol(and4_bristol).toJSON()).to.eql(and4_json);
-      expect(circuit.circuit_parse_bristol(add32_bristol).toJSON()).to.eql(add32_json);
+  describe('#circuit.Circuit.prototype.fromBristolFashion()', function () {
+    it('circuit.Circuit.prototype.fromBristolFashion', function() {
+      expect(circuit.Circuit.prototype.fromBristolFashion(and4_bristol).toJSON()).to.eql(and4_json);
+      expect(circuit.Circuit.prototype.fromBristolFashion(add32_bristol).toJSON()).to.eql(add32_json);
     });
   });
 });
 
 /**
- * Run pure (functions only) end-to-end test of entire protocol.
+ * Run pure (functions only) end-to-end execution of entire protocol.
  * @param {Object} circuit - Circuit to garble and evaluate
- * @param {number[]} input1 - Bit vector for first input
- * @param {number[]} input2 - Bit vector for second input
+ * @param {Object} input1 - Bit vector for first input
+ * @param {Object} input2 - Bit vector for second input
  * @returns {number[]} Computed bit vector output
  */
-function pureEndToEndTest(circuit, input1, input2) {
+function protocolPureEndToEnd(circuit, input1, input2) {
   var chan = new channel.ChannelSimulated();
 
   // Steps performed by garbler.
   var wToLs_G = garble.generateWireToLabelsMap(circuit);
   var garbledGates = garble.garbleGates(circuit, wToLs_G);
-  garble.sendInputWireToLabelsMap(chan, circuit, wToLs_G, input1);
+  garble.sendInputWireToLabelsMap(chan, circuit, wToLs_G, input1.bits);
   chan.sendDirect('garbledGates', JSON.stringify(garbledGates.toJSON()));
 
   // Steps performed by evaluator.
-  var messages = evaluate.receiveMessages(chan, circuit, input2);
+  var messages = evaluate.receiveMessages(chan, circuit, input2.bits);
   var [garbledGates_E, wToL_E] = evaluate.processMessages(circuit, messages);
   var wToL_E2 = evaluate.evaluateGates(circuit, wToL_E, garbledGates_E)
                         .copyWithOnlyIndices(circuit.output);
@@ -448,7 +448,7 @@ function pureEndToEndTest(circuit, input1, input2) {
     );
   var output = garble.outputLabelsToBits(circuit, wToLs_G, outputWireToLabels_G);
 
-  return output;
+  return new bits.Bits(output);
 }
 
 // The unit tests below require libsodium.
@@ -456,26 +456,24 @@ global.sodium = require('libsodium-wrappers');
 (async() => {
   await sodium.ready; // Wait for libsodium to load.
 
-  describe('#pureEndToEndTest', function() {
-
-    var input1 = "00000001";
-    var input2 = "00000001";
-    var output = "080000000";
-
-    input1 = hex2bin(input1);
-    input1 = input1.split('').reverse().map(JSON.parse);
-
-    input2 = hex2bin(input2);
-    input2 = input2.split('').reverse().map(JSON.parse);
-
-    //input1 = "11".split('');
-    //input2 = "11".split('');
-    //var circuit = and4_json;
-
-    input1 = new bits.Bits("00100000000000000000000000000101");
-    input2 = new bits.Bits("01000000000000000000000000001010");
-    var output = pureEndToEndTest(add32_json, input1.bits, input2.bits);
-    console.log(output.join(''));
+  describe('#protocolPureEndToEnd', function() {
+    it('and4_circuit', function() {
+      var input1 = new bits.Bits("01"), input2 = new bits.Bits("10");
+      var and4_circuit = circuit.Circuit.prototype.fromBristolFashion(and4_bristol);
+      var outEval = and4_circuit.evaluate([input1, input2]);
+      var outEtoE = protocolPureEndToEnd(and4_circuit, input1, input2);
+      expect(outEval.toString()).to.eql(outEtoE.toString());
+    });
+    for (var r = 0; r < 5*2; r += 2) {
+      it('add32_circuit', function() {
+        var input1 = bits.random(32, r);
+        var input2 = bits.random(32, r + 1);
+        var add32_circuit = circuit.Circuit.prototype.fromBristolFashion(add32_bristol);
+        var outEval = add32_circuit.evaluate([input1, input2]);
+        var outEtoE = protocolPureEndToEnd(add32_circuit, input1, input2);
+        expect(outEval.toString()).to.eql(outEtoE.toString());
+      });
+    }
 });
 
 })(); // End async() for libsodium.
