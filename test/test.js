@@ -442,26 +442,23 @@ global.sodium = require('libsodium-wrappers');
     var circuit = add32_json;
     var comm = new channel.ChannelSimulated();
 
+    // Steps performed by garbler.
     var wToLs_G = garble.generateWireToLabelsMap(circuit);
     var garbledGates = garble.garbleGates(circuit, wToLs_G);
     garble.sendInputWireToLabelsMap(comm, circuit, wToLs_G, input1);
     comm.sendDirect('garbledGates', JSON.stringify(garbledGates.toJSON()));
 
+    // Steps performed by evaluator.
     var messages = evaluate.receiveMessages(comm, circuit, input2);
     var [garbledGates_E, wToL_E] = evaluate.processMessages(circuit, messages);
-    var wToL_E2 = evaluate.evaluateGates(circuit, wToL_E, garbledGates_E);
+    var wToL_E2 = evaluate.evaluateGates(circuit, wToL_E, garbledGates_E).copyWithOnlyIndices(circuit.output);
     var outputWireToLabels_E = wToL_E2.copyWithOnlyIndices(circuit.output);
     comm.sendDirect('outputWireToLabels', JSON.stringify(outputWireToLabels_E.toJSON()));
 
-    var outputWireToLabels_G = JSON.parse(comm.receiveDirect('outputWireToLabels'));
-    var results = [];
-    for (var i = 0; i < circuit.output.length; i++) {
-      var labelNew = label.Label.prototype.fromJSON(outputWireToLabels_G[circuit.output[i]]).compactString(); // Wire output label.
-      var states = wToLs_G.get(circuit.output[i]).map(label.Label.prototype.compactString); // True and false labels.
-      var value = states.map(function (e) { return e.substring(0, e.length-3); }).indexOf(labelNew.substring(0, labelNew.length-3)); // Find which state the label represents.
-      results.push(value);
-    }
-    console.log(results.join(''));
+    // Steps performed by garbler.
+    var outputWireToLabels_G = wireToLabelsMap.WireToLabelsMap.prototype.fromJSON(JSON.parse(comm.receiveDirect('outputWireToLabels')));
+    var output = garble.outputLabelsToBits(circuit, wToLs_G, outputWireToLabels_G);
+    console.log(output.join(''));
 });
 
 })(); // End async() for libsodium.

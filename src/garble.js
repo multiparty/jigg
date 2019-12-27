@@ -136,9 +136,36 @@ function sendInputWireToLabelsMap(channel, circuit, wireToLabels, input) {
     }
 }
 
+/**
+ * Convert the output labels (from evaluator) to bits using original labels.
+ * @param {Object} circuit - Circuit being evaluated
+ * @param {Object} wireToLabels - Mapping from each wire index to two labels
+ * @param {Object} outputWireToLabels - Mapping from each output wire index to one label
+ * @returns {number[]} Bit vector corresponding to the determined output
+ */
+function outputLabelsToBits(circuit, wireToLabels, outputWireToLabels) {
+  var output = [];
+  for (var i = 0; i < circuit.output.length; i++) {
+    var labelsForFalseAndTrue =
+      wireToLabels
+        .get(circuit.output[i])
+        .map(function (l) { return l.withoutLastElement(); });
+
+    var outputLabel =
+      outputWireToLabels
+        .get(circuit.output[i])
+        .withoutLastElement();
+
+    var bit = outputLabel.getOccurrenceIndexIn(labelsForFalseAndTrue);
+    output.push(bit);
+  }
+  return output;
+}
+
 module.exports = {
   generateWireToLabelsMap: generateWireToLabelsMap,
   garbleGate: garbleGate,
   garbleGates: garbleGates,
-  sendInputWireToLabelsMap: sendInputWireToLabelsMap
+  sendInputWireToLabelsMap: sendInputWireToLabelsMap,
+  outputLabelsToBits: outputLabelsToBits
 };
