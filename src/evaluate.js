@@ -73,11 +73,11 @@ function evaluateGate(gate, garbledGate, wireToLabels) {
 /**
  * Evaluate all the gates (stateless version).
  * @param {Object} circuit - Circuit in which to garble the gates
- * @param {Object} wireToLabels - Labeled wire data structure
  * @param {Object} garbledGates - Ordered collection of garbled gates
+ * @param {Object} wireToLabels - Labeled wire data structure
  * @returns {Object[]} Mapping from each wire index to two labels
  */
-function evaluateGates(circuit, wireToLabels, garbledGates) {
+function evaluateGates(circuit, garbledGates, wireToLabels) {
   for (var i = 0; i < circuit.gates; i++) {
     this.evaluateGate(circuit.gate[i], garbledGates.get(i), wireToLabels);
   }
