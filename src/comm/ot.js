@@ -34,8 +34,8 @@ const init = function(socket) {
 
         socket.get('e' + msg_id).then(function (e_JSON) {
           const e = parseInt(e_JSON);
-          const f0 = crypto.xor_array(a, e ? r1 : r0);
-          const f1 = crypto.xor_array(b, e ? r0 : r1);
+          const f0 = crypto.xorArray(a, e ? r1 : r0);
+          const f1 = crypto.xorArray(b, e ? r0 : r1);
 
           socket.give('f' + msg_id, '[' + f0.compactString() + ',' + f1.compactString() + ']');
           resolve();
@@ -67,7 +67,7 @@ const init = function(socket) {
           const f0 = f[0];
           const f1 = f[1];
 
-          const m_c = crypto.xor_array(r_d, c ? f1 : f0);
+          const m_c = crypto.xorArray(r_d, c ? f1 : f0);
           const labelNew = label.Label(m_c);
           resolve(labelNew);
         });

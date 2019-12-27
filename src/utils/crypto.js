@@ -38,12 +38,12 @@ function random_oracle(m, t = 0) {
 
 /**
  * Generic element-wise XOR for any indexed data structure
- * @param {Array} a - First input to XOR.
- * @param {Array} b - Second input to XOR.
- * @param {number} l - Length of inputs.
- * @returns {Array} Result of XOR operation on inputs.
+ * @param {Array} a - First input to XOR
+ * @param {Array} b - Second input to XOR
+ * @param {number} l - Length of inputs
+ * @returns {Array} Result of XOR operation on inputs
  */
-function xor_array(a, b, l) {
+function xorArray(a, b, l) {
   if (l == null) {
     l = a.length;
   }
@@ -62,5 +62,5 @@ function xor_array(a, b, l) {
 module.exports = {
   encrypt: encrypt,
   decrypt: decrypt,
-  xor_array: xor_array
+  xorArray: xorArray
 };

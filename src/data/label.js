@@ -11,7 +11,7 @@ const labels = [];
 
 /**
  * Create label object; prototype is used for methods to save memory.
- * @param {number} init - Initial value.
+ * @param {number} init - Initial value
  * @returns {Uint8Array} Label object
  */
 var Label = function (init) {
@@ -116,7 +116,7 @@ Label.prototype.point = function (point) {
  * @returns {Array} Result of XOR operation.
  */
 Label.prototype.xor = function (b) {
-  return crypto.xor_array(this, b, this.length);
+  return crypto.xorArray(this, b, this.length);
 };
 
 /**

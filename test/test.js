@@ -435,9 +435,8 @@ function pureEndToEndTest(circuit, input1, input2) {
   // Steps performed by evaluator.
   var messages = evaluate.receiveMessages(chan, circuit, input2);
   var [garbledGates_E, wToL_E] = evaluate.processMessages(circuit, messages);
-  var wToL_E2 =
-    evaluate.evaluateGates(circuit, wToL_E, garbledGates_E)
-            .copyWithOnlyIndices(circuit.output);
+  var wToL_E2 = evaluate.evaluateGates(circuit, wToL_E, garbledGates_E)
+                        .copyWithOnlyIndices(circuit.output);
   var outputWireToLabels_E = wToL_E2.copyWithOnlyIndices(circuit.output);
   chan.sendDirect('outputWireToLabels', JSON.stringify(outputWireToLabels_E.toJSON()));
 
