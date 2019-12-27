@@ -24,6 +24,22 @@ function Bits(argument, representation) {
   }
 }
 
+/**
+ * Return a JSON representation of the bit vector.
+ * @returns {number[]} Array of numbers (each number is a bit)
+ */
+Bits.prototype.toJSON = function () {
+  return this.bits;
+};
+
+/**
+ * Return a string representation of the bit vector.
+ * @returns {string} String representation of the bit vector in binary
+ */
+Bits.prototype.toString = function () {
+  return this.bits.join('');
+};
+
 module.exports = {
   Bits: Bits
 };
