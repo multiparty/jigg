@@ -416,12 +416,47 @@ describe('parser', function() {
   });
 });
 
+/**
+ * Run pure (functions only) end-to-end test of entire protocol.
+ * @param {Object} circuit - Circuit to garble and evaluate
+ * @param {number[]} input1 - Bit vector for first input
+ * @param {number[]} input2 - Bit vector for second input
+ * @returns {number[]} Computed bit vector output
+ */
+function pureEndToEndTest(circuit, input1, input2) {
+  var chan = new channel.ChannelSimulated();
+
+  // Steps performed by garbler.
+  var wToLs_G = garble.generateWireToLabelsMap(circuit);
+  var garbledGates = garble.garbleGates(circuit, wToLs_G);
+  garble.sendInputWireToLabelsMap(chan, circuit, wToLs_G, input1);
+  chan.sendDirect('garbledGates', JSON.stringify(garbledGates.toJSON()));
+
+  // Steps performed by evaluator.
+  var messages = evaluate.receiveMessages(chan, circuit, input2);
+  var [garbledGates_E, wToL_E] = evaluate.processMessages(circuit, messages);
+  var wToL_E2 =
+    evaluate.evaluateGates(circuit, wToL_E, garbledGates_E)
+            .copyWithOnlyIndices(circuit.output);
+  var outputWireToLabels_E = wToL_E2.copyWithOnlyIndices(circuit.output);
+  chan.sendDirect('outputWireToLabels', JSON.stringify(outputWireToLabels_E.toJSON()));
+
+  // Steps performed by garbler.
+  var outputWireToLabels_G =
+    wireToLabelsMap.WireToLabelsMap.prototype.fromJSON(
+      JSON.parse(chan.receiveDirect('outputWireToLabels'))
+    );
+  var output = garble.outputLabelsToBits(circuit, wToLs_G, outputWireToLabels_G);
+
+  return output;
+}
+
 // The unit tests below require libsodium.
 global.sodium = require('libsodium-wrappers');
 (async() => {
   await sodium.ready; // Wait for libsodium to load.
 
-  describe('Garbler', function() {
+  describe('#pureEndToEndTest', function() {
 
     var input1 = "00000001";
     var input2 = "00000001";
@@ -436,28 +471,11 @@ global.sodium = require('libsodium-wrappers');
     //input1 = "11".split('');
     //input2 = "11".split('');
     //var circuit = and4_json;
-    
+
     input1 = "00100000000000000000000000000101".split('');
     input2 = "01000000000000000000000000001010".split('');
     var circuit = add32_json;
-    var comm = new channel.ChannelSimulated();
-
-    // Steps performed by garbler.
-    var wToLs_G = garble.generateWireToLabelsMap(circuit);
-    var garbledGates = garble.garbleGates(circuit, wToLs_G);
-    garble.sendInputWireToLabelsMap(comm, circuit, wToLs_G, input1);
-    comm.sendDirect('garbledGates', JSON.stringify(garbledGates.toJSON()));
-
-    // Steps performed by evaluator.
-    var messages = evaluate.receiveMessages(comm, circuit, input2);
-    var [garbledGates_E, wToL_E] = evaluate.processMessages(circuit, messages);
-    var wToL_E2 = evaluate.evaluateGates(circuit, wToL_E, garbledGates_E).copyWithOnlyIndices(circuit.output);
-    var outputWireToLabels_E = wToL_E2.copyWithOnlyIndices(circuit.output);
-    comm.sendDirect('outputWireToLabels', JSON.stringify(outputWireToLabels_E.toJSON()));
-
-    // Steps performed by garbler.
-    var outputWireToLabels_G = wireToLabelsMap.WireToLabelsMap.prototype.fromJSON(JSON.parse(comm.receiveDirect('outputWireToLabels')));
-    var output = garble.outputLabelsToBits(circuit, wToLs_G, outputWireToLabels_G);
+    var output = pureEndToEndTest(add32_json, input1, input2);
     console.log(output.join(''));
 });
 
