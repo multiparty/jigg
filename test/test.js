@@ -1,6 +1,8 @@
 var assert = require('assert');
 var expect = require('chai').expect;
 
+const fs = require('fs').promises;
+
 const bits = require('../src/data/bits.js');
 const gate = require('../src/data/gate.js');
 const circuit = require('../src/data/circuit.js');
@@ -407,16 +409,6 @@ var add32_json = {
   ]
 };
 
-// The unit tests below do not require a cryptographic library.
-describe('parser', function() {
-  describe('#circuit.Circuit.prototype.fromBristolFashion()', function () {
-    it('circuit.Circuit.prototype.fromBristolFashion', function() {
-      expect(circuit.Circuit.prototype.fromBristolFashion(and4_bristol).toJSON()).to.eql(and4_json);
-      expect(circuit.Circuit.prototype.fromBristolFashion(add32_bristol).toJSON()).to.eql(add32_json);
-    });
-  });
-});
-
 /**
  * Run pure (functions only) end-to-end execution of entire protocol.
  * @param {Object} circuit - Circuit to garble and evaluate
@@ -451,29 +443,58 @@ function protocolPureEndToEnd(circuit, input1, input2) {
   return new bits.Bits(output);
 }
 
-// The unit tests below require libsodium.
-global.sodium = require('libsodium-wrappers');
-(async() => {
-  await sodium.ready; // Wait for libsodium to load.
-
-  describe('#protocolPureEndToEnd', function() {
-    it('and4_circuit', function() {
-      var input1 = new bits.Bits("01"), input2 = new bits.Bits("10");
-      var and4_circuit = circuit.Circuit.prototype.fromBristolFashion(and4_bristol);
-      var outEval = and4_circuit.evaluate([input1, input2]);
-      var outEtoE = protocolPureEndToEnd(and4_circuit, input1, input2);
-      expect(outEval.toString()).to.eql(outEtoE.toString());
+// The unit tests below do not require a cryptographic library.
+describe('circuit-parser', function() {
+  describe('#circuit.Circuit.prototype.fromBristolFashion()', function () {
+    it('circuit.Circuit.prototype.fromBristolFashion', function() {
+      expect(circuit.Circuit.prototype.fromBristolFashion(and4_bristol).toJSON()).to.eql(and4_json);
+      expect(circuit.Circuit.prototype.fromBristolFashion(add32_bristol).toJSON()).to.eql(add32_json);
     });
-    for (var r = 0; r < 5*2; r += 2) {
-      it('add32_circuit', function() {
-        var input1 = bits.random(32, r);
-        var input2 = bits.random(32, r + 1);
-        var add32_circuit = circuit.Circuit.prototype.fromBristolFashion(add32_bristol);
-        var outEval = add32_circuit.evaluate([input1, input2]);
-        var outEtoE = protocolPureEndToEnd(add32_circuit, input1, input2);
-        expect(outEval.toString()).to.eql(outEtoE.toString());
-      });
-    }
+  });
 });
 
-})(); // End async() for libsodium.
+// The unit tests below assume that libsodium has been loaded.
+global.sodium = require('libsodium-wrappers');
+beforeEach(async function() {
+  await sodium.ready; // Wait for libsodium to load.
+});
+describe('end-to-end', function() {
+  it('and4_circuit', function() {
+    var input1 = new bits.Bits("01"), input2 = new bits.Bits("10");
+    var and4_circuit = circuit.Circuit.prototype.fromBristolFashion(and4_bristol);
+    var outEval = and4_circuit.evaluate([input1, input2]);
+    var outEtoE = protocolPureEndToEnd(and4_circuit, input1, input2);
+    expect(outEval.toString()).to.eql(outEtoE.toString());
+  });
+
+  for (var r = 0; r < 5*2; r += 2) {
+    it('add32_circuit', function() {
+      var input1 = bits.random(32, r);
+      var input2 = bits.random(32, r + 1);
+      var add32_circuit = circuit.Circuit.prototype.fromBristolFashion(add32_bristol);
+      var outEval = add32_circuit.evaluate([input1, input2]);
+      var outEtoE = protocolPureEndToEnd(add32_circuit, input1, input2);
+      expect(outEval.toString()).to.eql(outEtoE.toString());
+    });
+  }
+
+  let filenames = [
+    'universal_1bit.txt',
+    'and4.txt', 'and8.txt',
+    'adder_32bit.txt', 'adder_64bit.txt', 'sub64.txt',
+    'comparator_32bit_signed_lt.txt',
+    'zero_equal_64.txt'//, 'zero_equal_128.txt'
+    //,'mult_32x32.txt', 'mult64.txt', 'divide64.txt'
+  ];
+  for (let i = 0; i < filenames.length; i++) {
+    it(filenames[i], async function() {
+      let raw = await fs.readFile('./circuits/bristol/' + filenames[i], 'utf8');
+      let c = circuit.Circuit.prototype.fromBristolFashion(raw);
+      let input1 = bits.random(c.input.length/2, 1);
+      let input2 = bits.random(c.input.length/2, 2);
+      let outEval = c.evaluate([input1, input2]);
+      let outEtoE = protocolPureEndToEnd(c, input1, input2);
+      expect(outEval.toString()).to.eql(outEtoE.toString());
+    });
+  }
+});
