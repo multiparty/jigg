@@ -12,7 +12,7 @@ const labels = [];
 /**
  * Create label object; prototype is used for methods to save memory.
  * @param {number} init - Initial value.
- * @returns {Uint8Array} The label object.
+ * @returns {Uint8Array} Label object
  */
 var Label = function (init) {
   if (init == null) {
@@ -36,12 +36,13 @@ Reflect.setPrototypeOf(Label.prototype, Uint8Array.prototype);
  * Generate a new random unused label.
  * @param {number} length - Length of the label
  * @param {number} bits - Number of bits in individual values
- * @returns {Object} The random label as a Label object.
+ * @returns {Object} Random label as a Label object
  */
 function randomLabel(length, bits) {
   if (length == null) {
     length = random.bytes;
   }
+
   if (bits == null) {
     bits = 8;
   }
@@ -56,7 +57,7 @@ function randomLabel(length, bits) {
 
 /**
  * Create compact string representation of label object.
- * @param {Object} l - The label object to turn into a compact string
+ * @param {Object} l - Label object to turn into a compact string
  * @returns {string} Compact string representation of label
  */
 Label.prototype.compactString = function (l = this) {
@@ -102,7 +103,7 @@ Label.prototype.pointer = function (point) {
 /**
  * ???
  * @param {Object} point - ???
- * @returns {Object} Updated label object.
+ * @returns {Object} Updated label object
  */
 Label.prototype.point = function (point) {
   this.pointer(point);
@@ -111,11 +112,29 @@ Label.prototype.point = function (point) {
 
 /**
  * Compute XOR of this label object and another object.
- * @param {Object} b - The other label object.
+ * @param {Object} b - Other label object
  * @returns {Array} Result of XOR operation.
  */
 Label.prototype.xor = function (b) {
   return crypto.xor_array(this, b, this.length);
+};
+
+/**
+ * Return a copy of the label, except without the last entry.
+ * @param {Object} labels - Label to copy without the last entry
+ * @returns {Object} New label
+ */
+Label.prototype.withoutLastElement = function (labels) {
+  return Label(this.slice(0, this.length-1));
+};
+
+/**
+ * Determine index at which label occurs in an array of labels.
+ * @param {Object[]} labels - Array of labels
+ * @returns {number} Index of first occurrence
+ */
+Label.prototype.getOccurrenceIndexIn = function (labels) {
+  return labels.map(Label.prototype.compactString).indexOf(this.compactString());
 };
 
 module.exports = {
