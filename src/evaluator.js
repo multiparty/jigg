@@ -3,6 +3,7 @@
  * @module src/evaluator
  */
 
+const bits = require('./data/bits.js');
 const gate = require('./data/gate.js');
 const circuit = require('./data/circuit.js');
 const label = require('./data/label.js');
@@ -102,8 +103,8 @@ Evaluator.prototype.init = function (circuit) {
 
   // Wait until all messages are received.
   Promise.all(messages).then(function (messages) {
-    var [garbledGates, wireToLabel] = evaluate.processMessages(circuit, messages);
-    that.evaluate(circuit, garbledGates, wireToLabel, 0);
+    var [garbledGates, wireToLabels] = evaluate.processMessages(circuit, messages);
+    that.evaluateGatesThrottled(circuit, garbledGates, wireToLabels, 0);
   });
 };
 
@@ -114,7 +115,7 @@ Evaluator.prototype.init = function (circuit) {
  * @param {Object} wireToLabels - Mapping from gate indices to labels
  * @param {number} start - Gate index at which to begin/continue evaluating
  */
-Evaluator.prototype.evaluate = function (circuit, garbledGates, wireToLabels, start) {
+Evaluator.prototype.evaluateGatesThrottled = function (circuit, garbledGates, wireToLabels, start) {
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
     evaluate.evaluateGate(circuit.gate[i], garbledGates.get(i), wireToLabels);
   }
@@ -128,9 +129,9 @@ Evaluator.prototype.evaluate = function (circuit, garbledGates, wireToLabels, st
   }
 
   if (this.throttle > 0) {
-    setTimeout(this.evaluate.bind(this, circuit, garbledGates, wireToLabels, start), this.throttle);
+    setTimeout(this.evaluateGatesThrottled.bind(this, circuit, garbledGates, wireToLabels, start), this.throttle);
   } else {
-    this.evaluate(circuit, garbledGates, wireToLabels, start);
+    this.evaluateGatesThrottled(circuit, garbledGates, wireToLabels, start);
   }
 };
 
@@ -144,16 +145,12 @@ Evaluator.prototype.finish = function (circuit, wireToLabels) {
 
   // Collect all output wires' labels and send
   // them back to the garbler for decoding.
-  var evaluation = {};
-  for (var i = 0; i < circuit.output.length; i++) {
-    var j = circuit.output[i];
-    evaluation[j] = wireToLabels[j].compactString();
-  }
-  this.socket.give('evaluation', evaluation);
+  var outputWireToLabels = wireToLabels.copyWithOnlyIndices(circuit.output);
+  this.socket.give('outputWireToLabels', JSON.stringify(outputWireToLabels.toJSON()));
 
   // Receive decoded output states.
-  this.socket.get('results').then(function (results) {
-    that.callback(results.join(''));
+  this.socket.get('output').then(function (output) {
+    that.callback(new bits.Bits(output));
   }.bind(this));
 };
 

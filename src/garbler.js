@@ -3,6 +3,7 @@
  * @module src/garbler
  */
 
+const bits = require('./data/bits.js');
 const gate = require('./data/gate.js');
 const circuit = require('./data/circuit.js');
 const label = require('./data/label.js');
@@ -102,34 +103,34 @@ Garbler.prototype.init = function (circuit) {
     this.OT.send(wiresToLabels[j][0], wiresToLabels[j][1]);
   }
 
-  this.garble(circuit, garbledGates, wiresToLabels, 0);
+  this.garbleGatesThrottled(circuit, wiresToLabels, garbledGates, 0);
 };
 
 /**
- * Garble all the gates (with optional throttling).
+ * Garble all the gates (with throttling).
  * @param {Object} circuit - Circuit in which to garble the gates
+ * @param {Object} wireToLabels - Mapping from gate indices to labels
  * @param {Object} garbledGates - Ordered collection of garbled gates
- * @param {Object[]} wiresToLabels - Mapping from gate indices to labels
  * @param {number} start - Gate index at which to begin/continue garbling
  */
-Garbler.prototype.garble = function (circuit, garbledGates, wiresToLabels, start) {
+Garbler.prototype.garbleGatesThrottled = function (circuit, wireToLabels, garbledGates, start) {
   // Garble all gates.
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
-    garbledGates.insert(i, garble.garbleGate(circuit.gate[i], wiresToLabels));
+    garbledGates.insert(i, garble.garbleGate(circuit.gate[i], wireToLabels));
   }
 
   start += this.parallel;
   this.progress(Math.min(start, circuit.gates), circuit.gates);
 
   if (start >= circuit.gates) {
-    this.finish(circuit, garbledGates, wiresToLabels);
+    this.finish(circuit, garbledGates, wireToLabels);
     return;
   }
 
   if (this.throttle > 0) {
-    setTimeout(this.garble.bind(this, circuit, garbledGates, wiresToLabels, start), this.throttle);
+    setTimeout(this.garbleGatesThrottled.bind(this, circuit, wireToLabels, garbledGates, start), this.throttle);
   } else {
-    this.garble(circuit, garbledGates, wiresToLabels, start);
+    this.garbleGatesThrottled(circuit, wireToLabels, garbledGates, start);
   }
 };
 
@@ -137,31 +138,23 @@ Garbler.prototype.garble = function (circuit, garbledGates, wiresToLabels, start
  * Give garbled gates to evaluator, decode output, and run callback on results.
  * @param {Object} circuit - Circuit in which to garble the gates
  * @param {Object} garbledGates - Ordered collection of garbled gates
- * @param {Object[]} wiresToLabels - Mapping from gate indices to labels
+ * @param {Object} wireToLabels - Mapping from gate indices to labels
  */
-Garbler.prototype.finish = function (circuit, garbledGates, wiresToLabels) {
+Garbler.prototype.finish = function (circuit, garbledGates, wireToLabels) {
   const that = this;
 
   // Give the garbled gates to evaluator.
   this.socket.give('garbledGates', JSON.stringify(garbledGates.toJSON()));
 
   // Get output labels and decode them back to their original values.
-  this.socket.get('evaluation').then(function (evaluation) {
-    var results = [];
-    for (var i = 0; i < circuit.output.length; i++) {
-      var labelNew = label.Label.prototype.fromJSON(evaluation[circuit.output[i]]).compactString(); // Wire output label.
-      var states = wiresToLabels[circuit.output[i]].map(label.Label.prototype.compactString); // True and false labels.
-      var value = states.map(function (e) {
-        return e.substring(0, e.length-3)
-      }).indexOf(labelNew.substring(0, labelNew.length-3)); // Find which state the label represents.
-      results.push(value);
-    }
-
-    this.socket.give('results', results);
-    that.log('results', results);
-
-    results = results.join('');
-    that.callback(results);
+  this.socket.get('outputWireToLabels').then(function (outputWireToLabels) {
+    var outputWireToLabels_G =
+      wireToLabelsMap.WireToLabelsMap.prototype.fromJSON(
+        JSON.parse(outputWireToLabels)
+      );
+    var output = garble.outputLabelsToBits(circuit, wireToLabels, outputWireToLabels_G);
+    this.socket.give('output', output);
+    that.callback(new bits.Bits(output));
   }.bind(this));
 };
 
