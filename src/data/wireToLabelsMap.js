@@ -69,8 +69,13 @@ WireToLabelsMap.prototype.toJSON = function () {
 WireToLabelsMap.prototype.fromJSON = function (json) {
   var wireToLabelsMap = new WireToLabelsMap();
   for (var index in json) {
-    var labels = json[index].map(label.Label.prototype.fromJSON);
-    wireToLabelsMap.set(index, labels);
+    if (json[index].isArray == null) {
+      var labelCurrent = label.Label.prototype.fromJSON(json[index]);
+      wireToLabelsMap.set(index, labelCurrent);
+    } else {
+      var labelsCurrent = json[index].map(label.Label.prototype.fromJSON);
+      wireToLabelsMap.set(index, labelsCurrent);
+    }
   }
   return wireToLabelsMap;
 };
