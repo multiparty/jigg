@@ -18,7 +18,7 @@ const crypto = require('./utils/crypto.js');
  */
 function generateWireToLabelsMap(circuit) {
   const R = label.randomLabel();  // R in {0, 1}^N.
-  var wireToLabels = wireToLabelsMap.initializeWireToLabelsMap(circuit);
+  var wireToLabels = new wireToLabelsMap.WireToLabelsMap(circuit);
 
   for (var j = 0; j < circuit.input.length; j++) {
     var i = circuit.input[j];

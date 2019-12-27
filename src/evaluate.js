@@ -41,7 +41,7 @@ function receiveMessages(channel, circuit, input) {
  */
 function processMessages(circuit, messages) {
   var garbledGates = gate.GarbledGates.prototype.fromJSON(JSON.parse(messages[0]));
-  var wireToLabel = wireToLabelsMap.initializeWireToLabelsMap(circuit);
+  var wireToLabel = new wireToLabelsMap.WireToLabelsMap(circuit);
   for (var i = 0; i < circuit.input.length; i++) {
     var j = circuit.input[i];
     wireToLabel.set(j, label.Label(messages[j]));
