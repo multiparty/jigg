@@ -50,18 +50,23 @@ Circuit.prototype.fromBristolFashion = function (raw) {
   var circuit = new Circuit();
 
   const rows = raw.split('\n').map(function (ln) { return ln.split(' '); });
-  circuit.gates = +rows[0][0];
-  circuit.wires = +rows[0][1];
+  circuit.gates = +parseInt(rows[0][0]);
+  circuit.wires = +parseInt(rows[0][1]);
 
-  if (rows[1][0] != 2) {
-    // Asymmetric inputs.
+  // Determine total number of input and output wires.
+  var input_num = 0, output_num = 0;
+  for (var i = 1; i < rows[1].length; i++) {
+    input_num += parseInt(rows[1][i]);
+  }
+  for (var i = 1; i < rows[2].length; i++) {
+    output_num += parseInt(rows[2][i]);
   }
 
-  for (var i = 1; i <= rows[1][0] * rows[1][1]; i++) {
+  // Collect input and output wire indices.
+  for (var i = 1; i <= input_num; i++) {
     circuit.input.push(i);
   }
-
-  for (var i = 1+circuit.wires-(rows[2][0]*rows[2][1]); i <= circuit.wires; i++) {
+  for (var i = 1+circuit.wires-output_num; i <= circuit.wires; i++) {
     circuit.output.push(i);
   }
 
@@ -69,12 +74,13 @@ Circuit.prototype.fromBristolFashion = function (raw) {
   for (var row = 3; row < circuit.gates+3; row++) {
     var tokens = rows[row];
     var gate_new = new gate.Gate();
-    gate_new.wirein = [1 + (+tokens[2])];
+    gate_new.wirein = [1 + (+parseInt(tokens[2]))];
     if (parseInt(tokens[0]) === 2) {
-      gate_new.wirein.push(1 + (+tokens[3]));
+      gate_new.wirein.push(1 + (+parseInt(tokens[3])));
     }
-    gate_new.wireout = 1 + (+tokens[2 + (+tokens[0])]);
-    gate_new.type = gate.bristolOpToIGG[tokens[3 + (+tokens[0])]];
+    var offset = parseInt(tokens[0]);
+    gate_new.wireout = 1 + (+parseInt(tokens[2 + (+offset)]));
+    gate_new.type = gate.bristolOpToIGG[tokens[3 + (+offset)]];
     circuit.gate.push(gate_new);
   }
 
