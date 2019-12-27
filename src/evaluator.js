@@ -111,7 +111,7 @@ Evaluator.prototype.init = function (circuit) {
  * Evaluate all the garbled gates (with optional throttling).
  * @param {Object} circuit - Original circuit
  * @param {Object} garbledGates - Ordered collection of garbled gates
- * @param {Object[]} wireToLabels - Mapping from gate indices to labels
+ * @param {Object} wireToLabels - Mapping from gate indices to labels
  * @param {number} start - Gate index at which to begin/continue evaluating
  */
 Evaluator.prototype.evaluate = function (circuit, garbledGates, wireToLabels, start) {
@@ -137,7 +137,7 @@ Evaluator.prototype.evaluate = function (circuit, garbledGates, wireToLabels, st
 /**
  * Give wires back to garbler, receive decoded output states, and run callback on results.
  * @param {Object} circuit - Original circuit
- * @param {Object[]} wireToLabels - Mapping from gate indices to labels
+ * @param {Object} wireToLabels - Mapping from gate indices to labels
  */
 Evaluator.prototype.finish = function (circuit, wireToLabels) {
   const that = this;

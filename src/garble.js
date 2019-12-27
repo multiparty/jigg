@@ -14,7 +14,7 @@ const crypto = require('./utils/crypto.js');
  * Generate labels and encode each state of every wire
  * with a randomly generated label pair.
  * @param {Object} circuit - Circuit for which to generate labels
- * @returns {Object[]} Mapping from each wire index to two labels
+ * @returns {Object} Mapping from each wire index to two labels
  */
 function generateWireToLabelsMap(circuit) {
   const R = label.randomLabel();  // R in {0, 1}^N.
@@ -24,35 +24,36 @@ function generateWireToLabelsMap(circuit) {
     var i = circuit.input[j];
 
     var labelNew = label.randomLabel();
-    wireToLabels[i][0] = labelNew;
-    wireToLabels[i][1] = labelNew.xor(R);
+    wireToLabels.set(i, [labelNew, labelNew.xor(R)])
 
     var point = random.random_bit();
-    wireToLabels[i][0].pointer(point);
-    wireToLabels[i][1].pointer(1-point);
+    wireToLabels.get(i)[0].pointer(point);
+    wireToLabels.get(i)[1].pointer(1-point);
   }
 
   for (var i = 0; i < circuit.gates; i++) {
     var gate = circuit.gate[i];
     var k;
     if (gate.type === 'xor') {
-      var a = wireToLabels[gate.wirein[0]][0];
-      var b = wireToLabels[gate.wirein[1]][0];
+      var a = wireToLabels.get(gate.wirein[0])[0];
+      var b = wireToLabels.get(gate.wirein[1])[0];
       k = gate.wireout;
-
-      wireToLabels[k][0] = a.xor(b).point(a.pointer() ^ b.pointer());
-      wireToLabels[k][1] = a.xor(b).xor(R).point(a.pointer() ^ b.pointer() ^ 1);
+      wireToLabels.set(k, [
+        a.xor(b).point(a.pointer() ^ b.pointer()),
+        a.xor(b).xor(R).point(a.pointer() ^ b.pointer() ^ 1)
+      ]);
     } else if (gate.type === 'and') {
       k = gate.wireout;
 
       var key = label.randomLabel();
       point = random.random_bit();
 
-      wireToLabels[k][0] = key.point(point);
-      wireToLabels[k][1] = key.xor(R).point(point ^ 1);
+      wireToLabels.set(k, [key.point(point), key.xor(R).point(point ^ 1)]);
     } else if (gate.type === 'not') {
-      wireToLabels[gate.wireout][0] = wireToLabels[gate.wirein[0]][1];
-      wireToLabels[gate.wireout][1] = wireToLabels[gate.wirein[0]][0];
+      wireToLabels.set(gate.wireout, [
+        wireToLabels.get(gate.wirein[0])[1],
+        wireToLabels.get(gate.wirein[0])[0]
+      ]);
     } else {
       throw new Error('Unsupported gate type \''+gate.type+'\'');
     }
@@ -64,7 +65,7 @@ function generateWireToLabelsMap(circuit) {
 /**
  * Encrypt a single gate; input and output wires must have labels at this point.
  * @param {Object} gateFromCircuit - Gate to garble
- * @param {Object[]} wToLs - Mapping from each wire index to two labels
+ * @param {Object} wToLs - Mapping from each wire index to two labels
  * @returns {Object} Garbled gate
  */
 function garbleGate(gateFromCircuit, wToLs) {
@@ -79,10 +80,10 @@ function garbleGate(gateFromCircuit, wToLs) {
   } else {  // if (gateFromCircuit.type === 'and') {
     var t = [0,0,0,1];
     var values = [
-      [crypto.encrypt(wToLs[i][0], wToLs[j][0], k, wToLs[k][t[0]]).compactString(), (2 * wToLs[i][0].pointer()) + wToLs[j][0].pointer()],
-      [crypto.encrypt(wToLs[i][0], wToLs[j][1], k, wToLs[k][t[1]]).compactString(), (2 * wToLs[i][0].pointer()) + wToLs[j][1].pointer()],
-      [crypto.encrypt(wToLs[i][1], wToLs[j][0], k, wToLs[k][t[2]]).compactString(), (2 * wToLs[i][1].pointer()) + wToLs[j][0].pointer()],
-      [crypto.encrypt(wToLs[i][1], wToLs[j][1], k, wToLs[k][t[3]]).compactString(), (2 * wToLs[i][1].pointer()) + wToLs[j][1].pointer()]
+      [crypto.encrypt(wToLs.get(i)[0], wToLs.get(j)[0], k, wToLs.get(k)[t[0]]).compactString(), (2 * wToLs.get(i)[0].pointer()) + wToLs.get(j)[0].pointer()],
+      [crypto.encrypt(wToLs.get(i)[0], wToLs.get(j)[1], k, wToLs.get(k)[t[1]]).compactString(), (2 * wToLs.get(i)[0].pointer()) + wToLs.get(j)[1].pointer()],
+      [crypto.encrypt(wToLs.get(i)[1], wToLs.get(j)[0], k, wToLs.get(k)[t[2]]).compactString(), (2 * wToLs.get(i)[1].pointer()) + wToLs.get(j)[0].pointer()],
+      [crypto.encrypt(wToLs.get(i)[1], wToLs.get(j)[1], k, wToLs.get(k)[t[3]]).compactString(), (2 * wToLs.get(i)[1].pointer()) + wToLs.get(j)[1].pointer()]
     ];
     values = values.sort(function (c1, c2) {  // Point-and-permute.
       return c1[1] - c2[1];
@@ -96,7 +97,7 @@ function garbleGate(gateFromCircuit, wToLs) {
 /**
  * Garble all the gates (stateless version).
  * @param {Object} circuit - Circuit in which to garble the gates
- * @param {Object[]} wireToLabels - Mapping from each wire index to two labels
+ * @param {Object} wireToLabels - Mapping from each wire index to two labels
  * @returns {Object} Ordered collection of garbled gates
  */
 function garbleGates(circuit, wireToLabels) {
@@ -111,7 +112,7 @@ function garbleGates(circuit, wireToLabels) {
  * Send mapping from input wires to their label pairs.
  * @param {Object} channel - Communication channel to use
  * @param {Object} circuit - Circuit being evaluated
- * @param {Object[]} wireToLabels - Mapping from each wire index to two labels
+ * @param {Object} wireToLabels - Mapping from each wire index to two labels
  * @param {number[]} input - This party's input (first/left-hand input)
  * @param {Object[]} messages - Array of messages from garbler
  */
@@ -122,15 +123,15 @@ function sendInputWireToLabelsMap(channel, circuit, wireToLabels, input) {
     for (var i = 0; i < circuit.input.length/2; i++) {
       var j = circuit.input[i]; // Index of ith input gate.
       var inputBit = (inputPair[j] == 0) ? 0 : 1;
-      var label = wireToLabels[j][inputBit];
+      var label = wireToLabels.get(j)[inputBit];
       channel.sendDirect('Wire'+j, JSON.stringify(label.toJSON()));
     }
 
     // Use oblivious transfer for the second half of the input labels.
     for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
       channel.sendOblivious([
-        wireToLabels[circuit.input[i]][0], 
-        wireToLabels[circuit.input[i]][1]
+        wireToLabels.get(circuit.input[i])[0], 
+        wireToLabels.get(circuit.input[i])[1]
       ]);
     }
 }

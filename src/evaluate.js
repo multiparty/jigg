@@ -44,7 +44,7 @@ function processMessages(circuit, messages) {
   var wireToLabel = wireToLabelsMap.initializeWireToLabelsMap(circuit);
   for (var i = 0; i < circuit.input.length; i++) {
     var j = circuit.input[i];
-    wireToLabel[j] = label.Label(messages[j]);
+    wireToLabel.set(j, label.Label(messages[j]));
   }
   return [garbledGates, wireToLabel];
 }
@@ -53,27 +53,27 @@ function processMessages(circuit, messages) {
  * Decrypt a single garbled gate; the resulting label is stored automatically and also returned.
  * @param {Object} gate - Corresponding gate from the original circuit
  * @param {Object} garbledGate - Garbled gate to evaluate
- * @param {Object[]} wireToLabels - Mapping from each wire index to two labels
+ * @param {Object} wireToLabels - Mapping from each wire index to two labels
  */
 function evaluateGate(gate, garbledGate, wireToLabels) {
   const i = gate.wirein[0];
   const j = (gate.wirein.length === 2) ? gate.wirein[1] : i;
   const k = (gate.wireout != null) ? gate.wireout : 0; // If null, just return decrypted.
-  const l = 2 * wireToLabels[i].pointer() + wireToLabels[j].pointer();
+  const l = 2 * wireToLabels.get(i).pointer() + wireToLabels.get(j).pointer();
 
   if (gate.type === 'xor') {
-    wireToLabels[k] = wireToLabels[i].xor(wireToLabels[j]);
+    wireToLabels.set(k, wireToLabels.get(i).xor(wireToLabels.get(j)));
   } else if (gate.type === 'not') {
-    wireToLabels[k] = wireToLabels[i];  // Already inverted.
+    wireToLabels.set(k, wireToLabels.get(i));  // Already inverted.
   } else if (gate.type === 'and') {
-    wireToLabels[k] = crypto.decrypt(wireToLabels[i], wireToLabels[j], k, label.Label(garbledGate.get(l)));
+    wireToLabels.set(k, crypto.decrypt(wireToLabels.get(i), wireToLabels.get(j), k, label.Label(garbledGate.get(l))));
   }
 }
 
 /**
  * Evaluate all the gates (stateless version).
- * @param {Object} circuit - The circuit in which to garble the gates
- * @param {Object[]} wireToLabels - The labeled wire data structure
+ * @param {Object} circuit - Circuit in which to garble the gates
+ * @param {Object} wireToLabels - Labeled wire data structure
  * @param {Object} garbledGates - Ordered collection of garbled gates
  * @returns {Object[]} Mapping from each wire index to two labels
  */
