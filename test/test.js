@@ -1,6 +1,7 @@
 var assert = require('assert');
 var expect = require('chai').expect;
 
+const bits = require('../src/data/bits.js');
 const gate = require('../src/data/gate.js');
 const circuit = require('../src/data/circuit.js');
 const label = require('../src/data/label.js');
@@ -471,10 +472,9 @@ global.sodium = require('libsodium-wrappers');
     //input2 = "11".split('');
     //var circuit = and4_json;
 
-    input1 = "00100000000000000000000000000101".split('');
-    input2 = "01000000000000000000000000001010".split('');
-    var circuit = add32_json;
-    var output = pureEndToEndTest(add32_json, input1, input2);
+    input1 = new bits.Bits("00100000000000000000000000000101");
+    input2 = new bits.Bits("01000000000000000000000000001010");
+    var output = pureEndToEndTest(add32_json, input1.bits, input2.bits);
     console.log(output.join(''));
 });
 
