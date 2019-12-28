@@ -5,9 +5,9 @@
 
 'use strict';
 
-const bits = require('./bits.js');
-const gate = require('./gate.js');
-const socket = require('../comm/socket.js');
+const bits = require('./bits');
+const gate = require('./gate');
+const socket = require('../comm/socket');
 
 const bytes = 16;
 

@@ -3,11 +3,13 @@
  * @module src/evaluate
  */
 
-const gate = require('./data/gate.js');
-const circuit = require('./data/circuit.js');
-const label = require('./data/label.js');
-const wireToLabelsMap = require('./data/wireToLabelsMap.js');
-const crypto = require('./utils/crypto.js');
+'use strict';
+
+const gate = require('./data/gate');
+const circuit = require('./data/circuit');
+const label = require('./data/label');
+const wireToLabelsMap = require('./data/wireToLabelsMap');
+const crypto = require('./utils/crypto');
 
 /**
  * Receive garbled gates and wire-to-label map from garbler.

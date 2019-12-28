@@ -3,14 +3,16 @@
  * @module src/comm/parser
  */
 
+'use strict';
+
 /**
  * Create a communication object that uses OT.
  * @param {Object} socket - Socket to use for communications
  * @returns {Object} OT-based I/O object
  */
 const init = function(socket) {
-  const crypto = require('../utils/crypto.js');
-  const label = require('../data/label.js');
+  const crypto = require('../utils/crypto');
+  const label = require('../data/label');
 
   const bytes = 8;
 

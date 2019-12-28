@@ -3,6 +3,8 @@
  * @module src/comm/socket
  */
 
+'use strict';
+
 /**
  * Create a communication object.
  * @param {number} port - Port to use

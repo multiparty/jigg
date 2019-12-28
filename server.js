@@ -3,6 +3,8 @@
  * @module server
  */
 
+'use strict';
+
 // require('./src/.dep/node_modules/app-module-path').addPath(__dirname+'/src/.dep/node_modules/');
 var express = require('express');
 var app = express();

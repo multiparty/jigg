@@ -3,7 +3,9 @@
  * @module src/utils/crypto
  */
 
-//const sodium = require('../sodium.js');
+'use strict';
+
+//const sodium = require('../sodium');
 const bytes = 8;
 
 /**

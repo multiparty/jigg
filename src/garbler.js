@@ -3,15 +3,17 @@
  * @module src/garbler
  */
 
-const bits = require('./data/bits.js');
-const gate = require('./data/gate.js');
-const circuit = require('./data/circuit.js');
-const label = require('./data/label.js');
-const wireToLabelsMap = require('./data/wireToLabelsMap.js');
-const garble = require('./garble.js');
-const channel = require('./comm/channel.js');
-const socket = require('./comm/socket.js');
-const OT = require('./comm/ot.js');
+'use strict';
+
+const bits = require('./data/bits');
+const gate = require('./data/gate');
+const circuit = require('./data/circuit');
+const label = require('./data/label');
+const wireToLabelsMap = require('./data/wireToLabelsMap');
+const garble = require('./garble');
+const channel = require('./comm/channel');
+const socket = require('./comm/socket');
+const OT = require('./comm/ot');
 
 /**
  * This callback handles the result bit string.
@@ -73,7 +75,6 @@ Garbler.prototype.load_circuit = function () {
   const that = this;
   var promise = new Promise(function (resolve) {
     socket.geturl(that.circuitURL, 'text', that.channel.socket.port).then(function (txt) {
-      console.log(that.circuitURL, txt);
       resolve(circuit.Circuit.prototype.fromBristolFashion(txt));
     });
   });

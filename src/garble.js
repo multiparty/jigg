@@ -3,12 +3,14 @@
  * @module src/garble
  */
 
-const gate = require('./data/gate.js');
-const circuit = require('./data/circuit.js');
-const label = require('./data/label.js');
-const wireToLabelsMap = require('./data/wireToLabelsMap.js');
-const random = require('./utils/random.js');
-const crypto = require('./utils/crypto.js');
+'use strict';
+
+const gate = require('./data/gate');
+const circuit = require('./data/circuit');
+const label = require('./data/label');
+const wireToLabelsMap = require('./data/wireToLabelsMap');
+const random = require('./utils/random');
+const crypto = require('./utils/crypto');
 
 /**
  * Generate labels and encode each state of every wire

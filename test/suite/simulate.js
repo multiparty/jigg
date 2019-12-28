@@ -2,13 +2,15 @@
  * End-to-end tests that simulate multiple parties running the protocol.
  * @module test/simulate
  */
+ 
+'use strict';
 
 const fs = require('fs').promises;
 
-const bits = require('../../src/data/bits.js');
-const circuit = require('../../src/data/circuit.js');
-const Garbler = require('../../src/garbler.js');
-const Evaluator = require('../../src/evaluator.js');
+const bits = require('../../src/data/bits');
+const circuit = require('../../src/data/circuit');
+const Garbler = require('../../src/garbler');
+const Evaluator = require('../../src/evaluator');
 
 global.sodium = require('libsodium-wrappers');
 global.fetch = require('node-fetch');
@@ -69,7 +71,7 @@ async function executeSimulationTests(filenames, index) {
   var outEval = c.evaluate([input1, input2]);
 
   // Start the server.
-  var server = require('../../server.js');
+  var server = require('../../server');
   server.open(3001);
 
   // Start the two parties.

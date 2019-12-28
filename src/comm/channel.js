@@ -5,8 +5,8 @@
 
 'use strict';
 
-const socket = require('./socket.js');
-const OT = require('./ot.js');
+const socket = require('./socket');
+const OT = require('./ot');
 
 /**
  * This callback defines what happens once the protocol begins.

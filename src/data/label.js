@@ -3,8 +3,10 @@
  * @module src/data/label
  */
 
-const crypto = require('../utils/crypto.js');
-const random = require('../utils/random.js');
+'use strict';
+
+const crypto = require('../utils/crypto');
+const random = require('../utils/random');
 
 const bytes = 8;
 const labels = [];

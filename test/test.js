@@ -1,21 +1,23 @@
 /**
  * Unit tests for pure (functional) components.
- * @module test/test.js
+ * @module test/test
  */
+
+'use strict';
 
 var assert = require('assert');
 var expect = require('chai').expect;
 
 const fs = require('fs').promises;
 
-const bits = require('../src/data/bits.js');
-const gate = require('../src/data/gate.js');
-const circuit = require('../src/data/circuit.js');
-const label = require('../src/data/label.js');
-const wireToLabelsMap = require('../src/data/wireToLabelsMap.js');
-const channel = require('../src/comm/channel.js');
-const garble = require('../src/garble.js');
-const evaluate = require('../src/evaluate.js');
+const bits = require('../src/data/bits');
+const gate = require('../src/data/gate');
+const circuit = require('../src/data/circuit');
+const label = require('../src/data/label');
+const wireToLabelsMap = require('../src/data/wireToLabelsMap');
+const channel = require('../src/comm/channel');
+const garble = require('../src/garble');
+const evaluate = require('../src/evaluate');
 const {Garbler, Evaluator, bin2hex, hex2bin} = require('../src/jigg');
 
 var and4_bristol = "3 7\n4 1 1 1 1\n1 1\n2 1 0 1 4 AND\n2 1 2 3 5 AND\n2 1 4 5 6 AND";
