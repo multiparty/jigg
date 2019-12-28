@@ -140,6 +140,5 @@ Circuit.prototype.evaluate = function (inputs) {
 }
 
 module.exports = {
-  Circuit: Circuit,
-  circuit_load_bristol: circuit_load_bristol
+  Circuit: Circuit
 };

@@ -68,7 +68,7 @@ Evaluator.prototype.start = function () {
 /**
  * Parse and load the circuit, then initialize the evaluator.
  */
-Garbler.prototype.load_circuit = function () {
+Evaluator.prototype.load_circuit = function () {
   const that = this;
   var promise = new Promise(function (resolve) {
     this.socket.geturl(this.circuitURL, 'text', this.socket.port).then(function (txt) {
