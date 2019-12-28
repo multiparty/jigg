@@ -20,7 +20,7 @@
     "mocha": "^4.0.1"
   },
   "scripts": {
-    "test": "node test/suite/all.js",
+    "test": "node test/suite/simulate.js",
     "build": "browserify src/jigg.js --debug --s jigg -o dist/jigg.js",
     "casm": "node node_modules/casm/casm.js"
   },
