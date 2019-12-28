@@ -7,7 +7,9 @@ const bits = require('./data/bits.js');
 const gate = require('./data/gate.js');
 const circuit = require('./data/circuit.js');
 const label = require('./data/label.js');
+const wireToLabelsMap = require('./data/wireToLabelsMap.js');
 const garble = require('./garble.js');
+const channel = require('./comm/channel.js');
 const socket = require('./comm/socket.js');
 const OT = require('./comm/ot.js');
 
@@ -40,13 +42,12 @@ const OT = require('./comm/ot.js');
  */
 function Garbler(circuitURL, input, callback, progress, parallel, throttle, port, debug) {
   this.circuitURL = circuitURL;
-  this.input = input;
+  this.input = input.bits;
   this.callback = callback;
   this.parallel = parallel == null ? 30 : parallel;
   this.throttle = throttle == null ? 1 : throttle;
   this.progress = progress == null ? function () {} : progress;
-  this.socket = socket.io(port == null ? 3000 : port);
-  this.OT = OT(this.socket);
+  this.channel = new channel.Channel(port);
   this.debug = debug;
   this.log = this.debug ? function () {
     console.log.apply(console, ['Garbler', ...arguments]);
@@ -61,8 +62,8 @@ function Garbler(circuitURL, input, callback, progress, parallel, throttle, port
  * Run the garbler on the circuit.
  */
 Garbler.prototype.start = function () {
-  this.socket.join('garbler');
-  this.socket.hear('go').then(this.load_circuit.bind(this));
+  this.channel.socket.join('garbler');
+  this.channel.socket.hear('go').then(this.load_circuit.bind(this));
 };
 
 /**
@@ -71,7 +72,8 @@ Garbler.prototype.start = function () {
 Garbler.prototype.load_circuit = function () {
   const that = this;
   var promise = new Promise(function (resolve) {
-    this.socket.geturl(this.circuitURL, 'text', this.socket.port).then(function (txt) {
+    socket.geturl(that.circuitURL, 'text', that.channel.socket.port).then(function (txt) {
+      console.log(that.circuitURL, txt);
       resolve(circuit.Circuit.prototype.fromBristolFashion(txt));
     });
   });
@@ -85,27 +87,11 @@ Garbler.prototype.load_circuit = function () {
  * @param {Object} circuit - Circuit in which to garble the gates
  */
 Garbler.prototype.init = function (circuit) {
-  // User input.
-  const inputs = (new Array(1)).concat(this.input).concat(new Array(this.input.length));
-
-  // Generate labels and save them in labeled wire data structure.
-  var wiresToLabels = garble.generateWireToLabelsMap(circuit);
+  var wireToLabels = garble.generateWireToLabelsMap(circuit);
+  garble.sendInputWireToLabelsMap(this.channel, circuit, wireToLabels, this.input);
   var garbledGates = new gate.GarbledGates();
   garbledGates.allocate(circuit.gates);
-
-  // Give the evaluator the first half of the input labels.
-  for (var i = 0; i < circuit.input.length/2; i++) {
-    var j = circuit.input[i]; // Index of ith input gate.
-    this.socket.give('Wire'+j, wiresToLabels[j][(inputs[j] == 0) ? 0 : 1]);
-  }
-
-  // Use oblivious transfer for the second half of the input labels.
-  for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
-    var j = circuit.input[i];
-    this.OT.send(wiresToLabels[j][0], wiresToLabels[j][1]);
-  }
-
-  this.garbleGatesThrottled(circuit, wiresToLabels, garbledGates, 0);
+  this.garbleGatesThrottled(circuit, wireToLabels, garbledGates, 0);
 };
 
 /**
@@ -146,16 +132,16 @@ Garbler.prototype.finish = function (circuit, garbledGates, wireToLabels) {
   const that = this;
 
   // Give the garbled gates to evaluator.
-  this.socket.give('garbledGates', JSON.stringify(garbledGates.toJSON()));
-
+  this.channel.sendDirect('garbledGates', JSON.stringify(garbledGates.toJSON()));
+    
   // Get output labels and decode them back to their original values.
-  this.socket.get('outputWireToLabels').then(function (outputWireToLabels) {
+  this.channel.receiveDirect('outputWireToLabels').then(function (outputWireToLabels) {
     var outputWireToLabels_G =
       wireToLabelsMap.WireToLabelsMap.prototype.fromJSON(
         JSON.parse(outputWireToLabels)
       );
     var output = garble.outputLabelsToBits(circuit, wireToLabels, outputWireToLabels_G);
-    this.socket.give('output', output);
+    this.channel.sendDirect('output', output);
     that.callback(new bits.Bits(output));
   }.bind(this));
 };

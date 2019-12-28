@@ -8,6 +8,7 @@ const gate = require('./data/gate.js');
 const circuit = require('./data/circuit.js');
 const label = require('./data/label.js');
 const evaluate = require('./evaluate.js');
+const channel = require('./comm/channel.js');
 const socket = require('./comm/socket.js');
 const OT = require('./comm/ot.js');
 
@@ -40,13 +41,12 @@ const OT = require('./comm/ot.js');
  */
 function Evaluator(circuitURL, input, callback, progress, parallel, throttle, port, debug) {
   this.circuitURL = circuitURL;
-  this.input = input;
+  this.input = input.bits;
   this.callback = callback;
   this.parallel = parallel == null ? 30 : parallel;
   this.throttle = throttle == null ? 1 : throttle;
   this.progress = progress == null ? function () {} : progress;
-  this.socket = socket.io(port == null ? 3000 : port);
-  this.OT = OT(this.socket);
+  this.channel = new channel.Channel(port);
   this.debug = debug;
   this.log = this.debug ? function () {
     console.log.apply(console, ['Evaluator', ...arguments]);
@@ -61,8 +61,8 @@ function Evaluator(circuitURL, input, callback, progress, parallel, throttle, po
  * Run the evaluator on the circuit.
  */
 Evaluator.prototype.start = function () {
-  this.socket.join('evaluator');
-  this.socket.hear('go').then(this.load_circuit.bind(this));
+  this.channel.socket.join('evaluator');
+  this.channel.socket.hear('go').then(this.load_circuit.bind(this));
 };
 
 /**
@@ -71,7 +71,7 @@ Evaluator.prototype.start = function () {
 Evaluator.prototype.load_circuit = function () {
   const that = this;
   var promise = new Promise(function (resolve) {
-    this.socket.geturl(this.circuitURL, 'text', this.socket.port).then(function (txt) {
+    socket.geturl(that.circuitURL, 'text', that.channel.socket.port).then(function (txt) {
       resolve(circuit.Circuit.prototype.fromBristolFashion(txt));
     });
   });
@@ -86,24 +86,7 @@ Evaluator.prototype.load_circuit = function () {
  */
 Evaluator.prototype.init = function (circuit) {
   const that = this;
-
-  // Total input.
-  const input = (new Array(1 + this.input.length)).concat(this.input);
-
-  // All required message promises to evaluate.
-  var messages = [this.socket.get('garbledGates')]; // Promise to the garbled gates.
-
-  // Promises to each of the garbler's input labels.
-  for (var i = 0; i < circuit.input.length / 2; i++) {
-    messages.push(this.socket.get('Wire' + circuit.input[i]));
-  }
-
-  // Promises to each of the evaluator's input labels.
-  for (var i = circuit.input.length / 2; i < circuit.input.length; i++) {
-    messages.push(this.OT.receive(input[circuit.input[i]]));
-  }
-
-  // Wait until all messages are received.
+  var messages = evaluate.receiveMessages(this.channel, circuit, this.input);
   Promise.all(messages).then(function (messages) {
     var [garbledGates, wireToLabels] = evaluate.processMessages(circuit, messages);
     that.evaluateGatesThrottled(circuit, garbledGates, wireToLabels, 0);
@@ -145,13 +128,12 @@ Evaluator.prototype.evaluateGatesThrottled = function (circuit, garbledGates, wi
 Evaluator.prototype.finish = function (circuit, wireToLabels) {
   const that = this;
 
-  // Collect all output wires' labels and send
-  // them back to the garbler for decoding.
+  // Collect all output wires' labels; send them back to garbler for decoding.
   var outputWireToLabels = wireToLabels.copyWithOnlyIndices(circuit.output);
-  this.socket.give('outputWireToLabels', JSON.stringify(outputWireToLabels.toJSON()));
+  this.channel.sendDirect('outputWireToLabels', JSON.stringify(outputWireToLabels.toJSON()));
 
   // Receive decoded output states.
-  this.socket.get('output').then(function (output) {
+  this.channel.receiveDirect('output').then(function (output) {
     that.callback(new bits.Bits(output));
   }.bind(this));
 };
