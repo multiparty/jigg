@@ -139,20 +139,6 @@ Circuit.prototype.evaluate = function (inputs) {
   return new bits.Bits(outputBits);
 }
 
-/**
- * Obtain circuit from the specific URL.
- * @param {string} path - Path/URL
- * @param {number} port - Port to use
- * @returns {Promise} Promise object that represents the circuit object
- */
-function circuit_load_bristol(path, port) {
-  return new Promise(function (resolve) {
-    socket.geturl(path, 'text', port).then(function (txt) {
-      resolve(Circuit.prototype.fromBristolFashion(txt));
-    });
-  });
-}
-
 module.exports = {
   Circuit: Circuit,
   circuit_load_bristol: circuit_load_bristol

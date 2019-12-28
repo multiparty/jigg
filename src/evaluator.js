@@ -68,9 +68,13 @@ Evaluator.prototype.start = function () {
 /**
  * Parse and load the circuit, then initialize the evaluator.
  */
-Evaluator.prototype.load_circuit = function () {
+Garbler.prototype.load_circuit = function () {
   const that = this;
-  var promise = circuit.circuit_load_bristol(this.circuitURL, this.socket.port);
+  var promise = new Promise(function (resolve) {
+    this.socket.geturl(this.circuitURL, 'text', this.socket.port).then(function (txt) {
+      resolve(circuit.Circuit.prototype.fromBristolFashion(txt));
+    });
+  });
   promise.then(function (circuit) {
     that.init(circuit);
   });
@@ -91,13 +95,11 @@ Evaluator.prototype.init = function (circuit) {
 
   // Promises to each of the garbler's input labels.
   for (var i = 0; i < circuit.input.length / 2; i++) {
-    this.log('listen for Wire', circuit.input[i]);
     messages.push(this.socket.get('Wire' + circuit.input[i]));
   }
 
   // Promises to each of the evaluator's input labels.
   for (var i = circuit.input.length / 2; i < circuit.input.length; i++) {
-    this.log('obliviousT ask for wire', circuit.input[i], 'with value', input[circuit.input[i]]);
     messages.push(this.OT.receive(input[circuit.input[i]]));
   }
 

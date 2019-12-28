@@ -48,7 +48,7 @@ function Garbler(circuitURL, input, callback, progress, parallel, throttle, port
   this.socket = socket.io(port == null ? 3000 : port);
   this.OT = OT(this.socket);
   this.debug = debug;
-  this.log = this.debug? function () {
+  this.log = this.debug ? function () {
     console.log.apply(console, ['Garbler', ...arguments]);
   } : new Function();
 
@@ -70,9 +70,12 @@ Garbler.prototype.start = function () {
  */
 Garbler.prototype.load_circuit = function () {
   const that = this;
-  var promise = circuit.circuit_load_bristol(this.circuitURL, this.socket.port);
+  var promise = new Promise(function (resolve) {
+    this.socket.geturl(this.circuitURL, 'text', this.socket.port).then(function (txt) {
+      resolve(circuit.Circuit.prototype.fromBristolFashion(txt));
+    });
+  });
   promise.then(function (circuit) {
-    that.log(this.circuitURL, circuit);
     that.init(circuit);
   });
 };
@@ -84,7 +87,6 @@ Garbler.prototype.load_circuit = function () {
 Garbler.prototype.init = function (circuit) {
   // User input.
   const inputs = (new Array(1)).concat(this.input).concat(new Array(this.input.length));
-  this.log('input states', inputs);
 
   // Generate labels and save them in labeled wire data structure.
   var wiresToLabels = garble.generateWireToLabelsMap(circuit);
