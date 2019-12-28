@@ -1,3 +1,8 @@
+/**
+ * Unit tests for pure (functional) components.
+ * @module test/test.js
+ */
+
 var assert = require('assert');
 var expect = require('chai').expect;
 
