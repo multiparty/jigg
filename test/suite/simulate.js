@@ -72,6 +72,7 @@ async function executeSimulationTests(filenames, index) {
   // Start the server.
   var server = require('../../server');
   server.open(3001);
+  var timeStart = (new Date()).getTime();
 
   // Start the two parties.
   const garbler_out = runAgent(filenames[index], 'Garbler', input1);
@@ -83,7 +84,8 @@ async function executeSimulationTests(filenames, index) {
       if (outEval.toString() == outEtoE[0].toString() &&
           outEval.toString() == outEtoE[1].toString()
          ) {
-        simulateLog("Test using " + filenames[index] + " passed.");
+        var timeEnd = (new Date()).getTime();
+        simulateLog("Test using " + filenames[index] + " passed (" + (timeEnd-timeStart) + "ms).");
       } else {
         simulateLog("\n*******************");
         simulateLog("Test using " + filenames[index] + " failed:");
