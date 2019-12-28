@@ -114,26 +114,25 @@ function garbleGates(circuit, wireToLabels) {
  * @param {Object} circuit - Circuit being evaluated
  * @param {Object} wireToLabels - Mapping from each wire index to two labels
  * @param {number[]} input - This party's input (first/left-hand input)
- * @param {Object[]} messages - Array of messages from garbler
  */
 function sendInputWireToLabelsMap(channel, circuit, wireToLabels, input) {
-    const inputPair = (new Array(1)).concat(input).concat(new Array(input.length));
+  const inputPair = (new Array(1)).concat(input).concat(new Array(input.length));
 
-    // Send the evaluator the first half of the input labels directly.
-    for (var i = 0; i < circuit.input.length/2; i++) {
-      var j = circuit.input[i]; // Index of ith input gate.
-      var inputBit = (inputPair[j] == 0) ? 0 : 1;
-      var label = wireToLabels.get(j)[inputBit];
-      channel.sendDirect('Wire'+j, JSON.stringify(label.toJSON()));
-    }
+  // Send the evaluator the first half of the input labels directly.
+  for (var i = 0; i < circuit.input.length/2; i++) {
+    var j = circuit.input[i]; // Index of ith input gate.
+    var inputBit = (inputPair[j] == 0) ? 0 : 1;
+    var label = wireToLabels.get(j)[inputBit];
+    channel.sendDirect('Wire'+j, JSON.stringify(label.toJSON()));
+  }
 
-    // Use oblivious transfer for the second half of the input labels.
-    for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
-      channel.sendOblivious([
-        wireToLabels.get(circuit.input[i])[0], 
-        wireToLabels.get(circuit.input[i])[1]
-      ]);
-    }
+  // Use oblivious transfer for the second half of the input labels.
+  for (var i = circuit.input.length/2; i < circuit.input.length; i++) {
+    channel.sendOblivious([
+      wireToLabels.get(circuit.input[i])[0], 
+      wireToLabels.get(circuit.input[i])[1]
+    ]);
+  }
 }
 
 /**
