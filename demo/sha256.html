@@ -75,10 +75,10 @@ Check the log for progress
 
       const circuitURL = 'circuits/' + $('#circuit').val();
       if (role === 'garbler') {
-        var garbler = new jigg.Garbler(circuitURL, input, callback, progress);
+        var garbler = new jigg.Agent('Garbler', circuitURL, input, callback, progress);
         garbler.start();
       } else if (role === 'evaluator') {
-        var evaluator = new jigg.Evaluator(circuitURL, input, callback, progress);
+        var evaluator = new jigg.Agent('Evaluator', circuitURL, input, callback, progress);
         evaluator.start();
       }
     };
