@@ -1,3 +1,8 @@
+/**
+ * Communications server module.
+ * @module server
+ */
+
 // require('./src/.dep/node_modules/app-module-path').addPath(__dirname+'/src/.dep/node_modules/');
 var express = require('express');
 var app = express();
@@ -15,7 +20,7 @@ app.get('/sha', (request, response) => response.sendFile(__dirname + '/demo/sha2
 
 const open = (port) => http.listen(port, () => console.log('listening on *:'+port));
 
-// If command line, open right away
+// If invoked via command line, open right away.
 if (require.main === module) {
   let port = (process.argv.length === 3)? process.argv[2] : 3000;
   open(port);
@@ -24,6 +29,7 @@ if (require.main === module) {
 var party = {garbler: null, evaluator: null};
 var mailbox = {garbler: {}, evaluator: {}};
 var cache = [];
+
 io.on('connection', function (socket) {
   socket.on('join', function (msg) {
     if (msg === 'garbler' || (!(msg === 'evaluator') && party.garbler == null)) {
@@ -144,14 +150,14 @@ io.on('connection', function (socket) {
 
 const close = function () {
   try {
-    console.log('Closing server');
+    console.log('Closing server.');
     io.to(party.garbler).emit('shutdown', 'finished');
     io.to(party.evaluator).emit('shutdown', 'finished');
     io.close();
     http.close();
-    console.log('Server closed');
+    console.log('Server closed.');
   } catch (e) {
-    console.log('Closing with error', e);
+    console.log('Closing with error:', e);
   }
 };
 
