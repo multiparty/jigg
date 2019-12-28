@@ -1,7 +1,9 @@
 /**
  * End-to-end tests that simulate multiple parties running the protocol.
- * @module test/simulate.js
+ * @module test/simulate
  */
+
+const fs = require('fs').promises;
 
 const bits = require('../../src/data/bits.js');
 const circuit = require('../../src/data/circuit.js');
@@ -11,11 +13,17 @@ const Evaluator = require('../../src/evaluator.js');
 global.sodium = require('libsodium-wrappers');
 global.fetch = require('node-fetch');
 
+// Disable output from invoked components.
+const simulateLog = console.log; console.log = Function();
+
 /*
- * Equivalent of running the following command:
- *   `node demo/party.js <circuit> <role> <input>`
+ * Run agent playing a role in the protocol.
+ * @param {string} circuitFileName - Circuit file name
+ * @param {string} role - Agent role ('Garbler' or 'Evaluator')
+ * @param {Object} input - Bit vector representing input
+ * @returns {Promise} Promise representing agent output
  */
-function run(circuitFileName, role, input) {
+function runAgent(circuitFileName, role, input) {
   const circuitPathURL = 'circuits/bristol/' + circuitFileName;
 
   const progress = function (start, total) {
@@ -45,56 +53,74 @@ function run(circuitFileName, role, input) {
 
 /*
  *  Test a circuit's correctness for a known input-output pair.
+ * @param {string[]} filenames - File names of circuits to test
+ * @param {number} index - Index of current test
+ * @returns {Promise} Promise representing the completion of the tests.
  */
-function test() { //circuit, testvector) {
-  // Load a test vector
-  //const input1 = testvector[0];
-  //const input2 = testvector[1];
-  //const answer = testvector[2];
+async function executeSimulationTests(filenames, index) {
+  if (index >= filenames.length) {
+    return null;
+  }
 
-  var input1 = bits.random(2, 1);
-  var input2 = bits.random(2, 2);
-  input1.bits = [1, 0];
-  input2.bits = [1, 1];
-  var answer = "0";
-  var and4_path = "and4.txt";
-  //var and4_bristol = "3 7\n4 1 1 1 1\n1 1\n2 1 0 1 4 AND\n2 1 2 3 5 AND\n2 1 4 5 6 AND";
-  //var circuit = circuit.Circuit.prototype.fromBristolFashion(and4_bristol);
+  let raw = await fs.readFile('./circuits/bristol/' + filenames[index], 'utf8');
+  let c = circuit.Circuit.prototype.fromBristolFashion(raw);
+  let input1 = bits.random(c.input.length/2, 1);
+  let input2 = bits.random(c.input.length/2, 2);
+  var outEval = c.evaluate([input1, input2]);
 
   // Start the server.
   var server = require('../../server.js');
   server.open(3001);
 
   // Start the two parties.
-  const garbler_out = run(and4_path, 'Garbler', input1);
-  const evaluator_out = run(and4_path, 'Evaluator', input2);
+  const garbler_out = runAgent(filenames[index], 'Garbler', input1);
+  const evaluator_out = runAgent(filenames[index], 'Evaluator', input2);
 
   // Garble/evaluate the circuit and compare results.
   return new Promise(function (resolve) {
-    Promise.all([garbler_out, evaluator_out]).then(function (result) {
-      console.log(result);
+    Promise.all([garbler_out, evaluator_out]).then(function (outEtoE) {
+      if (outEval.toString() == outEtoE[0].toString() &&
+          outEval.toString() == outEtoE[1].toString()
+         ) {
+        simulateLog("Test using " + filenames[index] + " passed.");
+      } else {
+        simulateLog("\n*******************");
+        simulateLog("Test using " + filenames[index] + " failed:");
+        simulateLog("Output expected:");
+        simulateLog(outEval);
+        simulateLog("Outputs received:");
+        simulateLog(outEtoE);
+        simulateLog("*******************\n");
+      }
 
       if (server) {
         // Close the server.
         setTimeout(function(){
           server.close();
+          resolve(executeSimulationTests(filenames, index+1));
         }, 500);
       }
-
-      resolve([
-        result[0],
-        (answer.toString() === result[0].toString()) &&
-        (answer.toString() === result[1].toString())
-      ]);
     });
   });
 }
 
-test();
+let filenames = [
+  'universal_1bit.txt',
+  'and4.txt', 'and8.txt',
+  'adder_32bit.txt', 'adder_64bit.txt', 'sub64.txt',
+  'comparator_32bit_signed_lt.txt',
+  'zero_equal_64.txt', //'zero_equal_128.txt',
+  //'mult_32x32.txt', 'mult64.txt', 'divide64.txt'
+];
 
-module.exports = test;
+if (process.argv.length === 2) {
+  // Run all tests.
+  simulateLog("\nRunning all tests...");
+  executeSimulationTests(filenames, 0);
+} else if (process.argv.length === 3) {
+  // Run test on a single specified file.
+  simulateLog("\nRunning a single test...");
+  executeSimulationTests([process.argv[2]], 0);
+}
 
-/*if (process.argv.length === 4) {
-  const log = console.log; console.log = Function();  // TEMPORARY anti-logging hack
-  test(process.argv[2], JSON.parse(process.argv[3]), true).then(log.bind(null, process.argv[2]));
-}*/
+module.exports = executeSimulationTests;
