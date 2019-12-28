@@ -34,19 +34,19 @@ var cache = [];
 
 io.on('connection', function (socket) {
   socket.on('join', function (msg) {
-    if (msg === 'garbler' || (!(msg === 'evaluator') && party.garbler == null)) {
+    if (msg === 'Garbler' || (!(msg === 'Evaluator') && party.garbler == null)) {
       party.garbler = socket.id;
       console.log('connect garbler');
-      socket.emit('whoami', 'garbler');
+      socket.emit('whoami', 'Garbler');
       socket.on('disconnect', function() {
         party.garbler = null;
         mailbox.garbler = {};
         console.log('garbler disconnected');
       });
-    } else if (msg === 'evaluator' || party.evaluator == null) {
+    } else if (msg === 'Evaluator' || party.evaluator == null) {
       party.evaluator = socket.id;
       console.log('connect evaluator');
-      socket.emit('whoami', 'evaluator');
+      socket.emit('whoami', 'Evaluator');
       socket.on('disconnect', function() {
         party.evaluator = null;
         mailbox.evaluator = {};

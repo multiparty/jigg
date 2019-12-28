@@ -18,7 +18,6 @@ const wireToLabelsMap = require('../src/data/wireToLabelsMap');
 const channel = require('../src/comm/channel');
 const garble = require('../src/garble');
 const evaluate = require('../src/evaluate');
-const {Garbler, Evaluator, bin2hex, hex2bin} = require('../src/jigg');
 
 var and4_bristol = "3 7\n4 1 1 1 1\n1 1\n2 1 0 1 4 AND\n2 1 2 3 5 AND\n2 1 4 5 6 AND";
 var and4_json = {

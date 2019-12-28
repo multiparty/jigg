@@ -9,8 +9,7 @@ const fs = require('fs').promises;
 
 const bits = require('../../src/data/bits');
 const circuit = require('../../src/data/circuit');
-const Garbler = require('../../src/garbler');
-const Evaluator = require('../../src/evaluator');
+const jigg = require('../../src/jigg');
 
 global.sodium = require('libsodium-wrappers');
 global.fetch = require('node-fetch');
@@ -42,10 +41,10 @@ function runAgent(circuitFileName, role, input) {
   // console.time('time');
   var promise = new Promise(function (resolve) {
     if (role === 'Garbler') {
-      var garbler = new Garbler(circuitPathURL, input, callback.bind(this, resolve), progress, 0, 0, 3001, false);
+      var garbler = new jigg.Agent('Garbler', circuitPathURL, input, callback.bind(this, resolve), progress, 0, 0, 3001, false);
       garbler.start();
     } else if (role === 'Evaluator') {
-      var evaluator = new Evaluator(circuitPathURL, input, callback.bind(this, resolve), progress, 0, 0, 3001, false);
+      var evaluator = new jigg.Agent('Evaluator', circuitPathURL, input, callback.bind(this, resolve), progress, 0, 0, 3001, false);
       evaluator.start();
     }
   });
