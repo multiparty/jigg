@@ -86,7 +86,7 @@ GarbledGates.prototype.allocate = function (number) {
  * @param {number} index - Index at which to insert the supplied gate
  * @param {Object} garbledGate - Garbled gate to insert
  */
-GarbledGates.prototype.insert = function (index, garbledGate) {
+GarbledGates.prototype.set = function (index, garbledGate) {
   this.garbledGates[index] = garbledGate;
 };
 

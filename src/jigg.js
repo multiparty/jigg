@@ -20,15 +20,15 @@ const OT = require('./comm/ot');
  * This callback handles the result bit string.
  *
  * @callback resultCallback
- * @param {string} result - The result bit string to process.
+ * @param {string} result - Result bit string to process
  */
 
 /**
  * This callback logs or displays progress.
  *
  * @callback progressCallback
- * @param {number} current - The progress so far (i.e., numerator).
- * @param {number} total - The target total (i.e., the denominator).
+ * @param {number} current - Progress so far (i.e., numerator)
+ * @param {number} total - Target total (i.e., the denominator)
  */
 
 /**
@@ -83,50 +83,75 @@ Agent.prototype.load_circuit = function () {
   });
   promise.then(function (circuit) {
     if (that.role == 'Garbler')
-      that.initGarbler(circuit);
+      that.runGarbler(circuit);
     else if (that.role == 'Evaluator')
-      that.initEvaluator(circuit);
+      that.runEvaluator(circuit);
   });
 };
 
 /**
- * Initialize the garbler.
- * @param {Object} circuit - Circuit in which to garble the gates
+ * This callback performs a step in either garbling or evaluation.
+ *
+ * @callback stepCallback
+ * @param {Object} circuit - Original circuit
+ * @param {Object} garbledGates - Ordered collection of garbled gates
+ * @param {Object} wireToLabels - Mapping from gate indices to labels
+ * @param {number} i - Gate index at which to begin/continue
  */
-Agent.prototype.initGarbler = function (circuit) {
-  var wireToLabels = garble.generateWireToLabelsMap(circuit);
-  garble.sendInputWireToLabelsMap(this.channel, circuit, wireToLabels, this.input);
-  var garbledGates = new gate.GarbledGates();
-  garbledGates.allocate(circuit.gates);
-  this.garbleGatesThrottled(circuit, wireToLabels, garbledGates, 0);
-};
+ 
+/**
+ * This callback continues on to the next/final stage in the protocol.
+ *
+ * @callback finishCallback
+ * @param {Object} circuit - Original circuit
+ * @param {Object} garbledGates - Ordered collection of garbled gates (unused)
+ * @param {Object} wireToLabels - Mapping from gate indices to labels
+ */
 
 /**
- * Garble all the gates (with throttling).
- * @param {Object} circuit - Circuit in which to garble the gates
- * @param {Object} wireToLabels - Mapping from gate indices to labels
+ * Process all gates (with throttling) using supplied step function.
+ * @param {stepCallback} step - Step to perform for this part of protocol
+ * @param {finishCallback} finish - Callback to final stage of protocol
+ * @param {Object} circuit - Original circuit
  * @param {Object} garbledGates - Ordered collection of garbled gates
- * @param {number} start - Gate index at which to begin/continue garbling
+ * @param {Object} wireToLabels - Mapping from gate indices to labels
+ * @param {number} start - Gate index at which to begin/continue processing
  */
-Agent.prototype.garbleGatesThrottled = function (circuit, wireToLabels, garbledGates, start) {
-  // Garble all gates.
+Agent.prototype.gatesThrottled = function (step, finish, circuit, garbledGates, wireToLabels, start) {
   for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
-    garbledGates.insert(i, garble.garbleGate(circuit.gate[i], wireToLabels));
+    step(circuit, garbledGates, wireToLabels, i);
   }
 
   start += this.parallel;
   this.progress(Math.min(start, circuit.gates), circuit.gates);
 
   if (start >= circuit.gates) {
-    this.finishGarbler(circuit, garbledGates, wireToLabels);
+    finish(circuit, garbledGates, wireToLabels);
     return;
   }
 
   if (this.throttle > 0) {
-    setTimeout(this.garbleGatesThrottled.bind(this, circuit, wireToLabels, garbledGates, start), this.throttle);
+    setTimeout(this.gatesThrottled.bind(this, step, finish, circuit, garbledGates, wireToLabels, start), this.throttle);
   } else {
-    this.garbleGatesThrottled(circuit, wireToLabels, garbledGates, start);
+    this.gatesThrottled(step, finish, circuit, garbledGates, wireToLabels, start);
   }
+};
+
+/**
+ * Initialize the garbler.
+ * @param {Object} circuit - Circuit in which to garble the gates
+ */
+Agent.prototype.runGarbler = function (circuit) {
+  var wireToLabels = garble.generateWireToLabelsMap(circuit);
+  garble.sendInputWireToLabelsMap(this.channel, circuit, wireToLabels, this.input);
+  var garbledGates = new gate.GarbledGates();
+  garbledGates.allocate(circuit.gates);
+  this.gatesThrottled( // Garble the gates with throttling to avoid hanging.
+    function (circuit, garbledGates, wireToLabels, i) {
+      garbledGates.set(i, garble.garbleGate(circuit.gate[i], wireToLabels));
+    },
+    this.finishGarbler.bind(this), circuit, garbledGates, wireToLabels, 0
+  );
 };
 
 /**
@@ -148,7 +173,7 @@ Agent.prototype.finishGarbler = function (circuit, garbledGates, wireToLabels) {
         JSON.parse(outputWireToLabels)
       );
     var output = garble.outputLabelsToBits(circuit, wireToLabels, outputWireToLabels_G);
-    this.channel.sendDirect('output', output);
+    that.channel.sendDirect('output', output);
     that.callback(new bits.Bits(output));
   }.bind(this));
 };
@@ -157,48 +182,27 @@ Agent.prototype.finishGarbler = function (circuit, garbledGates, wireToLabels) {
  * Initialize the evaluator.
  * @param {Object} circuit - Original circuit
  */
-Agent.prototype.initEvaluator = function (circuit) {
+Agent.prototype.runEvaluator = function (circuit) {
   const that = this;
   var messages = evaluate.receiveMessages(this.channel, circuit, this.input);
   Promise.all(messages).then(function (messages) {
     var [garbledGates, wireToLabels] = evaluate.processMessages(circuit, messages);
-    that.evaluateGatesThrottled(circuit, garbledGates, wireToLabels, 0);
+    that.gatesThrottled( // Evaluate the gates with throttling to avoid hanging.
+      function (circuit, garbledGates, wireToLabels, i) {
+        evaluate.evaluateGate(circuit.gate[i], garbledGates.get(i), wireToLabels);
+      },
+      that.finishEvaluator.bind(that), circuit, garbledGates, wireToLabels, 0
+    );
   });
-};
-
-/**
- * Evaluate all the garbled gates (with optional throttling).
- * @param {Object} circuit - Original circuit
- * @param {Object} garbledGates - Ordered collection of garbled gates
- * @param {Object} wireToLabels - Mapping from gate indices to labels
- * @param {number} start - Gate index at which to begin/continue evaluating
- */
-Agent.prototype.evaluateGatesThrottled = function (circuit, garbledGates, wireToLabels, start) {
-  for (var i = start; i < start + this.parallel && i < circuit.gates; i++) {
-    evaluate.evaluateGate(circuit.gate[i], garbledGates.get(i), wireToLabels);
-  }
-
-  start += this.parallel;
-  this.progress(Math.min(start, circuit.gates), circuit.gates);
-
-  if (start >= circuit.gates) {
-    this.finishEvaluator(circuit, wireToLabels);
-    return;
-  }
-
-  if (this.throttle > 0) {
-    setTimeout(this.evaluateGatesThrottled.bind(this, circuit, garbledGates, wireToLabels, start), this.throttle);
-  } else {
-    this.evaluateGatesThrottled(circuit, garbledGates, wireToLabels, start);
-  }
 };
 
 /**
  * Give wires back to garbler, receive decoded output states, and run callback on results.
  * @param {Object} circuit - Original circuit
+ * @param {Object} garbledGates - Ordered collection of garbled gates (unused)
  * @param {Object} wireToLabels - Mapping from gate indices to labels
  */
-Agent.prototype.finishEvaluator = function (circuit, wireToLabels) {
+Agent.prototype.finishEvaluator = function (circuit, garbledGates, wireToLabels) {
   const that = this;
 
   // Collect all output wires' labels; send them back to garbler for decoding.
