@@ -78,7 +78,7 @@ GarbledGates.prototype.add = function (garbledGate) {
  * @param {number} number - Expected number of gates
  */
 GarbledGates.prototype.allocate = function (number) {
-  this.garbledGates = Array(number);
+  this.garbledGates = new Array(number);
 };
 
 /**
