@@ -44,10 +44,10 @@ Association.prototype.toJSON = function () {
   var json = {};
   for (var index in this.mapping) {
     if (this.mapping[index].isLabel == true) {
-      json[index] = this.mapping[index].toJSON();
+      json[index] = [this.mapping[index].toJSON()];
     } else {
-      //var chk = function (l) { return l.isLabel ? l.toJSON() : l; };
-      json[index] = this.mapping[index]; //.map(chk);
+      var chk = function (l) { return l.isLabel ? l.toJSON() : l; };
+      json[index] = this.mapping[index].map(chk);
     }
   }
   return json;
@@ -60,13 +60,8 @@ Association.prototype.toJSON = function () {
 Association.prototype.fromJSON = function (json) {
   var assoc = new Association();
   for (var index in json) {
-    if (json[index].isArray == null) {
-      var labelCurrent = label.Label.prototype.fromJSON(json[index]);
-      assoc.set(index, labelCurrent);
-    } else {
-      var labelsCurrent = json[index].map(label.Label.prototype.fromJSON);
-      assoc.set(index, labelsCurrent);
-    }
+    var labelsCurrent = json[index].map(label.Label.prototype.fromJSON);
+    assoc.set(index, labelsCurrent);
   }
   return assoc;
 };
