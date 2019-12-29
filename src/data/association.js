@@ -12,20 +12,10 @@ const label = require('./label.js');
 /**
  * Create a new wire-to-labels map data structure instance;
  * note that the domain of the map begins at 1 and not 0.
- * @param {Object} [circuit] - Optional circuit (for wire count/domain)
  * @constructor
  */
-function Association(circuit) {
-  if (circuit == null) {
-    this.mapping = {};
-  } else {
-    // Initialize map using the number of wires
-    // in the supplied circuit, counting from 1.
-    this.mapping = {};
-    for (var i = 1; i < circuit.wires+1; i++) {
-      this.mapping[i] = [];
-    }
-  }
+function Association() {
+  this.mapping = {};
 }
 
 /**

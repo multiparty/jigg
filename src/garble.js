@@ -20,7 +20,7 @@ const crypto = require('./utils/crypto');
  */
 function generateWireToLabelsMap(circuit) {
   const R = label.randomLabel();  // R in {0, 1}^N.
-  var wireToLabels = new association.Association(circuit);
+  var wireToLabels = new association.Association();
 
   for (var j = 0; j < circuit.input.length; j++) {
     var i = circuit.input[j];
