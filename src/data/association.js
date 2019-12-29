@@ -1,6 +1,6 @@
 /**
  * Data structure for a map from wire indices to one or two labels.
- * @module src/data/wireToLabelsMap
+ * @module src/data/association
  */
 
 'use strict';
@@ -15,7 +15,7 @@ const label = require('./label.js');
  * @param {Object} [circuit] - Optional circuit (for wire count/domain)
  * @constructor
  */
-function WireToLabelsMap(circuit) {
+function Association(circuit) {
   if (circuit == null) {
     this.mapping = {};
   } else {
@@ -33,7 +33,7 @@ function WireToLabelsMap(circuit) {
  * @param {number} index - Index of wire to associate with labels
  * @param {Object[]} labels - Array of one or two labels
  */
-WireToLabelsMap.prototype.set = function (index, labels) {
+Association.prototype.set = function (index, labels) {
   this.mapping[index] = labels;
 };
 
@@ -42,7 +42,7 @@ WireToLabelsMap.prototype.set = function (index, labels) {
  * @param {number} index - Index of wire for which to return the label
  * @param {Object[]} labels - Array of one or two labels
  */
-WireToLabelsMap.prototype.get = function (index) {
+Association.prototype.get = function (index) {
   return this.mapping[index];
 };
 
@@ -50,7 +50,7 @@ WireToLabelsMap.prototype.get = function (index) {
  * Return the data structure instance as a JSON object.
  * @returns {Object} Data structure as a JSON object
  */
-WireToLabelsMap.prototype.toJSON = function () {
+Association.prototype.toJSON = function () {
   var json = {};
   for (var index in this.mapping) {
     if (this.mapping[index].isArray == null) {
@@ -66,18 +66,18 @@ WireToLabelsMap.prototype.toJSON = function () {
  * Build a data structure instance from its JSON representation.
  * @returns {Object} Instance of the data structure
  */
-WireToLabelsMap.prototype.fromJSON = function (json) {
-  var wireToLabelsMap = new WireToLabelsMap();
+Association.prototype.fromJSON = function (json) {
+  var assoc = new Association();
   for (var index in json) {
     if (json[index].isArray == null) {
       var labelCurrent = label.Label.prototype.fromJSON(json[index]);
-      wireToLabelsMap.set(index, labelCurrent);
+      assoc.set(index, labelCurrent);
     } else {
       var labelsCurrent = json[index].map(label.Label.prototype.fromJSON);
-      wireToLabelsMap.set(index, labelsCurrent);
+      assoc.set(index, labelsCurrent);
     }
   }
-  return wireToLabelsMap;
+  return assoc;
 };
 
 /**
@@ -85,14 +85,14 @@ WireToLabelsMap.prototype.fromJSON = function (json) {
  * @param {number[]} indices - Indices of map entries to keep in result
  * @returns {Object} Data structure as a JSON object
  */
-WireToLabelsMap.prototype.copyWithOnlyIndices = function (indices) {
-  var wireToLabels = new WireToLabelsMap();
+Association.prototype.copyWithOnlyIndices = function (indices) {
+  var association = new Association();
   for (var k = 0; k < indices.length; k++) {
-    wireToLabels.set(indices[k], this.mapping[indices[k]]);
+    association.set(indices[k], this.mapping[indices[k]]);
   }
-  return wireToLabels;
+  return association;
 };
 
 module.exports = {
-  WireToLabelsMap: WireToLabelsMap
+  Association: Association
 };

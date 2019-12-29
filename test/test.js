@@ -14,7 +14,7 @@ const bits = require('../src/data/bits');
 const gate = require('../src/data/gate');
 const circuit = require('../src/data/circuit');
 const label = require('../src/data/label');
-const wireToLabelsMap = require('../src/data/wireToLabelsMap');
+const association = require('../src/data/association');
 const channel = require('../src/comm/channel');
 const garble = require('../src/garble');
 const evaluate = require('../src/evaluate');
@@ -441,7 +441,7 @@ function protocolPureEndToEnd(circuit, input1, input2) {
 
   // Steps performed by garbler.
   var outputWireToLabels_G =
-    wireToLabelsMap.WireToLabelsMap.prototype.fromJSON(
+    association.Association.prototype.fromJSON(
       JSON.parse(chan.receiveDirect('outputWireToLabels'))
     );
   var output = garble.outputLabelsToBits(circuit, wToLs_G, outputWireToLabels_G);

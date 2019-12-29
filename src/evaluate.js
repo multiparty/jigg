@@ -8,7 +8,7 @@
 const gate = require('./data/gate');
 const circuit = require('./data/circuit');
 const label = require('./data/label');
-const wireToLabelsMap = require('./data/wireToLabelsMap');
+const association = require('./data/association');
 const crypto = require('./utils/crypto');
 
 /**
@@ -43,7 +43,7 @@ function receiveMessages(channel, circuit, input) {
  */
 function processMessages(circuit, messages) {
   var garbledGates = gate.GarbledGates.prototype.fromJSON(JSON.parse(messages[0]));
-  var wireToLabel = new wireToLabelsMap.WireToLabelsMap(circuit);
+  var wireToLabel = new association.Association(circuit);
   for (var i = 0; i < circuit.input.length; i++) {
     var j = circuit.input[i];
     wireToLabel.set(j, label.Label(messages[j]));

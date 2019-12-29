@@ -8,7 +8,7 @@
 const gate = require('./data/gate');
 const circuit = require('./data/circuit');
 const label = require('./data/label');
-const wireToLabelsMap = require('./data/wireToLabelsMap');
+const association = require('./data/association');
 const random = require('./utils/random');
 const crypto = require('./utils/crypto');
 
@@ -20,7 +20,7 @@ const crypto = require('./utils/crypto');
  */
 function generateWireToLabelsMap(circuit) {
   const R = label.randomLabel();  // R in {0, 1}^N.
-  var wireToLabels = new wireToLabelsMap.WireToLabelsMap(circuit);
+  var wireToLabels = new association.Association(circuit);
 
   for (var j = 0; j < circuit.input.length; j++) {
     var i = circuit.input[j];
