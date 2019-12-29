@@ -64,7 +64,7 @@ function randomLabel(length, bits) {
  * @param {Object} l - Label object to turn into a compact string
  * @returns {string} Compact string representation of label
  */
-Label.prototype.compactString = function (l = this) {
+Label.prototype.serializeAsString = function (l = this) {
   var json = '[';
   for (var i = 0; i < l.length - 1; i++) {
     json += l[i] + ',';
@@ -147,7 +147,7 @@ Label.prototype.withoutLastElement = function (labels) {
  * @returns {number} Index of first occurrence
  */
 Label.prototype.getOccurrenceIndexIn = function (labels) {
-  return labels.map(Label.prototype.compactString).indexOf(this.compactString());
+  return labels.map(Label.prototype.serializeAsString).indexOf(this.serializeAsString());
 };
 
 module.exports = {

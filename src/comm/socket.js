@@ -54,8 +54,8 @@ const io = function(port) {
   *  Give a string to the other party.
   */
   const give = function(tag, msg) {
-    if (msg != null && typeof(msg.stringify) === 'function') {
-      msg = msg.stringify();
+    if (msg != null && typeof(msg.serializeAsString) === 'function') {
+      msg = msg.serializeAsString();
     }
 
     socket.emit('send', tag, msg);
