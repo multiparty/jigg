@@ -125,7 +125,7 @@ function sendInputWireToLabelsMap(channel, circuit, wireToLabels, input) {
     var j = circuit.input[i]; // Index of ith input gate.
     var inputBit = (inputPair[j] == 0) ? 0 : 1;
     var label = wireToLabels.get(j)[inputBit];
-    channel.sendDirect('Wire'+j, JSON.stringify(label.toJSON()));
+    channel.sendDirect('Wire'+j, label.toJSONString());
   }
 
   // Use oblivious transfer for the second half of the input labels.

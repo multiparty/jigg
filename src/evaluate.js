@@ -42,7 +42,7 @@ function receiveMessages(channel, circuit, input) {
  * @returns {Object[]} Pair containing the received gates and wire-to-label map
  */
 function processMessages(circuit, messages) {
-  var garbledGates = gate.GarbledGates.prototype.fromJSON(JSON.parse(messages[0]));
+  var garbledGates = gate.GarbledGates.prototype.fromJSONString(messages[0]);
   var wireToLabels = new association.Association();
   for (var i = 0; i < circuit.input.length; i++) {
     var j = circuit.input[i];

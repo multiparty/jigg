@@ -78,7 +78,7 @@ Agent.prototype.loadCircuit = function () {
   const that = this;
   var promise = new Promise(function (resolve) {
     socket.geturl(that.circuitURL, 'text', that.channel.socket.port).then(function (txt) {
-      resolve(circuit.Circuit.prototype.fromBristolFashion(txt));
+      resolve(circuit.fromBristolFashion(txt));
     });
   });
   promise.then(function (circuit) {
@@ -144,14 +144,12 @@ Agent.prototype.finishGarbler = function (circuit, garbledGates, wireToLabels) {
   const that = this;
 
   // Give the garbled gates to evaluator.
-  this.channel.sendDirect('garbledGates', JSON.stringify(garbledGates.toJSON()));
+  this.channel.sendDirect('garbledGates', garbledGates.toJSONString());
 
   // Get output labels and decode them back to their original values.
   this.channel.receiveDirect('outputWireToLabels').then(function (outputWireToLabelsString) {
     var outputWireToLabels =
-      association.Association.prototype.fromJSON(
-        JSON.parse(outputWireToLabelsString)
-      );
+      association.fromJSONString(outputWireToLabelsString);
     var output = garble.outputLabelsToBits(circuit, wireToLabels, outputWireToLabels);
     that.channel.sendDirect('output', output);
     that.callback(new bits.Bits(output));
@@ -181,7 +179,7 @@ Agent.prototype.finishEvaluator = function (circuit, wireToLabels) {
 
   // Collect all output wires' labels; send them back to garbler for decoding.
   var outputWireToLabels = wireToLabels.copyWithOnlyIndices(circuit.output);
-  this.channel.sendDirect('outputWireToLabels', JSON.stringify(outputWireToLabels.toJSON()));
+  this.channel.sendDirect('outputWireToLabels', outputWireToLabels.toJSONString());
 
   // Receive decoded output states.
   this.channel.receiveDirect('output').then(function (output) {

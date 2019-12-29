@@ -429,7 +429,7 @@ function protocolPureEndToEnd(circuit, input1, input2) {
   var wToLs_G = garble.generateWireToLabelsMap(circuit);
   var garbledGates = garble.garbleGates(circuit, wToLs_G);
   garble.sendInputWireToLabelsMap(chan, circuit, wToLs_G, input1.bits);
-  chan.sendDirect('garbledGates', JSON.stringify(garbledGates.toJSON()));
+  chan.sendDirect('garbledGates', garbledGates.toJSONString());
 
   // Steps performed by evaluator.
   var messages = evaluate.receiveMessages(chan, circuit, input2.bits);
@@ -437,13 +437,11 @@ function protocolPureEndToEnd(circuit, input1, input2) {
   var wToL_E2 = evaluate.evaluateGates(circuit, garbledGates_E, wToL_E)
                         .copyWithOnlyIndices(circuit.output);
   var outputWireToLabels_E = wToL_E2.copyWithOnlyIndices(circuit.output);
-  chan.sendDirect('outputWireToLabels', JSON.stringify(outputWireToLabels_E.toJSON()));
+  chan.sendDirect('outputWireToLabels', outputWireToLabels_E.toJSONString());
 
   // Steps performed by garbler.
   var outputWireToLabels_G =
-    association.Association.prototype.fromJSON(
-      JSON.parse(chan.receiveDirect('outputWireToLabels'))
-    );
+    association.fromJSONString(chan.receiveDirect('outputWireToLabels'));
   var output = garble.outputLabelsToBits(circuit, wToLs_G, outputWireToLabels_G);
 
   return new bits.Bits(output);
@@ -451,10 +449,10 @@ function protocolPureEndToEnd(circuit, input1, input2) {
 
 // The unit tests below do not require a cryptographic library.
 describe('circuit-parser', function() {
-  describe('#circuit.Circuit.prototype.fromBristolFashion()', function () {
-    it('circuit.Circuit.prototype.fromBristolFashion', function() {
-      expect(circuit.Circuit.prototype.fromBristolFashion(and4_bristol).toJSON()).to.eql(and4_json);
-      expect(circuit.Circuit.prototype.fromBristolFashion(add32_bristol).toJSON()).to.eql(add32_json);
+  describe('#circuit.fromBristolFashion()', function () {
+    it('circuit.fromBristolFashion', function() {
+      expect(circuit.fromBristolFashion(and4_bristol).toJSON()).to.eql(and4_json);
+      expect(circuit.fromBristolFashion(add32_bristol).toJSON()).to.eql(add32_json);
     });
   });
 });
@@ -467,7 +465,7 @@ beforeEach(async function() {
 describe('end-to-end', function() {
   it('and4_circuit', function() {
     var input1 = new bits.Bits("01"), input2 = new bits.Bits("10");
-    var and4_circuit = circuit.Circuit.prototype.fromBristolFashion(and4_bristol);
+    var and4_circuit = circuit.fromBristolFashion(and4_bristol);
     var outEval = and4_circuit.evaluate([input1, input2]);
     var outEtoE = protocolPureEndToEnd(and4_circuit, input1, input2);
     expect(outEval.toString()).to.eql(outEtoE.toString());
@@ -477,7 +475,7 @@ describe('end-to-end', function() {
     it('add32_circuit', function() {
       var input1 = bits.random(32, r);
       var input2 = bits.random(32, r + 1);
-      var add32_circuit = circuit.Circuit.prototype.fromBristolFashion(add32_bristol);
+      var add32_circuit = circuit.fromBristolFashion(add32_bristol);
       var outEval = add32_circuit.evaluate([input1, input2]);
       var outEtoE = protocolPureEndToEnd(add32_circuit, input1, input2);
       expect(outEval.toString()).to.eql(outEtoE.toString());
@@ -495,7 +493,7 @@ describe('end-to-end', function() {
   for (let i = 0; i < filenames.length; i++) {
     it(filenames[i], async function() {
       let raw = await fs.readFile('./circuits/bristol/' + filenames[i], 'utf8');
-      let c = circuit.Circuit.prototype.fromBristolFashion(raw);
+      let c = circuit.fromBristolFashion(raw);
       let input1 = bits.random(c.input.length/2, 1);
       let input2 = bits.random(c.input.length/2, 2);
       let outEval = c.evaluate([input1, input2]);
