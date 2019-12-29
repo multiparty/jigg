@@ -66,7 +66,7 @@ Association.prototype.toJSONString = function () {
 Association.prototype.fromJSON = function (json) {
   var assoc = new Association();
   for (var index in json) {
-    assoc.set(index, json[index].map(label.Label.prototype.fromJSON));
+    assoc.set(index, json[index].map(label.fromJSON));
   }
   return assoc;
 };

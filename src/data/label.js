@@ -152,5 +152,6 @@ Label.prototype.getOccurrenceIndexIn = function (labels) {
 
 module.exports = {
   Label: Label,
+  fromJSON: Label.prototype.fromJSON,
   randomLabel: randomLabel
 };
