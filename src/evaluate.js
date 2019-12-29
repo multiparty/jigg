@@ -46,7 +46,7 @@ function processMessages(circuit, messages) {
   var wireToLabels = new association.Association(circuit);
   for (var i = 0; i < circuit.input.length; i++) {
     var j = circuit.input[i];
-    wireToLabels.set(j, label.Label(messages[j]));
+    wireToLabels.set(j, [label.Label(messages[j])]);
   }
   return [garbledGates, wireToLabels];
 }
@@ -61,14 +61,14 @@ function evaluateGate(gate, garbledGate, wireToLabels) {
   const i = gate.wirein[0];
   const j = (gate.wirein.length === 2) ? gate.wirein[1] : i;
   const k = (gate.wireout != null) ? gate.wireout : 0; // If null, just return decrypted.
-  const l = 2 * wireToLabels.get(i).pointer() + wireToLabels.get(j).pointer();
+  const l = 2 * wireToLabels.get(i)[0].pointer() + wireToLabels.get(j)[0].pointer();
 
   if (gate.type === 'xor') {
-    wireToLabels.set(k, wireToLabels.get(i).xor(wireToLabels.get(j)));
+    wireToLabels.set(k, wireToLabels.get(i)[0].xor(wireToLabels.get(j)[0]));
   } else if (gate.type === 'not') {
-    wireToLabels.set(k, wireToLabels.get(i));  // Already inverted.
+    wireToLabels.set(k, wireToLabels.get(i)[0]);  // Already inverted.
   } else if (gate.type === 'and') {
-    wireToLabels.set(k, crypto.decrypt(wireToLabels.get(i), wireToLabels.get(j), k, label.Label(garbledGate.get(l))));
+    wireToLabels.set(k, crypto.decrypt(wireToLabels.get(i)[0], wireToLabels.get(j)[0], k, label.Label(garbledGate.get(l))));
   }
 }
 

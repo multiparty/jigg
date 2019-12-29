@@ -28,7 +28,9 @@ var Label = function (init) {
     init.concat(0);
   }
 
-  return Reflect.construct(Uint8Array, [init], Label);
+  var label = Reflect.construct(Uint8Array, [init], Label);
+  label.isLabel = true;
+  return label;
 };
 
 // Add Uint8Array features to label objects.

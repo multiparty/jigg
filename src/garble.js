@@ -150,14 +150,13 @@ function outputLabelsToBits(circuit, wireToLabels, outputWireToLabels) {
     var labelsForFalseAndTrue =
       wireToLabels
         .get(circuit.output[i])
-        .map(function (l) { return l.withoutLastElement(); });
+        .map(function (l) { return l.withoutLastElement(); }); // Drop last bits.
 
     var outputLabel =
       outputWireToLabels
         .get(circuit.output[i])
-        .withoutLastElement();
-        //.map(function (l) { return l.withoutLastElement(); })
-        //[0]; // We know there is only one label.
+        [0] // Only one label in association from evaluator.
+        .withoutLastElement(); // Drop last bit.
 
     var bit = outputLabel.getOccurrenceIndexIn(labelsForFalseAndTrue);
     output.push(bit);

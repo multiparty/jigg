@@ -43,7 +43,7 @@ Association.prototype.set = function (index, labels) {
  * @param {Object[]} labels - Array of one or two labels
  */
 Association.prototype.get = function (index) {
-  return this.mapping[index];
+  return (this.mapping[index].isLabel) ? [this.mapping[index]]: this.mapping[index];
 };
 
 /**
@@ -53,10 +53,11 @@ Association.prototype.get = function (index) {
 Association.prototype.toJSON = function () {
   var json = {};
   for (var index in this.mapping) {
-    if (this.mapping[index].isArray == null) {
+    if (this.mapping[index].isLabel == true) {
       json[index] = this.mapping[index].toJSON();
     } else {
-      json[index] = this.mapping[index];
+      //var chk = function (l) { return l.isLabel ? l.toJSON() : l; };
+      json[index] = this.mapping[index]; //.map(chk);
     }
   }
   return json;
