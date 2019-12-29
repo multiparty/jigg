@@ -1,13 +1,26 @@
 # JIGG
 JavaScript implementation of garbled gates and 2PC boolean circuit protocols.
 
-## Installation and Setup
+## Requirements and Installation
 This library is implemented entirely in JavaScript. Running the server requires [Node.js](https://nodejs.org/en/), [npm](https://www.npmjs.com/) (both installed via `yum install nodejs npm` or `brew install npm` on macOS), [Socket.IO](https://socket.io/), and [libsodium](https://www.npmjs.com/package/libsodium).
 
 Run `npm` to install all JIGG dependencies:
 ```shell
 npm install
 ```
+
+## Project Layout
+
+    ├─ circuits/        Circuit files
+    │  └─ bristol/          Extended functionality for use cases (e.g. negative numbers)
+    ├─ demo/            Demo for client-server deployment scenario
+    ├─ src/             Library modules implementing protocol steps for participants
+    │  ├─ comm/         Communications modules (such as for OT)
+    │  ├─ data/         Data structure modules (such as circuits)
+    │  └─ utils/        Other utility modules (such as cryptographic primitives)
+    └─ test/            Unit tests and end-to-end simulation tests
+       └─ suite/        End-to-end simulation tests
+
 
 ## Running the Prototype
 Start the communications server from server.js with the command below and optionally specify a port number such as:
@@ -95,3 +108,7 @@ JIGG is designed for semi-honest parties (in either node or in the browser). We 
 - Encrypt communications between parties (or use ECC)
 - Half-AND gate optimization
 - Standardize JSON, serialized, and compressed formats for inter-party messages
+
+## Information and Collaborators
+
+More information about this project, including collaborators and publications, can be found at [multiparty.org](https://multiparty.org/).
