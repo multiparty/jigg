@@ -43,12 +43,12 @@ function receiveMessages(channel, circuit, input) {
  */
 function processMessages(circuit, messages) {
   var garbledGates = gate.GarbledGates.prototype.fromJSON(JSON.parse(messages[0]));
-  var wireToLabel = new association.Association(circuit);
+  var wireToLabels = new association.Association(circuit);
   for (var i = 0; i < circuit.input.length; i++) {
     var j = circuit.input[i];
-    wireToLabel.set(j, label.Label(messages[j]));
+    wireToLabels.set(j, label.Label(messages[j]));
   }
-  return [garbledGates, wireToLabel];
+  return [garbledGates, wireToLabels];
 }
 
 /**

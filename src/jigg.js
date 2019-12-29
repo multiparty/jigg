@@ -147,12 +147,12 @@ Agent.prototype.finishGarbler = function (circuit, garbledGates, wireToLabels) {
   this.channel.sendDirect('garbledGates', JSON.stringify(garbledGates.toJSON()));
 
   // Get output labels and decode them back to their original values.
-  this.channel.receiveDirect('outputWireToLabels').then(function (outputWireToLabels) {
-    var outputWireToLabels_G =
+  this.channel.receiveDirect('outputWireToLabels').then(function (outputWireToLabelsString) {
+    var outputWireToLabels =
       association.Association.prototype.fromJSON(
-        JSON.parse(outputWireToLabels)
+        JSON.parse(outputWireToLabelsString)
       );
-    var output = garble.outputLabelsToBits(circuit, wireToLabels, outputWireToLabels_G);
+    var output = garble.outputLabelsToBits(circuit, wireToLabels, outputWireToLabels);
     that.channel.sendDirect('output', output);
     that.callback(new bits.Bits(output));
   }.bind(this));

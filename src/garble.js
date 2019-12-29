@@ -156,6 +156,8 @@ function outputLabelsToBits(circuit, wireToLabels, outputWireToLabels) {
       outputWireToLabels
         .get(circuit.output[i])
         .withoutLastElement();
+        //.map(function (l) { return l.withoutLastElement(); })
+        //[0]; // We know there is only one label.
 
     var bit = outputLabel.getOccurrenceIndexIn(labelsForFalseAndTrue);
     output.push(bit);
