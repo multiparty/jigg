@@ -55,6 +55,14 @@ GarbledGate.prototype.toJSON = function () {
 };
 
 /**
+ * Return a gate data structure instance as a JSON string.
+ * @returns {string} Gate data structure instance as a JSON string
+ */
+GarbledGate.prototype.toJSONString = function () {
+  return JSON.stringify(this.values);
+};
+
+/**
  * Create an ordered collection of garbled gates.
  * @param {Object[]} [garbledGates=[]] - Array of garbled gates
  * @constructor
@@ -108,12 +116,28 @@ GarbledGates.prototype.toJSON = function () {
 };
 
 /**
+ * Return garbled gates as a JSON string.
+ * @returns {string} Garbled gates as a JSON string
+ */
+GarbledGates.prototype.toJSONString = function () {
+  return JSON.stringify(this.toJSON());
+};
+
+/**
  * Build an ordered collection of garbled gates from its JSON representation.
  * @param {Object[]} json - Array of gates, with each gate as JSON
  * @returns {Object} Ordered collection of garbled gates
  */
 GarbledGates.prototype.fromJSON = function (json) {
   return new GarbledGates(json.map(function (vs) { return new GarbledGate(vs); }));
+};
+
+/**
+ * Build an ordered collection of garbled gates from a JSON string.
+ * @returns {Object} Ordered collection of garbled gates
+ */
+GarbledGates.prototype.fromJSONString = function (s) {
+  return GarbledGates.prototype.fromJSON(JSON.parse(s));
 };
 
 module.exports = {

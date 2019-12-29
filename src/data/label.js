@@ -87,6 +87,15 @@ Label.prototype.toJSON = function (label = this) {
 };
 
 /**
+ * Create JSON representation of label object as a string.
+ * @param {Object} l - Label object to turn into a JSON string
+ * @returns {string} JSON string representation of label
+ */
+Label.prototype.toJSONString = function () {
+  return JSON.stringify(this.toJSON());
+};
+
+/**
  * Build a label from a JSON representation.
  * @param {number[]} labelAsArrayOfNumbers - Array representation of label
  * @returns {Object} Label object

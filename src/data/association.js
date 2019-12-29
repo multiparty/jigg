@@ -52,6 +52,14 @@ Association.prototype.toJSON = function () {
 };
 
 /**
+ * Return the data structure instance as a JSON string.
+ * @returns {string} Data structure as a JSON string
+ */
+Association.prototype.toJSONString = function () {
+  return JSON.stringify(this.toJSON());
+};
+
+/**
  * Build a data structure instance from its JSON representation.
  * @returns {Object} Instance of the data structure
  */
@@ -61,6 +69,14 @@ Association.prototype.fromJSON = function (json) {
     assoc.set(index, json[index].map(label.Label.prototype.fromJSON));
   }
   return assoc;
+};
+
+/**
+ * Build a data structure instance from its JSON string representation.
+ * @returns {Object} Instance of the data structure
+ */
+Association.prototype.fromJSONString = function (s) {
+  return Association.prototype.fromJSON(JSON.parse(s));
 };
 
 /**
@@ -77,5 +93,7 @@ Association.prototype.copyWithOnlyIndices = function (indices) {
 };
 
 module.exports = {
-  Association: Association
+  Association: Association,
+  fromJSON: Association.prototype.fromJSON,
+  fromJSONString: Association.prototype.fromJSONString
 };
