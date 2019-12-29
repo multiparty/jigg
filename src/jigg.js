@@ -97,17 +97,17 @@ Agent.prototype.loadCircuit = function () {
  * @param {number} index - Gate index at which to begin/continue processing
  */
 Agent.prototype.gatesThrottled = function (circuit, garbledGates, wireToLabels, index) {
-  for (var i = index; i < index + this.parallel && i < circuit.gates; i++) {
+  for (var i = index; i < index + this.parallel && i < circuit.gate_count; i++) {
     if (this.role == 'Garbler')
-      garbledGates.set(i, garble.garbleGate(circuit.gate[i], wireToLabels));
+      garbledGates.set(i, garble.garbleGate(circuit.gates[i], wireToLabels));
     else if (this.role == 'Evaluator')
-      evaluate.evaluateGate(circuit.gate[i], garbledGates.get(i), wireToLabels);
+      evaluate.evaluateGate(circuit.gates[i], garbledGates.get(i), wireToLabels);
   }
 
   index += this.parallel;
-  this.progress(Math.min(index, circuit.gates), circuit.gates);
+  this.progress(Math.min(index, circuit.gate_count), circuit.gate_count);
 
-  if (index >= circuit.gates) {
+  if (index >= circuit.gate_count) {
     if (this.role == 'Garbler')
       this.finishGarbler(circuit, garbledGates, wireToLabels);
     else if (this.role == 'Evaluator')
@@ -130,7 +130,7 @@ Agent.prototype.runGarbler = function (circuit) {
   var wireToLabels = garble.generateWireToLabelsMap(circuit);
   garble.sendInputWireToLabelsMap(this.channel, circuit, wireToLabels, this.input);
   var garbledGates = new gate.GarbledGates();
-  garbledGates.allocate(circuit.gates);
+  garbledGates.allocate(circuit.gate_count);
   this.gatesThrottled(circuit, garbledGates, wireToLabels, 0);
 };
 
@@ -178,7 +178,7 @@ Agent.prototype.finishEvaluator = function (circuit, wireToLabels) {
   const that = this;
 
   // Collect all output wires' labels; send them back to garbler for decoding.
-  var outputWireToLabels = wireToLabels.copyWithOnlyIndices(circuit.output);
+  var outputWireToLabels = wireToLabels.copyWithOnlyIndices(circuit.output_wires);
   this.channel.sendDirect('outputWireToLabels', outputWireToLabels.toJSONString());
 
   // Receive decoded output states.

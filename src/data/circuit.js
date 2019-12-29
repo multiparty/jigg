@@ -13,19 +13,28 @@ const bytes = 16;
 
 /**
  * Create a new circuit data structure instance.
- * @param {number} wires - Number of wires in the circuit
- * @param {number} gates - Number of gates in the circuit
- * @param {number[]} input - Input wires for the entire circuit
- * @param {number[]} output - Output wires for the entire circuit
- * @param {Object[]} gate - Array of gates in the circuit
+ * @param {number} wire_count - Number of wires in the circuit
+ * @param {number} gate_count - Number of gates in the circuit
+ * @param {number} input_count - Number of input bit vectors
+ * @param {number[]} input_lengths - Length of each input bit vector
+ * @param {number} output_count - Number of output bit vectors
+ * @param {number[]} output_lengths - Length of each output bit vector
+ * @param {Object[]} gates - Array of gates in the circuit
  * @constructor
  */
-function Circuit(wires, gates, input, output, gate) {
-  this.wires = wires == null ? 0 : wires;
-  this.gates = gates == null ? 0 : gates;
-  this.input = input == null ? [] : input;
-  this.output = output == null ? [] : output;
-  this.gate = gate == null ? [] : gate;
+function Circuit(
+    wire_count, gate_count,
+    input_count, input_lengths, output_count, output_lengths, gates
+  ) {
+  this.wire_count = wire_count == null ? 0 : wire_count;
+  this.gate_count = gate_count == null ? 0 : gate_count;
+  this.input_count = input_count == null ? 0 : input_count;
+  this.input_lengths = input_lengths == null ? [] : input_lengths;
+  this.output_count = output_count == null ? 0 : output_count;
+  this.output_lengths = output_lengths == null ? [] : output_lengths;
+  this.input_wires = []; // This is redundant information.
+  this.output_wires = []; // This is redundant information.
+  this.gates = gates == null ? [] : gates;
 }
 
 /**
@@ -34,9 +43,11 @@ function Circuit(wires, gates, input, output, gate) {
  */
 Circuit.prototype.toJSON = function () {
   return {
-    wires: this.wires, gates: this.gates,
-    input: this.input, output: this.output,
-    gate: this.gate.map(function (g) { return g.toJSON(); })
+    wire_count: this.wire_count, gate_count: this.gate_count,
+    input_count: this.input_count, input_lengths: this.input_lengths,
+    output_count: this.output_count, output_lengths: this.output_lengths,
+    input_wires: this.input_wires, output_wires: this.output_wires,
+    gates: this.gates.map(function (g) { return g.toJSON(); })
   };
 };
 
@@ -54,38 +65,44 @@ Circuit.prototype.fromBristolFashion = function (raw) {
       return line.split(' ')
                  .map(function (tok) { return tok.trim(); });
     });
-  circuit.gates = +parseInt(rows[0][0]);
-  circuit.wires = +parseInt(rows[0][1]);
+  circuit.gate_count = +parseInt(rows[0][0]);
+  circuit.wire_count = +parseInt(rows[0][1]);
 
   // Determine total number of input and output wires.
-  var input_num = 0, output_num = 0;
+  var inputWireCount = 0, outputWireCount = 0;
   for (var i = 1; i < rows[1].length; i++) {
-    input_num += parseInt(rows[1][i]);
+    var length = parseInt(rows[1][i]);
+    circuit.input_count += 1;
+    circuit.input_lengths.push(length);
+    inputWireCount += length;
   }
   for (var i = 1; i < rows[2].length; i++) {
-    output_num += parseInt(rows[2][i]);
+    var length = parseInt(rows[2][i]);
+    circuit.output_count += 1;
+    circuit.output_lengths.push(length);
+    outputWireCount += length;
   }
 
-  // Collect input and output wire indices.
-  for (var i = 1; i <= input_num; i++) {
-    circuit.input.push(i);
+  // Collect input/output wire indices for easier processing.
+  for (var i = 1; i <= inputWireCount; i++) {
+    circuit.input_wires.push(i);
   }
-  for (var i = 1+circuit.wires-output_num; i <= circuit.wires; i++) {
-    circuit.output.push(i);
+  for (var i = 1+circuit.wire_count-outputWireCount; i <= circuit.wire_count; i++) {
+    circuit.output_wires.push(i);
   }
 
   // Parse the individual gates.
-  for (var row = 3; row < circuit.gates+3; row++) {
+  for (var row = 3; row < circuit.gate_count+3; row++) {
     var tokens = rows[row];
     var gateNew = new gate.Gate();
-    gateNew.wirein = [1 + (+parseInt(tokens[2]))];
+    gateNew.input_wires = [1 + (+parseInt(tokens[2]))];
     if (parseInt(tokens[0]) === 2) {
-      gateNew.wirein.push(1 + (+parseInt(tokens[3])));
+      gateNew.input_wires.push(1 + (+parseInt(tokens[3])));
     }
     var offset = parseInt(tokens[0]);
-    gateNew.wireout = 1 + (+parseInt(tokens[2 + (+offset)]));
-    gateNew.type = gate.bristolOpToIGG[tokens[3 + (+offset)]];
-    circuit.gate.push(gateNew);
+    gateNew.output_wire = 1 + (+parseInt(tokens[2 + (+offset)]));
+    gateNew.operation = gate.bristolOpToIGG[tokens[3 + (+offset)]];
+    circuit.gates.push(gateNew);
   }
 
   return circuit;
@@ -105,35 +122,35 @@ Circuit.prototype.evaluate = function (inputs) {
   var circuitInputWireIndex = 0;
   for (var i = 0; i < inputs.length; i++) {
     for (var j = 0; j < inputs[i].bits.length; j++) {
-      wires[c.input[circuitInputWireIndex]] = inputs[i].bits[j];
+      wires[c.input_wires[circuitInputWireIndex]] = inputs[i].bits[j];
       circuitInputWireIndex++;
     }
   }
 
   // Evaluate the gates.
-  for (var i = 0; i < c.gates; i++) {
-    if (c.gate[i].type == 'and') {
-      wires[c.gate[i].wireout] =
-        ((wires[c.gate[i].wirein[0]] == 1) &&
-         (wires[c.gate[i].wirein[1]] == 1)) ?
+  for (var i = 0; i < c.gate_count; i++) {
+    if (c.gates[i].operation == 'and') {
+      wires[c.gates[i].output_wire] =
+        ((wires[c.gates[i].input_wires[0]] == 1) &&
+         (wires[c.gates[i].input_wires[1]] == 1)) ?
         1 : 0;
     }
-    if (c.gate[i].type == 'xor') {
-      wires[c.gate[i].wireout] =
-        (wires[c.gate[i].wirein[0]] != wires[c.gate[i].wirein[1]]) ?
+    if (c.gates[i].operation == 'xor') {
+      wires[c.gates[i].output_wire] =
+        (wires[c.gates[i].input_wires[0]] != wires[c.gates[i].input_wires[1]]) ?
         1 : 0;
     }
-    if (c.gate[i].type == 'not') {
-      wires[c.gate[i].wireout] =
-        (wires[c.gate[i].wirein[0]] == 0) ?
+    if (c.gates[i].operation == 'not') {
+      wires[c.gates[i].output_wire] =
+        (wires[c.gates[i].input_wires[0]] == 0) ?
         1 : 0;
     }
   }
 
   // Retrieve the output bits.
   var outputBits = [];
-  for (var i = 0; i < c.output.length; i++) {
-    outputBits.push(wires[c.output[i]]);
+  for (var i = 0; i < c.output_wires.length; i++) {
+    outputBits.push(wires[c.output_wires[i]]);
   }
 
   return new bits.Bits(outputBits);

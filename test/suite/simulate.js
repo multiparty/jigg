@@ -65,8 +65,8 @@ async function executeSimulationTests(filenames, index) {
 
   let raw = await fs.readFile('./circuits/bristol/' + filenames[index], 'utf8');
   let c = circuit.fromBristolFashion(raw);
-  let input1 = bits.random(c.input.length/2, 1);
-  let input2 = bits.random(c.input.length/2, 2);
+  let input1 = bits.random(c.input_wires.length/2, 1);
+  let input2 = bits.random(c.input_wires.length/2, 2);
   var outEval = c.evaluate([input1, input2]);
 
   // Start the server.
