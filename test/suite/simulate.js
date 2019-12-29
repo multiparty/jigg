@@ -75,12 +75,12 @@ async function executeSimulationTests(filenames, index) {
   var timeStart = (new Date()).getTime();
 
   // Start the two parties.
-  const garbler_out = runAgent(filenames[index], 'Garbler', input1);
-  const evaluator_out = runAgent(filenames[index], 'Evaluator', input2);
+  const garblerOut = runAgent(filenames[index], 'Garbler', input1);
+  const evaluatorOut = runAgent(filenames[index], 'Evaluator', input2);
 
   // Garble/evaluate the circuit and compare results.
   return new Promise(function (resolve) {
-    Promise.all([garbler_out, evaluator_out]).then(function (outEtoE) {
+    Promise.all([garblerOut, evaluatorOut]).then(function (outEtoE) {
       if (outEval.toString() == outEtoE[0].toString() &&
           outEval.toString() == outEtoE[1].toString()
          ) {

@@ -68,13 +68,13 @@ function Agent(role, circuitURL, input, callback, progress, parallel, throttle, 
  */
 Agent.prototype.start = function () {
   this.channel.socket.join(this.role);
-  this.channel.socket.hear('go').then(this.load_circuit.bind(this));
+  this.channel.socket.hear('go').then(this.loadCircuit.bind(this));
 };
 
 /**
  * Parse and load the circuit, then initialize the agent.
  */
-Agent.prototype.load_circuit = function () {
+Agent.prototype.loadCircuit = function () {
   const that = this;
   var promise = new Promise(function (resolve) {
     socket.geturl(that.circuitURL, 'text', that.channel.socket.port).then(function (txt) {

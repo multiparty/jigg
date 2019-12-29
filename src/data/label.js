@@ -53,7 +53,7 @@ function randomLabel(length, bits) {
 
   var l = new Label();
   for (var i = 0; i < length; i++) {
-    l[i] = random.random_with_replacement(bits);
+    l[i] = random.randomWithReplacement(bits);
   }
   labels.unshift(l.toString());
   return (labels.lastIndexOf(l.toString()) === 0)? l : randomLabel(length);

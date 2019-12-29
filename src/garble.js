@@ -28,7 +28,7 @@ function generateWireToLabelsMap(circuit) {
     var labelNew = label.randomLabel();
     wireToLabels.set(i, [labelNew, labelNew.xor(R)])
 
-    var point = random.random_bit();
+    var point = random.randomBit();
     wireToLabels.get(i)[0].pointer(point);
     wireToLabels.get(i)[1].pointer(1-point);
   }
@@ -48,7 +48,7 @@ function generateWireToLabelsMap(circuit) {
       k = gate.wireout;
 
       var key = label.randomLabel();
-      point = random.random_bit();
+      point = random.randomBit();
 
       wireToLabels.set(k, [key.point(point), key.xor(R).point(point ^ 1)]);
     } else if (gate.type === 'not') {

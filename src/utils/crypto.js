@@ -20,7 +20,7 @@ const bytes = 8;
 function encrypt(a, b, t, m) {
   // console.log('a', a, '\nb', b, '\nt', t, '\nm', m);
   const k = a.xor(b);
-  return m.xor(k).xor(random_oracle(k, t));
+  return m.xor(k).xor(randomOracle(k, t));
 }
 const decrypt = encrypt;
 
@@ -30,7 +30,7 @@ const decrypt = encrypt;
  * @param {string} t - ...
  * @returns {string} ...
  */
-function random_oracle(m, t = 0) {
+function randomOracle(m, t = 0) {
   return sodium.crypto_secretbox_easy(
     m,
     new Uint8Array(24).fill(t),  // Nonce 24 bytes because this sodium uses 192 bit blocks.

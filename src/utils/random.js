@@ -11,7 +11,7 @@ const bytes = 16;
  * Return a random bit.
  * @returns {uint32_t} The random bit.
  */
-function random_bit() {
+function randomBit() {
   return sodium.randombytes_uniform(2);
 }
 
@@ -20,15 +20,15 @@ function random_bit() {
  * @param {number} bitLength - The number of bits in value's representation.
  * @returns {uint32_t} The random number.
  */
-function random_with_replacement(bitLength) {
+function randomWithReplacement(bitLength) {
   if (bitLength == null) {
     bitLength = bytes * 8;
   }
 
-  var r = random_bit();
+  var r = randomBit();
   for (var i = 1; i < bitLength; i++) {
     r *= 2;
-    r += random_bit();
+    r += randomBit();
   }
   return r;
 }
@@ -54,7 +54,7 @@ function shuffle(array) {
 
 module.exports = {
   shuffle: shuffle,
-  random_bit: random_bit,
-  random_with_replacement: random_with_replacement,
+  randomBit: randomBit,
+  randomWithReplacement: randomWithReplacement,
   bytes: bytes
 };

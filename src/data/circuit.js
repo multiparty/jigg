@@ -77,15 +77,15 @@ Circuit.prototype.fromBristolFashion = function (raw) {
   // Parse the individual gates.
   for (var row = 3; row < circuit.gates+3; row++) {
     var tokens = rows[row];
-    var gate_new = new gate.Gate();
-    gate_new.wirein = [1 + (+parseInt(tokens[2]))];
+    var gateNew = new gate.Gate();
+    gateNew.wirein = [1 + (+parseInt(tokens[2]))];
     if (parseInt(tokens[0]) === 2) {
-      gate_new.wirein.push(1 + (+parseInt(tokens[3])));
+      gateNew.wirein.push(1 + (+parseInt(tokens[3])));
     }
     var offset = parseInt(tokens[0]);
-    gate_new.wireout = 1 + (+parseInt(tokens[2 + (+offset)]));
-    gate_new.type = gate.bristolOpToIGG[tokens[3 + (+offset)]];
-    circuit.gate.push(gate_new);
+    gateNew.wireout = 1 + (+parseInt(tokens[2 + (+offset)]));
+    gateNew.type = gate.bristolOpToIGG[tokens[3 + (+offset)]];
+    circuit.gate.push(gateNew);
   }
 
   return circuit;
