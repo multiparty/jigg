@@ -64,11 +64,11 @@ function evaluateGate(gate, garbledGate, wireToLabels) {
   const l = 2 * wireToLabels.get(i)[0].pointer() + wireToLabels.get(j)[0].pointer();
 
   if (gate.type === 'xor') {
-    wireToLabels.set(k, wireToLabels.get(i)[0].xor(wireToLabels.get(j)[0]));
+    wireToLabels.set(k, [wireToLabels.get(i)[0].xor(wireToLabels.get(j)[0])]);
   } else if (gate.type === 'not') {
-    wireToLabels.set(k, wireToLabels.get(i)[0]);  // Already inverted.
+    wireToLabels.set(k, [wireToLabels.get(i)[0]]);  // Already inverted.
   } else if (gate.type === 'and') {
-    wireToLabels.set(k, crypto.decrypt(wireToLabels.get(i)[0], wireToLabels.get(j)[0], k, label.Label(garbledGate.get(l))));
+    wireToLabels.set(k, [crypto.decrypt(wireToLabels.get(i)[0], wireToLabels.get(j)[0], k, label.Label(garbledGate.get(l)))]);
   }
 }
 

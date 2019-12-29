@@ -33,7 +33,7 @@ Association.prototype.set = function (index, labels) {
  * @param {Object[]} labels - Array of one or two labels
  */
 Association.prototype.get = function (index) {
-  return (this.mapping[index].isLabel) ? [this.mapping[index]]: this.mapping[index];
+  return this.mapping[index];
 };
 
 /**
@@ -43,12 +43,10 @@ Association.prototype.get = function (index) {
 Association.prototype.toJSON = function () {
   var json = {};
   for (var index in this.mapping) {
-    if (this.mapping[index].isLabel == true) {
-      json[index] = [this.mapping[index].toJSON()];
-    } else {
-      var chk = function (l) { return l.isLabel ? l.toJSON() : l; };
-      json[index] = this.mapping[index].map(chk);
-    }
+    json[index] =
+      this.mapping[index].map(function (l) {
+        return l.isLabel ? l.toJSON() : l;
+      });
   }
   return json;
 };
@@ -60,8 +58,7 @@ Association.prototype.toJSON = function () {
 Association.prototype.fromJSON = function (json) {
   var assoc = new Association();
   for (var index in json) {
-    var labelsCurrent = json[index].map(label.Label.prototype.fromJSON);
-    assoc.set(index, labelsCurrent);
+    assoc.set(index, json[index].map(label.Label.prototype.fromJSON));
   }
   return assoc;
 };
@@ -72,11 +69,11 @@ Association.prototype.fromJSON = function (json) {
  * @returns {Object} Data structure as a JSON object
  */
 Association.prototype.copyWithOnlyIndices = function (indices) {
-  var association = new Association();
+  var assoc = new Association();
   for (var k = 0; k < indices.length; k++) {
-    association.set(indices[k], this.mapping[indices[k]]);
+    assoc.set(indices[k], this.mapping[indices[k]]);
   }
-  return association;
+  return assoc;
 };
 
 module.exports = {
