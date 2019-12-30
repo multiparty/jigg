@@ -72,11 +72,15 @@ Channel.prototype.receiveOblivious = function (bit) {
 
 /**
  * Create a new simulated channel.
+ * @param {Object} keyToSchema - Mapping from keys to schemas
  * @constructor
  */
-function ChannelSimulated() {
+function ChannelSimulated(keyToSchema) {
   this.direct = {};
   this.oblivious = [];
+  
+  // For message format validation.
+  this.keyToSchema = (keyToSchema == null) ? {} : keyToSchema;
 }
 
 /**
