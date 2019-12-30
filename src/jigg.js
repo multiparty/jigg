@@ -150,9 +150,9 @@ Agent.prototype.finishGarbler = function (circuit, garbledGates, wireToLabels) {
   this.channel.receiveDirect('outputWireToLabels').then(function (outputWireToLabelsString) {
     var outputWireToLabels =
       association.fromJSONString(outputWireToLabelsString);
-    var output = garble.outputLabelsToBits(circuit, wireToLabels, outputWireToLabels);
-    that.channel.sendDirect('output', output);
-    that.callback(new bits.Bits(output));
+    var outputBits = garble.outputLabelsToBits(circuit, wireToLabels, outputWireToLabels);
+    that.channel.sendDirect('outputBits', outputBits);
+    that.callback(new bits.Bits(outputBits));
   }.bind(this));
 };
 
@@ -182,7 +182,7 @@ Agent.prototype.finishEvaluator = function (circuit, wireToLabels) {
   this.channel.sendDirect('outputWireToLabels', outputWireToLabels.toJSONString());
 
   // Receive decoded output states.
-  this.channel.receiveDirect('output').then(function (output) {
+  this.channel.receiveDirect('outputBits').then(function (output) {
     that.callback(new bits.Bits(output));
   }.bind(this));
 };

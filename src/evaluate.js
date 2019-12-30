@@ -24,7 +24,7 @@ function receiveMessages(channel, circuit, input) {
 
     // Receive each of the garbler's input labels.
     for (var i = 0; i < circuit.wire_in_count/2; i++) {
-      messages.push(channel.receiveDirect('Wire' + circuit.wire_in_index[i]));
+      messages.push(channel.receiveDirect('wire[' + circuit.wire_in_index[i] + ']'));
     }
 
     // Promises to each of the evaluator's input labels.
