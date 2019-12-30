@@ -17,6 +17,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-requirejs": "^4.0.0",
     "chai": "^4.2.0",
+    "chai-json-schema": "^1.5.1",
     "mocha": "^4.0.1"
   },
   "scripts": {

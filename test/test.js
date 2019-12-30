@@ -6,7 +6,9 @@
 'use strict';
 
 var assert = require('assert');
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
+chai.use(require('chai-json-schema'));
 
 const fs = require('fs').promises;
 
@@ -452,12 +454,16 @@ function protocolPureEndToEnd(circuit, input1, input2) {
 }
 
 // The unit tests below do not require a cryptographic library.
-describe('circuit-parser', function() {
-  describe('#circuit.fromBristolFashion()', function () {
-    it('circuit.fromBristolFashion', function() {
-      expect(circuit.fromBristolFashion(and4_bristol).toJSON()).to.eql(and4_json);
-      expect(circuit.fromBristolFashion(add32_bristol).toJSON()).to.eql(add32_json);
-    });
+describe('circuit', async function() {
+  it('circuit.fromBristolFashion()', function() {
+    expect(circuit.fromBristolFashion(and4_bristol).toJSON()).to.eql(and4_json);
+    expect(circuit.fromBristolFashion(add32_bristol).toJSON()).to.eql(add32_json);
+  });
+  it('circuit.Circuit.prototype.toJSON()', async function() {
+    let circuitSchemaString = await fs.readFile('./schemas/circuit.schema.json', 'utf8');
+    let circuitSchema = JSON.parse(circuitSchemaString);
+    expect(circuit.fromBristolFashion(and4_bristol).toJSON()).to.be.jsonSchema(circuitSchema);
+    expect(circuit.fromBristolFashion(add32_bristol).toJSON()).to.be.jsonSchema(circuitSchema);
   });
 });
 
