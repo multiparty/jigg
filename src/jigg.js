@@ -130,7 +130,6 @@ Agent.prototype.runGarbler = function (circuit) {
   var wireToLabels = garble.generateWireToLabelsMap(circuit);
   garble.sendInputWireToLabelsMap(this.channel, circuit, wireToLabels, this.input);
   var garbledGates = new gate.GarbledGates();
-  garbledGates.allocate(circuit.gate_count);
   this.gatesThrottled(circuit, garbledGates, wireToLabels, 0);
 };
 

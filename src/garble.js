@@ -76,23 +76,23 @@ function garbleGate(gateFromCircuit, wToLs) {
   const k = gateFromCircuit.wire_out_index[0];
 
   if (gateFromCircuit.operation === 'xor') {
-    return new gate.GarbledGate('xor');  // Free XOR; encrypt nothing.
+    return new gate.GarbledGate(); // Free XOR; encrypt nothing.
   } else if (gateFromCircuit.operation === 'not') {
-    return new gate.GarbledGate('not');
+    return new gate.GarbledGate(); // Encrypt nothing.
   } else if (gateFromCircuit.operation === 'and') {
     var t = [0,0,0,1];
     var values = [
       [crypto.encrypt(wToLs.get(i)[0], wToLs.get(j)[0], k, wToLs.get(k)[t[0]])
-             .serializeAsString(),
+             .toJSON(),
         (2 * wToLs.get(i)[0].pointer()) + wToLs.get(j)[0].pointer()],
       [crypto.encrypt(wToLs.get(i)[0], wToLs.get(j)[1], k, wToLs.get(k)[t[1]])
-             .serializeAsString(),
+             .toJSON(),
         (2 * wToLs.get(i)[0].pointer()) + wToLs.get(j)[1].pointer()],
       [crypto.encrypt(wToLs.get(i)[1], wToLs.get(j)[0], k, wToLs.get(k)[t[2]])
-             .serializeAsString(),
+             .toJSON(),
         (2 * wToLs.get(i)[1].pointer()) + wToLs.get(j)[0].pointer()],
       [crypto.encrypt(wToLs.get(i)[1], wToLs.get(j)[1], k, wToLs.get(k)[t[3]])
-             .serializeAsString(),
+             .toJSON(),
         (2 * wToLs.get(i)[1].pointer()) + wToLs.get(j)[1].pointer()]
     ];
     values = values.sort(function (c1, c2) {  // Point-and-permute.
@@ -113,7 +113,7 @@ function garbleGate(gateFromCircuit, wToLs) {
 function garbleGates(circuit, wireToLabels) {
   var garbledGates = new gate.GarbledGates();
   for (var i = 0; i < circuit.gate_count; i++) {
-    garbledGates.add(garbleGate(circuit.gate[i], wireToLabels));
+    garbledGates.set(i, garbleGate(circuit.gate[i], wireToLabels));
   }
   return garbledGates;
 }
