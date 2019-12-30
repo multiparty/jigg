@@ -1,0 +1,32 @@
+{
+  "$id": "https://github.com/multiparty/sigg/blob/master/schemas/gate.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Representation of a logic gate",
+  "type": "object",
+  "properties": {
+    "wire_in_count": { "$ref": "#/definitions/nonnegative" },
+    "wire_in_index": { "$ref": "#/definitions/array_of_nonnegative" },
+    "wire_out_count": { "$ref": "#/definitions/nonnegative" },
+    "wire_out_index": { "$ref": "#/definitions/array_of_nonnegative" },
+    "operation": { "$ref": "#/definitions/operation" }
+  },
+  "required":[
+    "wire_in_index",
+    "wire_out_index",
+    "operation"
+  ],
+  "definitions": {
+    "nonnegative": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "array_of_nonnegative": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/nonnegative" }
+    },
+    "operation": {
+      "type": "string",
+      "enum": ["not", "xor", "and"]
+    }
+  }
+}

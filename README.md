@@ -48,24 +48,27 @@ There is now a SHA-256 demo at `sha256.html` and `client.html`.
 The boolean circuit for SHA has +100,000 gates, and by limiting the number of gates encrypted in parallel, JIGG is able to compute it in under a minute in the browser. Test vectors are found [here](https://homes.esat.kuleuven.be/~nsmart/MPC/sha-256-test.txt) and in the `test/` folder.
 
 ### Circuit Format
-JIGG can evaluate a boolean circuit in either of two formats. It supports a custom JSON circuit format:
+JIGG can evaluate a boolean circuit in either of two formats. It supports circuits represented using JSON according to the [SIGG](https://github.com/multiparty/sigg) standard.
 ```javascript
 const circuit = {
-  wires: 8, gates: 4,
-  input: [1, 2, 3, 4], output: [5, 7, 8],
-  gate: [
-    {wirein: [1,2], wireout: 5, type: 'and'},
-    {wirein: [3,4], wireout: 6, type: 'xor'},
-    {wirein: [6], wireout: 7, type: 'not'},
-    {wirein: [5,7], wireout: 8, type: 'and'}
+  "wire_count":8, "gate_count":4,
+  "value_in_count":2, "value_in_length":[2,2],
+  "value_out_count":1, "value_out_length":[3],  
+  "wire_in_count":4, "wire_in_index":[1,2,3,4],
+  "wire_out_count":3, "wire_out_index":[5,7,8],
+  "gate": [
+    {"wire_in_index":[1,2], "wire_out_index":[5], "operation":"and"},
+    {"wire_in_index":[3,4], "wire_out_index":[6], "operation":"xor"},
+    {"wire_in_index":[6], "wire_out_index":[7], "operation":"not"},
+    {"wire_in_index":[5,7], "wire_out_index":[8], "operation":"and"}
   ]
 };
 ```
 
-It can also parse a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsmart/MPC/) [Format](https://homes.esat.kuleuven.be/~nsmart/MPC/old-circuits.html)' which is supported by several compiled MPC libraries such as [SCALE-MAMBA](https://homes.esat.kuleuven.be/~nsmart/SCALE/).
+JIGG can also parse a circuit in the standardized '[Bristol](https://homes.esat.kuleuven.be/~nsmart/MPC/) [Format](https://homes.esat.kuleuven.be/~nsmart/MPC/old-circuits.html)' which is supported by several compiled MPC libraries such as [SCALE-MAMBA](https://homes.esat.kuleuven.be/~nsmart/SCALE/).
 ```ada
 4 8
-1 4
+2 2 2
 1 3
 2 1 0 1 4 AND
 2 1 2 3 5 XOR

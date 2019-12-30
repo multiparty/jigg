@@ -35,10 +35,7 @@
     },
     "array_of_nonnegative": {
       "type": "array",
-      "items": {
-        "type": "integer",
-        "minimum": 0
-      }
+      "items": { "$ref": "#/definitions/nonnegative" }
     },
     "gate": {
       "type": "object",
