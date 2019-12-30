@@ -99,9 +99,9 @@ Agent.prototype.loadCircuit = function () {
 Agent.prototype.gatesThrottled = function (circuit, garbledGates, wireToLabels, index) {
   for (var i = index; i < index + this.parallel && i < circuit.gate_count; i++) {
     if (this.role == 'Garbler')
-      garbledGates.set(i, garble.garbleGate(circuit.gates[i], wireToLabels));
+      garbledGates.set(i, garble.garbleGate(circuit.gate[i], wireToLabels));
     else if (this.role == 'Evaluator')
-      evaluate.evaluateGate(circuit.gates[i], garbledGates.get(i), wireToLabels);
+      evaluate.evaluateGate(circuit.gate[i], garbledGates.get(i), wireToLabels);
   }
 
   index += this.parallel;
@@ -178,7 +178,7 @@ Agent.prototype.finishEvaluator = function (circuit, wireToLabels) {
   const that = this;
 
   // Collect all output wires' labels; send them back to garbler for decoding.
-  var outputWireToLabels = wireToLabels.copyWithOnlyIndices(circuit.output_wires);
+  var outputWireToLabels = wireToLabels.copyWithOnlyIndices(circuit.wire_out_index);
   this.channel.sendDirect('outputWireToLabels', outputWireToLabels.toJSONString());
 
   // Receive decoded output states.

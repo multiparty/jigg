@@ -9,14 +9,14 @@ const bristolOpToIGG = {'AND': 'and', 'XOR': 'xor', 'INV': 'not'};
 
 /**
  * Create a new gate data structure instance.
- * @param {number[]} input_wires - Input wires indices for the gate
- * @param {number} output_wire - Output wire index
+ * @param {number[]} wire_in_index - Input wire indices for the gate
+ * @param {number[]} wire_out_index - Output wire indices for the gate
  * @param {string} operation - Gate operation
  * @constructor
  */
-function Gate(input_wires, output_wire, operation) {
-  this.input_wires = input_wires == null ? [] : input_wires;
-  this.output_wire = output_wire == null ? undefined : output_wire;
+function Gate(wire_in_index, wire_out_index, operation) {
+  this.wire_in_index = wire_in_index == null ? [] : wire_in_index;
+  this.wire_out_index = wire_out_index == null ? [] : wire_out_index;
   this.operation = operation == null ? 'unknown' : operation;
 }
 
@@ -26,8 +26,8 @@ function Gate(input_wires, output_wire, operation) {
  */
 Gate.prototype.toJSON = function () {
   return {
-    "input_wires": this.input_wires,
-    "output_wire": this.output_wire,
+    "wire_in_index": this.wire_in_index,
+    "wire_out_index": this.wire_out_index,
     "operation": this.operation
   };
 };

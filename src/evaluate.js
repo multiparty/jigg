@@ -23,13 +23,13 @@ function receiveMessages(channel, circuit, input) {
     var messages = [channel.receiveDirect('garbledGates')];
 
     // Receive each of the garbler's input labels.
-    for (var i = 0; i < circuit.input_wires.length / 2; i++) {
-      messages.push(channel.receiveDirect('Wire' + circuit.input_wires[i]));
+    for (var i = 0; i < circuit.wire_in_count/2; i++) {
+      messages.push(channel.receiveDirect('Wire' + circuit.wire_in_index[i]));
     }
 
     // Promises to each of the evaluator's input labels.
-    for (var i = circuit.input_wires.length / 2; i < circuit.input_wires.length; i++) {
-      messages.push(channel.receiveOblivious(inputPair[circuit.input_wires[i]]));
+    for (var i = circuit.wire_in_count/2; i < circuit.wire_in_count; i++) {
+      messages.push(channel.receiveOblivious(inputPair[circuit.wire_in_index[i]]));
     }
 
     return messages;
@@ -44,8 +44,8 @@ function receiveMessages(channel, circuit, input) {
 function processMessages(circuit, messages) {
   var garbledGates = gate.GarbledGates.prototype.fromJSONString(messages[0]);
   var wireToLabels = new association.Association();
-  for (var i = 0; i < circuit.input_wires.length; i++) {
-    var j = circuit.input_wires[i];
+  for (var i = 0; i < circuit.wire_in_count; i++) {
+    var j = circuit.wire_in_index[i];
     wireToLabels.set(j, [label.Label(messages[j])]);
   }
   return [garbledGates, wireToLabels];
@@ -58,9 +58,9 @@ function processMessages(circuit, messages) {
  * @param {Object} wireToLabels - Mapping from each wire index to two labels
  */
 function evaluateGate(gate, garbledGate, wireToLabels) {
-  const i = gate.input_wires[0];
-  const j = (gate.input_wires.length === 2) ? gate.input_wires[1] : i;
-  const k = (gate.output_wire != null) ? gate.output_wire : 0; // If null, just return decrypted.
+  const i = gate.wire_in_index[0];
+  const j = (gate.wire_in_index.length === 2) ? gate.wire_in_index[1] : i;
+  const k = (gate.wire_out_index != null) ? gate.wire_out_index[0] : 0; // If null, just return decrypted.
   const l = 2 * wireToLabels.get(i)[0].pointer() + wireToLabels.get(j)[0].pointer();
 
   if (gate.operation === 'xor') {
@@ -81,7 +81,7 @@ function evaluateGate(gate, garbledGate, wireToLabels) {
  */
 function evaluateGates(circuit, garbledGates, wireToLabels) {
   for (var i = 0; i < circuit.gate_count; i++) {
-    this.evaluateGate(circuit.gates[i], garbledGates.get(i), wireToLabels);
+    this.evaluateGate(circuit.gate[i], garbledGates.get(i), wireToLabels);
   }
   return wireToLabels;
 }
