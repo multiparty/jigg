@@ -1,0 +1,37 @@
+{
+  "$id": "https://github.com/multiparty/sigg/blob/master/schemas/gates.garbled.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Representation of an indexed collection of garbled gates",
+  "type": "object",
+  "patternProperties": {
+    "^[0-9]+$": {
+      "oneOf": [
+        { "$ref": "#/definitions/unencrypted" },
+        { "$ref": "#/definitions/encrypted" }
+      ]
+    }
+  },
+  "definitions": {
+    "uint8": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "label": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/uint8" },
+      "minItems": 1
+    },
+    "unencrypted": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/label" },
+      "maxItems": 0
+    },
+    "encrypted": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/label" },
+      "minItems": 4,
+      "maxItems": 4
+    }
+  }
+}

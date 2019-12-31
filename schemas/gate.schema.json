@@ -5,9 +5,9 @@
   "type": "object",
   "properties": {
     "wire_in_count": { "$ref": "#/definitions/nonnegative" },
-    "wire_in_index": { "$ref": "#/definitions/array_of_nonnegative" },
+    "wire_in_index": { "$ref": "#/definitions/arrayOfNonnegative" },
     "wire_out_count": { "$ref": "#/definitions/nonnegative" },
-    "wire_out_index": { "$ref": "#/definitions/array_of_nonnegative" },
+    "wire_out_index": { "$ref": "#/definitions/arrayOfNonnegative" },
     "operation": { "$ref": "#/definitions/operation" }
   },
   "required":[
@@ -20,7 +20,7 @@
       "type": "integer",
       "minimum": 0
     },
-    "array_of_nonnegative": {
+    "arrayOfNonnegative": {
       "type": "array",
       "items": { "$ref": "#/definitions/nonnegative" }
     },

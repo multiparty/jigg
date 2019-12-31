@@ -7,13 +7,13 @@
     "gate_count": { "$ref": "#/definitions/nonnegative" },
     "wire_count": { "$ref": "#/definitions/nonnegative" },
     "value_in_count": { "$ref": "#/definitions/nonnegative" },
-    "value_in_length": { "$ref": "#/definitions/array_of_nonnegative" },
+    "value_in_length": { "$ref": "#/definitions/arrayOfNonnegative" },
     "value_out_count": { "$ref": "#/definitions/nonnegative" },
-    "value_out_length": { "$ref": "#/definitions/array_of_nonnegative" },
+    "value_out_length": { "$ref": "#/definitions/arrayOfNonnegative" },
     "wire_in_count": { "$ref": "#/definitions/nonnegative" },
-    "wire_in_index": { "$ref": "#/definitions/array_of_nonnegative" },
+    "wire_in_index": { "$ref": "#/definitions/arrayOfNonnegative" },
     "wire_out_count": { "$ref": "#/definitions/nonnegative" },
-    "wire_out_index": { "$ref": "#/definitions/array_of_nonnegative" },
+    "wire_out_index": { "$ref": "#/definitions/arrayOfNonnegative" },
     "gate": {
       "type": "array",
       "items": { "$ref": "#/definitions/gate" }
@@ -33,7 +33,7 @@
       "type": "integer",
       "minimum": 0
     },
-    "array_of_nonnegative": {
+    "arrayOfNonnegative": {
       "type": "array",
       "items": { "$ref": "#/definitions/nonnegative" }
     },
@@ -41,9 +41,9 @@
       "type": "object",
       "properties": {
         "wire_in_count": { "$ref": "#/definitions/nonnegative" },
-        "wire_in_index": { "$ref": "#/definitions/array_of_nonnegative" },
+        "wire_in_index": { "$ref": "#/definitions/arrayOfNonnegative" },
         "wire_out_count": { "$ref": "#/definitions/nonnegative" },
-        "wire_out_index": { "$ref": "#/definitions/array_of_nonnegative" },
+        "wire_out_index": { "$ref": "#/definitions/arrayOfNonnegative" },
         "operation": { "$ref": "#/definitions/operation" }
       },
       "required":[
