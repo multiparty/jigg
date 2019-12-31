@@ -1,6 +1,6 @@
 /**
  * Cryptographic utility functions.
- * @module src/utils/crypto
+ * @module src/util/crypto
  */
 
 'use strict';

@@ -1,6 +1,6 @@
 /**
  * Conversion functions between hexadecimal and binary strings.
- * @module src/utils/hexutils
+ * @module src/util/hexutils
  */
 
 /**

@@ -11,7 +11,7 @@
  * @returns {Object} OT-based I/O object
  */
 const init = function(socket) {
-  const crypto = require('../utils/crypto');
+  const crypto = require('../util/crypto');
   const label = require('../data/label');
 
   const bytes = 8;

@@ -9,7 +9,7 @@ const gate = require('./data/gate');
 const circuit = require('./data/circuit');
 const label = require('./data/label');
 const assignment = require('./data/assignment');
-const crypto = require('./utils/crypto');
+const crypto = require('./util/crypto');
 
 /**
  * Receive garbled gates and wire-to-label map from garbler.

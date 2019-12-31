@@ -9,8 +9,8 @@ const gate = require('./data/gate');
 const circuit = require('./data/circuit');
 const label = require('./data/label');
 const assignment = require('./data/assignment');
-const random = require('./utils/random');
-const crypto = require('./utils/crypto');
+const random = require('./util/random');
+const crypto = require('./util/crypto');
 
 /**
  * Generate labels and encode each state of every wire
