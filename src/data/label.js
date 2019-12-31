@@ -105,6 +105,42 @@ Label.prototype.fromJSON = function (labelAsArrayOfNumbers) {
 };
 
 /**
+ * Turn an array of labels into a JSON object.
+ * @param {Object[]} labels - Array of labels
+ * @returns {Object[]} Array of JSON objects
+ */
+Label.prototype.labelsToJSON = function (labels) {
+  return labels.map(Label.prototype.toJSON);
+};
+
+/**
+ * Turn an array of labels into a JSON object as a string.
+ * @param {Object[]} labels - Array of labels
+ * @returns {string} JSON string representation of array of labels
+ */
+Label.prototype.labelsToJSONString = function (labels) {
+  return JSON.stringify(Label.prototype.labelsToJSON(labels));
+};
+
+/**
+ * Turn a JSON object into an array of labels.
+ * @param {Object} json - The JSON object
+ * @returns {Object[]} Array of labels
+ */
+Label.prototype.labelsFromJSON = function (json) {
+  return json;
+};
+
+/**
+ * Turn a JSON string representing an array of labels into that array.
+ * @param {string} labels - JSON string representation of array of labels
+ * @returns {Object[]} Array of labels
+ */
+Label.prototype.labelsFromJSONString = function (json) {
+  return Label.prototype.labelsFromJSON(JSON.parse(json));
+};
+
+/**
  * ???
  * @param {Object} point - ???
  * @returns {???} ???
@@ -126,7 +162,7 @@ Label.prototype.point = function (point) {
 /**
  * Compute XOR of this label object and another object.
  * @param {Object} b - Other label object
- * @returns {Array} Result of XOR operation.
+ * @returns {Array} Result of XOR operation
  */
 Label.prototype.xor = function (b) {
   return crypto.xorArray(this, b, this.length);
@@ -153,5 +189,9 @@ Label.prototype.getOccurrenceIndexIn = function (labels) {
 module.exports = {
   Label: Label,
   fromJSON: Label.prototype.fromJSON,
+  labelsToJSONS: Label.prototype.labelsToJSONS,
+  labelsToJSONString: Label.prototype.labelsToJSONString,
+  labelsFromJSON: Label.prototype.labelsFromJSON,
+  labelsFromJSONString: Label.prototype.labelsFromJSONString,
   randomLabel: randomLabel
 };
