@@ -423,14 +423,14 @@ var add32_json = {
 
 /**
  * Run pure (functions only) end-to-end execution of entire protocol.
- * @param {Object} keyToSchema - Mapping from keys to schemas (for message format validation)
  * @param {Object} circuit - Circuit to garble and evaluate
  * @param {Object} input1 - Bit vector for first input
  * @param {Object} input2 - Bit vector for second input
+ * @param {Object} channel - Communications channel to use for test
  * @returns {number[]} Computed bit vector output
  */
-function protocolPureEndToEnd(keyToSchema, circuit, input1, input2) {
-  var chan = new channel.ChannelSimulated(keyToSchema);
+function protocolPureEndToEnd(circuit, input1, input2, chan) {
+  chan = (chan == null) ? new channel.ChannelSimulated() : chan;
 
   // Steps performed by garbler.
   var wToLs_G = garble.generateWireToLabelsMap(circuit);
@@ -478,7 +478,7 @@ describe('end-to-end', function() {
     var input1 = new bits.Bits("01"), input2 = new bits.Bits("10");
     var and4_circuit = circuit.fromBristolFashion(and4_bristol);
     var outEval = and4_circuit.evaluate([input1, input2]);
-    var outEtoE = protocolPureEndToEnd({}, and4_circuit, input1, input2);
+    var outEtoE = protocolPureEndToEnd(and4_circuit, input1, input2);
     expect(outEval.toString()).to.eql(outEtoE.toString());
   });
 
@@ -488,7 +488,7 @@ describe('end-to-end', function() {
       var input2 = bits.random(32, r + 1);
       var add32_circuit = circuit.fromBristolFashion(add32_bristol);
       var outEval = add32_circuit.evaluate([input1, input2]);
-      var outEtoE = protocolPureEndToEnd({}, add32_circuit, input1, input2);
+      var outEtoE = protocolPureEndToEnd(add32_circuit, input1, input2);
       expect(outEval.toString()).to.eql(outEtoE.toString());
     });
   }
@@ -503,14 +503,36 @@ describe('end-to-end', function() {
   ];
   for (let i = 0; i < filenames.length; i++) {
     it(filenames[i], async function() {
-      let keyToSchema = {};
+      // Create the simulated communications channel.
+      var chan = new channel.ChannelSimulated();
+      
+      // Load circuit file and perform end-to-end test.
       let raw = await fs.readFile('./circuits/bristol/' + filenames[i], 'utf8');
       let c = circuit.fromBristolFashion(raw);
       let input1 = bits.random(c.wire_in_count/2, 1);
       let input2 = bits.random(c.wire_in_count/2, 2);
       let outEval = c.evaluate([input1, input2]);
-      let outEtoE = protocolPureEndToEnd(keyToSchema, c, input1, input2);
+      let outEtoE = protocolPureEndToEnd(c, input1, input2, chan);
+ 
+      // Confirm that the output bit vectors match.
       expect(outEval.toString()).to.eql(outEtoE.toString());
+      
+      // Confirm that communicated messages conform to schemas.
+      let gatesGarbledSchemaString = await fs.readFile('./schemas/gates.garbled.schema.json', 'utf8');
+      let gatesGarbledSchema = JSON.parse(gatesGarbledSchemaString);
+      expect(JSON.parse(chan.direct['garbledGates'])).to.be.jsonSchema(gatesGarbledSchema);
+
+      let assignmentSchemaString = await fs.readFile('./schemas/assignment.schema.json', 'utf8');
+      let assignmentSchema = JSON.parse(assignmentSchemaString);
+      expect(JSON.parse(chan.direct['outputWireToLabels'])).to.be.jsonSchema(assignmentSchema);
+
+      let labelSchemaString = await fs.readFile('./schemas/label.schema.json', 'utf8');
+      let labelSchema = JSON.parse(labelSchemaString);
+      for (var key in chan.direct) {
+        if (key.startsWith("wire[")) {
+          expect(JSON.parse(chan.direct[key])).to.be.jsonSchema(labelSchema);
+        }
+      }
     });
   }
 });

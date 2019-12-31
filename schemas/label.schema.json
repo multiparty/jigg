@@ -1,0 +1,14 @@
+{
+  "$id": "https://github.com/multiparty/sigg/blob/master/schemas/label.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Representation of a single wire label",
+  "type": "array",
+  "items": { "$ref": "#/definitions/uint8" },
+  "minItems": 1,
+  "definitions": {
+    "uint8": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}
