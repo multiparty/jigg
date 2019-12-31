@@ -8,14 +8,12 @@
 /**
  * Create a communication object.
  * @param {number} port - Port to use
- * @returns {Object} I/O object.
+ * @returns {Object} I/O object
  */
 const io = function(port) {
   port = port == null ? 3000 : port;
   var socket = require('socket.io-client')('http://localhost:'+port, {forceNew: true});
-  // console.log('=====', socket);
   socket.on('shutdown', function (msg) {
-    // console.log('Server closed.', msg);
     socket.disconnect();
   });
 
@@ -44,7 +42,6 @@ const io = function(port) {
     socket.emit('listening for', tag);
     return new Promise(function (resolve) {
       socket.on(tag, function (msg) {
-        // console.log('received msg:', tag, msg);
         resolve(msg);
       });
     });
@@ -54,10 +51,6 @@ const io = function(port) {
   *  Give a string to the other party.
   */
   const give = function(tag, msg) {
-    if (msg != null && typeof(msg.serializeAsString) === 'function') {
-      msg = msg.serializeAsString();
-    }
-
     socket.emit('send', tag, msg);
   }
 
@@ -65,7 +58,6 @@ const io = function(port) {
   *  Connect to the server.
   */
   const join = function(role) {
-    // console.log('join', role);
     socket.emit('join', role);
   }
 
