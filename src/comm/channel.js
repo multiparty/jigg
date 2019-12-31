@@ -72,15 +72,11 @@ Channel.prototype.receiveOblivious = function (bit) {
 
 /**
  * Create a new simulated channel.
- * @param {Object} keyToSchema - Mapping from keys to schemas
  * @constructor
  */
-function ChannelSimulated(keyToSchema) {
+function ChannelSimulated() {
   this.direct = {};
   this.oblivious = [];
-  
-  // For message format validation.
-  this.keyToSchema = (keyToSchema == null) ? {} : keyToSchema;
 }
 
 /**
@@ -94,7 +90,6 @@ ChannelSimulated.prototype.sendDirect = function (key, value) {
   if (!(typeof(value) === 'string')) {
     throw new Error('Only string values should be sent directly over channel');
   }
-
   this.direct[key] = value;
 };
 
