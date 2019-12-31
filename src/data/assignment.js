@@ -1,6 +1,6 @@
 /**
  * Data structure for a map from wire indices to one or two labels.
- * @module src/data/association
+ * @module src/data/assignment
  */
 
 'use strict';
@@ -14,16 +14,16 @@ const label = require('./label');
  * note that the domain of the map begins at 1 and not 0.
  * @constructor
  */
-function Association() {
+function Assignment() {
   this.mapping = {};
 }
 
 /**
- * Associate a wire index with a list of labels.
- * @param {number} index - Index of wire to associate with labels
+ * Assign an ordered collection of labels to a wire index.
+ * @param {number} index - Index of wire to which to assign labels
  * @param {Object[]} labels - Array of one or two labels
  */
-Association.prototype.set = function (index, labels) {
+Assignment.prototype.set = function (index, labels) {
   this.mapping[index] = labels;
 };
 
@@ -32,7 +32,7 @@ Association.prototype.set = function (index, labels) {
  * @param {number} index - Index of wire for which to return the label
  * @param {Object[]} labels - Array of one or two labels
  */
-Association.prototype.get = function (index) {
+Assignment.prototype.get = function (index) {
   return this.mapping[index];
 };
 
@@ -40,7 +40,7 @@ Association.prototype.get = function (index) {
  * Return the data structure instance as a JSON object.
  * @returns {Object} Data structure as a JSON object
  */
-Association.prototype.toJSON = function () {
+Assignment.prototype.toJSON = function () {
   var json = {};
   for (var index in this.mapping) {
     json[index] =
@@ -55,7 +55,7 @@ Association.prototype.toJSON = function () {
  * Return the data structure instance as a JSON string.
  * @returns {string} Data structure as a JSON string
  */
-Association.prototype.toJSONString = function () {
+Assignment.prototype.toJSONString = function () {
   return JSON.stringify(this.toJSON());
 };
 
@@ -63,20 +63,20 @@ Association.prototype.toJSONString = function () {
  * Build a data structure instance from its JSON representation.
  * @returns {Object} Instance of the data structure
  */
-Association.prototype.fromJSON = function (json) {
-  var assoc = new Association();
+Assignment.prototype.fromJSON = function (json) {
+  var a = new Assignment();
   for (var index in json) {
-    assoc.set(index, json[index].map(label.fromJSON));
+    a.set(index, json[index].map(label.fromJSON));
   }
-  return assoc;
+  return a;
 };
 
 /**
  * Build a data structure instance from its JSON string representation.
  * @returns {Object} Instance of the data structure
  */
-Association.prototype.fromJSONString = function (s) {
-  return Association.prototype.fromJSON(JSON.parse(s));
+Assignment.prototype.fromJSONString = function (s) {
+  return Assignment.prototype.fromJSON(JSON.parse(s));
 };
 
 /**
@@ -84,16 +84,16 @@ Association.prototype.fromJSONString = function (s) {
  * @param {number[]} indices - Indices of map entries to keep in result
  * @returns {Object} Data structure as a JSON object
  */
-Association.prototype.copyWithOnlyIndices = function (indices) {
-  var assoc = new Association();
+Assignment.prototype.copyWithOnlyIndices = function (indices) {
+  var a = new Assignment();
   for (var k = 0; k < indices.length; k++) {
-    assoc.set(indices[k], this.mapping[indices[k]]);
+    a.set(indices[k], this.mapping[indices[k]]);
   }
-  return assoc;
+  return a;
 };
 
 module.exports = {
-  Association: Association,
-  fromJSON: Association.prototype.fromJSON,
-  fromJSONString: Association.prototype.fromJSONString
+  Assignment: Assignment,
+  fromJSON: Assignment.prototype.fromJSON,
+  fromJSONString: Assignment.prototype.fromJSONString
 };

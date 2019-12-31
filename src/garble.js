@@ -8,7 +8,7 @@
 const gate = require('./data/gate');
 const circuit = require('./data/circuit');
 const label = require('./data/label');
-const association = require('./data/association');
+const assignment = require('./data/assignment');
 const random = require('./utils/random');
 const crypto = require('./utils/crypto');
 
@@ -20,7 +20,7 @@ const crypto = require('./utils/crypto');
  */
 function generateWireToLabelsMap(circuit) {
   const R = label.randomLabel();  // R in {0, 1}^N.
-  var wireToLabels = new association.Association();
+  var wireToLabels = new assignment.Assignment();
 
   for (var j = 0; j < circuit.wire_in_count; j++) {
     var i = circuit.wire_in_index[j];
@@ -163,7 +163,7 @@ function outputLabelsToBits(circuit, wireToLabels, outputWireToLabels) {
     var outputLabel =
       outputWireToLabels
         .get(circuit.wire_out_index[i])
-        [0] // Only one label in association from evaluator.
+        [0] // Only one label in assignment from evaluator.
         .withoutLastElement(); // Drop last bit.
 
     var bit = outputLabel.getOccurrenceIndexIn(labelsForFalseAndTrue);

@@ -9,7 +9,7 @@ const bits = require('./data/bits');
 const gate = require('./data/gate');
 const circuit = require('./data/circuit');
 const label = require('./data/label');
-const association = require('./data/association');
+const assignment = require('./data/assignment');
 const garble = require('./garble');
 const evaluate = require('./evaluate');
 const channel = require('./comm/channel');
@@ -148,7 +148,7 @@ Agent.prototype.finishGarbler = function (circuit, garbledGates, wireToLabels) {
   // Get output labels and decode them back to their original values.
   this.channel.receiveDirect('outputWireToLabels').then(function (outputWireToLabelsString) {
     var outputWireToLabels =
-      association.fromJSONString(outputWireToLabelsString);
+      assignment.fromJSONString(outputWireToLabelsString);
     var outputBits = garble.outputLabelsToBits(circuit, wireToLabels, outputWireToLabels);
     that.channel.sendDirect('outputBits', outputBits);
     that.callback(new bits.Bits(outputBits));
