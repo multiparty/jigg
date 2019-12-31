@@ -20,7 +20,7 @@ const crypto = require('./util/crypto');
  */
 function receiveMessages(channel, circuit, input) {
     const inputPair = (new Array(1 + input.length)).concat(input);
-    var messages = [channel.receiveDirect('garbledGates')];
+    var messages = [channel.receiveDirect('gatesGarbled')];
 
     // Receive each of the garbler's input labels.
     for (var i = 0; i < circuit.wire_in_count/2; i++) {
@@ -42,22 +42,22 @@ function receiveMessages(channel, circuit, input) {
  * @returns {Object[]} Pair containing the received gates and wire-to-label map
  */
 function processMessages(circuit, messages) {
-  var garbledGates = gate.GarbledGates.prototype.fromJSONString(messages[0]);
+  var gatesGarbled = gate.GatesGarbled.prototype.fromJSONString(messages[0]);
   var wireToLabels = new assignment.Assignment();
   for (var i = 0; i < circuit.wire_in_count; i++) {
     var j = circuit.wire_in_index[i];
     wireToLabels.set(j, [label.Label(messages[j])]);
   }
-  return [garbledGates, wireToLabels];
+  return [gatesGarbled, wireToLabels];
 }
 
 /**
  * Decrypt a single garbled gate; the resulting label is stored automatically and also returned.
  * @param {Object} gate - Corresponding gate from the original circuit
- * @param {Object} garbledGate - Garbled gate to evaluate
+ * @param {Object} gateGarbled - Garbled gate to evaluate
  * @param {Object} wireToLabels - Mapping from each wire index to two labels
  */
-function evaluateGate(gate, garbledGate, wireToLabels) {
+function evaluateGate(gate, gateGarbled, wireToLabels) {
   const i = gate.wire_in_index[0];
   const j = (gate.wire_in_index.length === 2) ? gate.wire_in_index[1] : i;
   const k = (gate.wire_out_index != null) ? gate.wire_out_index[0] : 0; // If null, just return decrypted.
@@ -68,20 +68,20 @@ function evaluateGate(gate, garbledGate, wireToLabels) {
   } else if (gate.operation === 'not') {
     wireToLabels.set(k, [wireToLabels.get(i)[0]]);  // Already inverted.
   } else if (gate.operation === 'and') {
-    wireToLabels.set(k, [crypto.decrypt(wireToLabels.get(i)[0], wireToLabels.get(j)[0], k, label.Label(garbledGate.get(l)))]);
+    wireToLabels.set(k, [crypto.decrypt(wireToLabels.get(i)[0], wireToLabels.get(j)[0], k, label.Label(gateGarbled.get(l)))]);
   }
 }
 
 /**
  * Evaluate all the gates (stateless version).
  * @param {Object} circuit - Circuit in which to garble the gates
- * @param {Object} garbledGates - Ordered collection of garbled gates
+ * @param {Object} gatesGarbled - Ordered collection of garbled gates
  * @param {Object} wireToLabels - Labeled wire data structure
  * @returns {Object} Mapping from each wire index to two labels
  */
-function evaluateGates(circuit, garbledGates, wireToLabels) {
+function evaluateGates(circuit, gatesGarbled, wireToLabels) {
   for (var i = 0; i < circuit.gate_count; i++) {
-    this.evaluateGate(circuit.gate[i], garbledGates.get(i), wireToLabels);
+    this.evaluateGate(circuit.gate[i], gatesGarbled.get(i), wireToLabels);
   }
   return wireToLabels;
 }

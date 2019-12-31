@@ -76,9 +76,9 @@ function garbleGate(gateFromCircuit, wToLs) {
   const k = gateFromCircuit.wire_out_index[0];
 
   if (gateFromCircuit.operation === 'xor') {
-    return new gate.GarbledGate(); // Free XOR; encrypt nothing.
+    return new gate.GateGarbled(); // Free XOR; encrypt nothing.
   } else if (gateFromCircuit.operation === 'not') {
-    return new gate.GarbledGate(); // Encrypt nothing.
+    return new gate.GateGarbled(); // Encrypt nothing.
   } else if (gateFromCircuit.operation === 'and') {
     var t = [0,0,0,1];
     var values = [
@@ -99,7 +99,7 @@ function garbleGate(gateFromCircuit, wToLs) {
       return c1[1] - c2[1];
     })
     values = values.map(function (c) { return c = c[0]; });
-    return new gate.GarbledGate(values);
+    return new gate.GateGarbled(values);
   }
   // Define cases for any other gate operations here.
 }
@@ -111,11 +111,11 @@ function garbleGate(gateFromCircuit, wToLs) {
  * @returns {Object} Ordered collection of garbled gates
  */
 function garbleGates(circuit, wireToLabels) {
-  var garbledGates = new gate.GarbledGates();
+  var gatesGarbled = new gate.GatesGarbled();
   for (var i = 0; i < circuit.gate_count; i++) {
-    garbledGates.set(i, garbleGate(circuit.gate[i], wireToLabels));
+    gatesGarbled.set(i, garbleGate(circuit.gate[i], wireToLabels));
   }
-  return garbledGates;
+  return gatesGarbled;
 }
 
 /**

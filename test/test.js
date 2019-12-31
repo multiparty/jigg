@@ -434,14 +434,14 @@ function protocolPureEndToEnd(circuit, input1, input2, chan) {
 
   // Steps performed by garbler.
   var wToLs_G = garble.generateWireToLabelsMap(circuit);
-  var garbledGates = garble.garbleGates(circuit, wToLs_G);
+  var gatesGarbled = garble.garbleGates(circuit, wToLs_G);
   garble.sendInputWireToLabelsMap(chan, circuit, wToLs_G, input1.bits);
-  chan.sendDirect('garbledGates', garbledGates.toJSONString());
+  chan.sendDirect('gatesGarbled', gatesGarbled.toJSONString());
 
   // Steps performed by evaluator.
   var messages = evaluate.receiveMessages(chan, circuit, input2.bits);
-  var [garbledGates_E, wToL_E] = evaluate.processMessages(circuit, messages);
-  var wToL_E2 = evaluate.evaluateGates(circuit, garbledGates_E, wToL_E)
+  var [gatesGarbled_E, wToL_E] = evaluate.processMessages(circuit, messages);
+  var wToL_E2 = evaluate.evaluateGates(circuit, gatesGarbled_E, wToL_E)
                         .copyWithOnlyIndices(circuit.wire_out_index);
   var outputWireToLabels_E = wToL_E2.copyWithOnlyIndices(circuit.wire_out_index);
   chan.sendDirect('outputWireToLabels', outputWireToLabels_E.toJSONString());
@@ -520,7 +520,7 @@ describe('end-to-end', function() {
       // Confirm that communicated messages conform to schemas.
       let gatesGarbledSchemaString = await fs.readFile('./schemas/gates.garbled.schema.json', 'utf8');
       let gatesGarbledSchema = JSON.parse(gatesGarbledSchemaString);
-      expect(JSON.parse(chan.direct['garbledGates'])).to.be.jsonSchema(gatesGarbledSchema);
+      expect(JSON.parse(chan.direct['gatesGarbled'])).to.be.jsonSchema(gatesGarbledSchema);
 
       let assignmentSchemaString = await fs.readFile('./schemas/assignment.schema.json', 'utf8');
       let assignmentSchema = JSON.parse(assignmentSchemaString);
