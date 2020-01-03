@@ -28,7 +28,7 @@ function generateWireToLabelsMap(circuit) {
     var labelNew = label.randomLabel();
     wireToLabels.set(i, [labelNew, labelNew.xor(R)])
 
-    var point = random.randomBit();
+    var point = random.randomBit();  // Generate a 'select bit' for point-and-permute sorting
     wireToLabels.get(i)[0].pointer(point);
     wireToLabels.get(i)[1].pointer(1-point);
   }
@@ -95,7 +95,8 @@ function garbleGate(gateFromCircuit, wToLs) {
              .toJSON(),
         (2 * wToLs.get(i)[1].pointer()) + wToLs.get(j)[1].pointer()]
     ];
-    values = values.sort(function (c1, c2) {  // Point-and-permute.
+    // Point-and-permute.  Sort by select bits.
+    values = values.sort(function (c1, c2) {
       return c1[1] - c2[1];
     })
     values = values.map(function (c) { return c = c[0]; });
@@ -139,7 +140,7 @@ function sendInputWireToLabelsMap(channel, circuit, wireToLabels, input) {
   // Use oblivious transfer for the second half of the input labels.
   for (var i = circuit.wire_in_count/2; i < circuit.wire_in_count; i++) {
     channel.sendOblivious([
-      wireToLabels.get(circuit.wire_in_index[i])[0], 
+      wireToLabels.get(circuit.wire_in_index[i])[0],
       wireToLabels.get(circuit.wire_in_index[i])[1]
     ]);
   }

@@ -4,7 +4,7 @@ global.fetch = require('node-fetch');
 const hexutils = require('../src/utils/hexutils');
 const jigg = require('../src/jigg');
 
-// Handle ommand line arguments.
+// Handle command line arguments.
 var args = process.argv;
 var role = args[3];
 var input = args[4];

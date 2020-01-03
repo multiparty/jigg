@@ -141,17 +141,18 @@ Label.prototype.labelsFromJSONString = function (json) {
 };
 
 /**
- * ???
- * @param {Object} point - ???
- * @returns {???} ???
+ * Get (and optionally set) this label's select bit 'point'
+ *              used in the point-and-permute optimization.
+ * @param {number} point - Optional select bit to set
+ * @returns {number} a 0 or 1 valued select bit
  */
 Label.prototype.pointer = function (point) {
   return this[bytes] = (point == null) ? this[bytes] : point;
 };
 
 /**
- * ???
- * @param {Object} point - ???
+ * Mutate a label object to point up 0 or down 1
+ * @param {number} point - select bit 'point'
  * @returns {Object} Updated label object
  */
 Label.prototype.point = function (point) {
