@@ -5,9 +5,9 @@
 
 'use strict';
 
+const label = require('./data/label');
 const gate = require('./data/gate');
 const circuit = require('./data/circuit');
-const label = require('./data/label');
 const assignment = require('./data/assignment');
 const crypto = require('./util/crypto');
 
@@ -19,20 +19,20 @@ const crypto = require('./util/crypto');
  * @returns {Object[]} Array of messages from garbler
  */
 function receiveMessages(channel, circuit, input) {
-    const inputPair = (new Array(1 + input.length)).concat(input);
-    var messages = [channel.receiveDirect('gatesGarbled')];
+  const inputPair = (new Array(1 + input.length)).concat(input);
+  var messages = [channel.receiveDirect('gatesGarbled')];
 
-    // Receive each of the garbler's input labels.
-    for (var i = 0; i < circuit.wire_in_count/2; i++) {
-      messages.push(channel.receiveDirect('wire[' + circuit.wire_in_index[i] + ']'));
-    }
+  // Receive each of the garbler's input labels.
+  for (var i = 0; i < circuit.wire_in_count/2; i++) {
+    messages.push(channel.receiveDirect('wire[' + circuit.wire_in_index[i] + ']'));
+  }
 
-    // Promises to each of the evaluator's input labels.
-    for (var i = circuit.wire_in_count/2; i < circuit.wire_in_count; i++) {
-      messages.push(channel.receiveOblivious(inputPair[circuit.wire_in_index[i]]));
-    }
+  // Promises to each of the evaluator's input labels.
+  for (var i = circuit.wire_in_count/2; i < circuit.wire_in_count; i++) {
+    messages.push(channel.receiveOblivious(inputPair[circuit.wire_in_index[i]]));
+  }
 
-    return messages;
+  return messages;
 }
 
 /**

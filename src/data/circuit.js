@@ -130,13 +130,16 @@ Circuit.prototype.fromBristolFashion = function (raw) {
 Circuit.prototype.evaluate = function (inputs) {
   
   var c = this;
-  var wires = {};
+  var wire = {};
   
   // Assign input bits to corresponding input wires.
+  // It is assumed that the number of input wires
+  // in the circuit matches the total number of bits
+  // across all inputs in the inputs array.
   var circuitInputWireIndex = 0;
   for (var i = 0; i < inputs.length; i++) {
     for (var j = 0; j < inputs[i].bits.length; j++) {
-      wires[c.wire_in_index[circuitInputWireIndex]] = inputs[i].bits[j];
+      wire[c.wire_in_index[circuitInputWireIndex]] = inputs[i].bits[j];
       circuitInputWireIndex++;
     }
   }
@@ -144,19 +147,19 @@ Circuit.prototype.evaluate = function (inputs) {
   // Evaluate the gate.
   for (var i = 0; i < c.gate_count; i++) {
     if (c.gate[i].operation == 'and') {
-      wires[c.gate[i].wire_out_index[0]] =
-        ((wires[c.gate[i].wire_in_index[0]] == 1) &&
-         (wires[c.gate[i].wire_in_index[1]] == 1)) ?
+      wire[c.gate[i].wire_out_index[0]] =
+        ((wire[c.gate[i].wire_in_index[0]] == 1) &&
+         (wire[c.gate[i].wire_in_index[1]] == 1)) ?
         1 : 0;
     }
     if (c.gate[i].operation == 'xor') {
-      wires[c.gate[i].wire_out_index[0]] =
-        (wires[c.gate[i].wire_in_index[0]] != wires[c.gate[i].wire_in_index[1]]) ?
+      wire[c.gate[i].wire_out_index[0]] =
+        (wire[c.gate[i].wire_in_index[0]] != wire[c.gate[i].wire_in_index[1]]) ?
         1 : 0;
     }
     if (c.gate[i].operation == 'not') {
-      wires[c.gate[i].wire_out_index[0]] =
-        (wires[c.gate[i].wire_in_index[0]] == 0) ?
+      wire[c.gate[i].wire_out_index[0]] =
+        (wire[c.gate[i].wire_in_index[0]] == 0) ?
         1 : 0;
     }
   }
@@ -164,7 +167,7 @@ Circuit.prototype.evaluate = function (inputs) {
   // Retrieve the output bits.
   var outputBits = [];
   for (var i = 0; i < c.wire_out_count; i++) {
-    outputBits.push(wires[c.wire_out_index[i]]);
+    outputBits.push(wire[c.wire_out_index[i]]);
   }
 
   return new bits.Bits(outputBits);

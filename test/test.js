@@ -434,9 +434,9 @@ function protocolPureEndToEnd(circuit, input1, input2, chan) {
 
   // Steps performed by garbler.
   var wToLs_G = garble.generateWireToLabelsMap(circuit);
-  var gatesGarbled = garble.garbleGates(circuit, wToLs_G);
+  var gatesGarbled_G = garble.garbleGates(circuit, wToLs_G);
   garble.sendInputWireToLabelsMap(chan, circuit, wToLs_G, input1.bits);
-  chan.sendDirect('gatesGarbled', gatesGarbled.toJSONString());
+  chan.sendDirect('gatesGarbled', gatesGarbled_G.toJSONString());
 
   // Steps performed by evaluator.
   var messages = evaluate.receiveMessages(chan, circuit, input2.bits);

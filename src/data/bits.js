@@ -41,13 +41,13 @@ Bits.prototype.toString = function () {
 };
 
 /**
- * Return a random (uniformly) bit vector of specified length
+ * Return a random (uniformly) bit vector of specified length.
  * @param {number} length - Length of bit vector
  * @param {number} index - Seed index (for determinism)
  * @returns {Object} Random bit vector
  */
 function random(length, index) {
-  index = (index == null) ? 1 : index;
+  index = (index == null) ? 1 : index; // Never use 0 as index.
   var prime1 = 7518157;
   var primes2 = [
     1120211, 1193911, 1390931, 1761671, 3001003, 3321233, 3673763,

@@ -85,11 +85,11 @@ Assignment.prototype.fromJSONString = function (s) {
  * @returns {Object} Data structure as a JSON object
  */
 Assignment.prototype.copyWithOnlyIndices = function (indices) {
-  var a = new Assignment();
+  var assignment = new Assignment();
   for (var k = 0; k < indices.length; k++) {
-    a.set(indices[k], this.mapping[indices[k]]);
+    assignment.set(indices[k], this.mapping[indices[k]]);
   }
-  return a;
+  return assignment;
 };
 
 module.exports = {

@@ -6,9 +6,9 @@
 'use strict';
 
 const bits = require('./data/bits');
+const label = require('./data/label');
 const gate = require('./data/gate');
 const circuit = require('./data/circuit');
-const label = require('./data/label');
 const assignment = require('./data/assignment');
 const garble = require('./garble');
 const evaluate = require('./evaluate');
