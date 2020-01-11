@@ -493,6 +493,7 @@ describe('end-to-end', function() {
     });
   }
 
+  // Circuits to test.
   let filenames = [
     'universal_1bit.txt',
     'and4.txt', 'and8.txt',
@@ -501,11 +502,19 @@ describe('end-to-end', function() {
     'zero_equal_64.txt'//, 'zero_equal_128.txt'
     //,'mult_32x32.txt', 'mult64.txt', 'divide64.txt'
   ];
+
+  // Mathematical reference functions corresponding to circuits.
+  let functions = {
+    'and4.txt': function (a, b) { return a.concat(b).andBits(); },
+    'and8.txt': function (a, b) { return a.concat(b).andBits(); },
+  }
+
+  // Test each circuit.
   for (let i = 0; i < filenames.length; i++) {
     it(filenames[i], async function() {
       // Create the simulated communications channel.
       var chan = new channel.ChannelSimulated();
-      
+
       // Load circuit file and perform end-to-end test.
       let raw = await fs.readFile('./circuits/bristol/' + filenames[i], 'utf8');
       let c = circuit.fromBristolFashion(raw);
@@ -514,7 +523,14 @@ describe('end-to-end', function() {
       let outEval = c.evaluate([input1, input2]);
       let outEtoE = protocolPureEndToEnd(c, input1, input2, chan);
  
-      // Confirm that the output bit vectors match.
+      // Confirm that the circuit is mathematically correct if a
+      // reference function for the circuit is provided.
+      if (filenames[i] in functions) {
+        let outRef = functions[filenames[i]](input1, input2);
+        expect(outEval.toString()).to.eql(outRef.toString());
+      }
+
+      // Do the evaluation and end-to-end protocol output bit vectors match?
       expect(outEval.toString()).to.eql(outEtoE.toString());
       
       // Confirm that communicated messages conform to schemas.
