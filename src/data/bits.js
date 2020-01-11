@@ -86,29 +86,32 @@ Bits.prototype.concat = function (other) {
 };
 
 /**
- * Return a (decimal representation) number of the bit vector.
+ * Return a BigInt (decimal) representation of the bit vector.
  * @returns {number} Numeric value corresponding to the bit vector
  */
 Bits.prototype.toNumber = function () {
-  var n = 0;
-  var multiplier = 1;
+  var n = BigInt(0);
+  var multiplier = BigInt(1);
   for (var i = this.bits.length-1; i >= 0; i--) {
-      n += this.bits[i] * multiplier;
-      multiplier *= 2;
+      n += BigInt(this.bits[i]) * multiplier;
+      multiplier *= BigInt(2);
   }
   return n;
 };
 
 /**
  * Creates a bit vector representation of a natural number.
+ * Works both with numbers and BigInt instances.
  * @param {number} n - Natural number to convert into bit vector
  * @returns {Object} Bit vector
  */
 Bits.prototype.fromNumber = function (n) {
   var bits = [];
-  while (n > 0) {
-      bits = [n % 2].concat(bits);
-      n = Math.floor(n / 2);
+  var zero = (typeof n === 'bigint') ? BigInt(0) : 0;
+  var two = (typeof n === 'bigint') ? BigInt(2) : 2;
+  while (n > zero) {
+      bits = [((n%two)==BigInt(0)) ? 0 : 1].concat(bits);
+      n = n / two;
   }
   return new Bits(bits);
 };
