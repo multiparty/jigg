@@ -42,6 +42,22 @@ Bits.prototype.toString = function () {
 };
 
 /**
+ * Concatenate two bit vectors.
+ * @param {Object} other - Other bit vector
+ * @returns {number} Concatenated bit vector
+ */
+Bits.prototype.concat = function (other) {
+  var bits = [];
+  for (var i = 0; i < this.bits.length; i++) {
+    bits.push(this.bits[i]);
+  }
+  for (var i = 0; i < other.bits.length; i++) {
+    bits.push(other.bits[i]);
+  }
+  return new Bits(bits);
+};
+
+/**
  * Return a (decimal representation) number of the bit vector.
  * @returns {number} Numeric value corresponding to the bit vector
  */
@@ -124,6 +140,17 @@ Bits.prototype.not = function () {
     bits.push(1 - this.bits[i]);
   }
   return new Bits(bits);
+};
+
+/**
+ * Perform bit-wise conjunction across all bits of a vector.
+ * @returns {number} Bit vector representing conjunction of all bits
+ */
+Bits.prototype.andBits = function () {
+  for (var i = 0; i < this.bits.length; i++)
+    if (this.bits[i] == 0)
+      return new Bits([0]);
+  return new Bits([1]);
 };
 
 /**
