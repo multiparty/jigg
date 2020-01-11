@@ -42,6 +42,34 @@ Bits.prototype.toString = function () {
 };
 
 /**
+ * Return a bit vector padded to the specified length.
+ * @param {number} length - Target bit vector length
+ * @returns {number} Padded bit vector
+ */
+Bits.prototype.pad = function (length) {
+  var bits = [];
+  for (var i = 0; i < Math.max(0, length - this.bits.length); i++) {
+    bits.push(0);
+  }
+  for (var i = 0; i < this.bits.length; i++) {
+    bits.push(this.bits[i]);
+  }
+  return new Bits(bits);
+};
+
+/**
+ * Return a reversed bit vector.
+ * @returns {number} Reversed bit vector
+ */
+Bits.prototype.rev = function () {
+  var bits = [];
+  for (var i = this.bits.length-1; i >= 0; i--) {
+    bits.push(this.bits[i]);
+  }
+  return new Bits(bits);
+};
+
+/**
  * Concatenate two bit vectors.
  * @param {Object} other - Other bit vector
  * @returns {number} Concatenated bit vector

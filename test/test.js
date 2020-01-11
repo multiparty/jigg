@@ -507,6 +507,7 @@ describe('end-to-end', function() {
   let functions = {
     'and4.txt': function (a, b) { return a.concat(b).andBits(); },
     'and8.txt': function (a, b) { return a.concat(b).andBits(); },
+    'adder_32bit.txt': function (a, b) { return a.rev().add(b.rev()).pad(33).rev(); },
     'zero_equal_64.txt': function (a, b) { return a.concat(b).orBits().not(); },
   }
 
