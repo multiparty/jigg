@@ -508,6 +508,8 @@ describe('end-to-end', function() {
     'and4.txt': function (a, b) { return a.concat(b).andBits(); },
     'and8.txt': function (a, b) { return a.concat(b).andBits(); },
     'adder_32bit.txt': function (a, b) { return a.rev().add(b.rev()).pad(33).rev(); },
+    'adder_64bit.txt': function (a, b) { return a.rev().add(b.rev()).pad(65).rev(); },
+    'sub64.txt': function (a, b) { return a.rev().sub(b.rev()).pad(64).rev(); },
     'zero_equal_64.txt': function (a, b) { return a.concat(b).orBits().not(); },
   }
 
@@ -524,7 +526,7 @@ describe('end-to-end', function() {
       let input2 = bits.random(c.wire_in_count/2, 2);
       let outEval = c.evaluate([input1, input2]);
       let outEtoE = protocolPureEndToEnd(c, input1, input2, chan);
- 
+
       // Confirm that the circuit is mathematically correct if a
       // reference function for the circuit is provided.
       if (filenames[i] in functions) {
@@ -534,7 +536,7 @@ describe('end-to-end', function() {
 
       // Do the evaluation and end-to-end protocol output bit vectors match?
       expect(outEval.toString()).to.eql(outEtoE.toString());
-      
+
       // Confirm that communicated messages conform to schemas.
       let gatesGarbledSchemaString = await fs.readFile('./schemas/gates.garbled.schema.json', 'utf8');
       let gatesGarbledSchema = JSON.parse(gatesGarbledSchemaString);
