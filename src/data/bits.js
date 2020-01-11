@@ -154,6 +154,17 @@ Bits.prototype.andBits = function () {
 };
 
 /**
+ * Perform bit-wise disjunction across all bits of a vector.
+ * @returns {number} Bit vector representing disjunction of all bits
+ */
+Bits.prototype.orBits = function () {
+  for (var i = 0; i < this.bits.length; i++)
+    if (this.bits[i] == 1)
+      return new Bits([1]);
+  return new Bits([0]);
+};
+
+/**
  * Add one bit vector to another bit vector.
  * @param {Object} other - Other bit vector
  * @returns {number} Bit vector representing the sum
@@ -198,6 +209,19 @@ Bits.prototype.div = function (other) {
 };
 
 /**
+ * Return a zero bit vector of specified length.
+ * @param {number} length - Length of bit vector
+ * @returns {Object} Random bit vector
+ */
+function zero(length) {
+  var bits = [];
+  for (var i = 0; i < length; i++) {
+    bits.push(0);
+  }
+  return new Bits(bits);  
+};
+
+/**
  * Return a random (uniformly) bit vector of specified length.
  * @param {number} length - Length of bit vector
  * @param {number} index - Seed index (for determinism)
@@ -221,5 +245,6 @@ function random(length, index) {
 module.exports = {
   Bits: Bits,
   fromNumber: Bits.prototype.fromNumber,
+  zero: zero,
   random: random
 };

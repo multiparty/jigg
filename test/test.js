@@ -507,6 +507,7 @@ describe('end-to-end', function() {
   let functions = {
     'and4.txt': function (a, b) { return a.concat(b).andBits(); },
     'and8.txt': function (a, b) { return a.concat(b).andBits(); },
+    'zero_equal_64.txt': function (a, b) { return a.concat(b).orBits().not(); },
   }
 
   // Test each circuit.
