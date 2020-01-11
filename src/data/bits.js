@@ -12,8 +12,9 @@
  * @constructor
  */
 function Bits(argument, representation) {
-  // The internal representation is an array of numbers
-  // in which each number is either 0 or 1.
+  // The internal representation is an array of numbers in
+  // which each number is either 0 or 1, with the right-most
+  // digit being the least significant.
   if (typeof(argument) == 'string') {
     if (representation == null || representation === 'binary') {
       this.bits = argument.split('');
@@ -41,6 +42,135 @@ Bits.prototype.toString = function () {
 };
 
 /**
+ * Return a (decimal representation) number of the bit vector.
+ * @returns {number} Numeric value corresponding to the bit vector
+ */
+Bits.prototype.toNumber = function () {
+  var n = 0;
+  var multiplier = 1;
+  for (var i = this.bits.length-1; i >= 0; i--) {
+      n += this.bits[i] * multiplier;
+      multiplier *= 2;
+  }
+  return n;
+};
+
+/**
+ * Creates a bit vector representation of a natural number.
+ * @param {number} n - Natural number to convert into bit vector
+ * @returns {Object} Bit vector
+ */
+Bits.prototype.fromNumber = function (n) {
+  var bits = [];
+  while (n > 0) {
+      bits = [n % 2].concat(bits);
+      n = Math.floor(n / 2);
+  }
+  return new Bits(bits);
+};
+
+/**
+ * Perform bit-wise conjunction on two bit vectors.
+ * @param {Object} other - Other bit vector
+ * @returns {number} Bit vector representing bit-wise conjunction
+ */
+Bits.prototype.and = function (other) {
+  var bits = [];
+  if (this.bits.length == other.bits.length) {
+    for (var i = 0; i < this.bits.length; i++) {
+      bits.push((this.bits[i] == 1 && other.bits[i] == 1) ? 1 : 0);
+    }
+  }
+  return new Bits(bits);
+};
+
+/**
+ * Perform bit-wise disjunction on two bit vectors.
+ * @param {Object} other - Other bit vector
+ * @returns {number} Bit vector representing bit-wise disjunction
+ */
+Bits.prototype.or = function (other) {
+  var bits = [];
+  if (this.bits.length == other.bits.length) {
+    for (var i = 0; i < this.bits.length; i++) {
+      bits.push((this.bits[i] == 1 || other.bits[i] == 1) ? 1 : 0);
+    }
+  }
+  return new Bits(bits);
+};
+
+/**
+ * Perform bit-wise exclusive disjunction on two bit vectors.
+ * @param {Object} other - Other bit vector
+ * @returns {number} Bit vector representing the bit-wise exclusive disjunction
+ */
+Bits.prototype.xor = function (other) {
+  var bits = [];
+  if (this.bits.length == other.bits.length) {
+    for (var i = 0; i < this.bits.length; i++) {
+      bits.push((this.bits[i] != other.bits[i]) ? 1 : 0);
+    }
+  }
+  return new Bits(bits);
+};
+
+/**
+ * Perform negation of a bit vector.
+ * @returns {number} Bit vector representing the negation of the bit vector
+ */
+Bits.prototype.not = function () {
+  var bits = [];
+  for (var i = 0; i < this.bits.length; i++) {
+    bits.push(1 - this.bits[i]);
+  }
+  return new Bits(bits);
+};
+
+/**
+ * Add one bit vector to another bit vector.
+ * @param {Object} other - Other bit vector
+ * @returns {number} Bit vector representing the sum
+ */
+Bits.prototype.add = function (other) {
+  var n = this.toNumber();
+  var m = other.toNumber();
+  return Bits.prototype.fromNumber(n + m);
+};
+
+/**
+ * Subtract one bit vector to another bit vector.
+ * @param {Object} other - Other bit vector
+ * @returns {number} Bit vector representing the difference
+ */
+Bits.prototype.sub = function (other) {
+  var n = this.toNumber();
+  var m = other.toNumber();
+  return Bits.prototype.fromNumber(n - m);
+};
+
+/**
+ * Multiply one bit vector by another bit vector.
+ * @param {Object} other - Other bit vector
+ * @returns {number} Bit vector representing the product
+ */
+Bits.prototype.mul = function (other) {
+  var n = this.toNumber();
+  var m = other.toNumber();
+  return Bits.prototype.fromNumber(n * m);
+};
+
+/**
+ * Divide one bit vector by another bit vector.
+ * @param {Object} other - Other bit vector
+ * @returns {number} Bit vector representing the quotient
+ */
+Bits.prototype.div = function (other) {
+  var n = this.toNumber();
+  var m = other.toNumber();
+  return Bits.prototype.fromNumber(Math.floor(n / m));
+};
+
+/**
  * Return a random (uniformly) bit vector of specified length.
  * @param {number} length - Length of bit vector
  * @param {number} index - Seed index (for determinism)
@@ -63,5 +193,6 @@ function random(length, index) {
 
 module.exports = {
   Bits: Bits,
+  fromNumber: Bits.prototype.fromNumber,
   random: random
 };
