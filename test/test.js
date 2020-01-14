@@ -499,8 +499,9 @@ describe('end-to-end', function() {
     'and4.txt', 'and8.txt',
     'adder_32bit.txt', 'adder_64bit.txt', 'sub64.txt',
     'comparator_32bit_signed_lt.txt',
-    'zero_equal_64.txt'//, 'zero_equal_128.txt'
-    //,'mult_32x32.txt', 'mult64.txt', 'divide64.txt'
+    'zero_equal_64.txt', //'zero_equal_128.txt',
+    'mult_32x32.txt', 'mult64.txt', 'divide64.txt',
+    'aes128.txt', 'sha256.txt'
   ];
 
   // Mathematical reference functions corresponding to circuits.
@@ -516,6 +517,8 @@ describe('end-to-end', function() {
   // Test each circuit.
   for (let i = 0; i < filenames.length; i++) {
     it(filenames[i], async function() {
+      this.timeout(60000); // Necessary for larger circuits.
+
       // Create the simulated communications channel.
       var chan = new channel.ChannelSimulated();
 
