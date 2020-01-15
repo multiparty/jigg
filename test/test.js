@@ -510,7 +510,7 @@ describe('end-to-end', function() {
     'adder_32bit.txt': function (a, b) { return a.rev().add(b.rev()).pad(33).rev(); },
     'adder_64bit.txt': function (a, b) { return a.rev().add(b.rev()).pad(65).rev(); },
     'sub64.txt': function (a, b) { return a.rev().sub(b.rev()).pad(64).rev(); },
-    'zero_equal_64.txt': function (a, b) { return a.concat(b).orBits().not(); },
+    'zero_equal_64.txt': function (a, b) { return a.concat(b).orBits().not(); }
   }
 
   // Test each circuit.

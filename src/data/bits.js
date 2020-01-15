@@ -59,7 +59,7 @@ Bits.prototype.pad = function (length) {
 
 /**
  * Return a reversed bit vector.
- * @returns {number} Reversed bit vector
+ * @returns {Object} Reversed bit vector
  */
 Bits.prototype.rev = function () {
   var bits = [];
@@ -72,7 +72,7 @@ Bits.prototype.rev = function () {
 /**
  * Concatenate two bit vectors.
  * @param {Object} other - Other bit vector
- * @returns {number} Concatenated bit vector
+ * @returns {Object} Concatenated bit vector
  */
 Bits.prototype.concat = function (other) {
   var bits = [];
@@ -174,7 +174,7 @@ Bits.prototype.not = function () {
 };
 
 /**
- * Perform bit-wise conjunction across all bits of a vector.
+ * Perform bit-by-bit conjunction across all bits of a vector.
  * @returns {number} Bit vector representing conjunction of all bits
  */
 Bits.prototype.andBits = function () {
@@ -185,7 +185,7 @@ Bits.prototype.andBits = function () {
 };
 
 /**
- * Perform bit-wise disjunction across all bits of a vector.
+ * Perform bit-by-bit disjunction across all bits of a vector.
  * @returns {number} Bit vector representing disjunction of all bits
  */
 Bits.prototype.orBits = function () {
