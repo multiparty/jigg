@@ -500,7 +500,8 @@ describe('end-to-end', function() {
     'adder_32bit.txt', 'adder_64bit.txt', 'sub64.txt',
     'comparator_32bit_signed_lt.txt',
     'zero_equal_64.txt', //'zero_equal_128.txt',
-    'mult_32x32.txt', 'mult64.txt', 'divide64.txt',
+    'mult_32x32.txt', 'mult64.txt', 'mult64_truncate.txt',
+    'divide64.txt',
     'aes128.txt', 'sha256.txt'
   ];
 
@@ -511,6 +512,7 @@ describe('end-to-end', function() {
     'adder_32bit.txt': function (a, b) { return a.rev().add(b.rev()).pad(33).rev(); },
     'adder_64bit.txt': function (a, b) { return a.rev().add(b.rev()).pad(65).rev(); },
     'sub64.txt': function (a, b) { return a.rev().sub(b.rev()).pad(64).rev(); },
+    'mult_32x32.txt': function (a, b) { return a.rev().mul(b.rev()).pad(64).rev(); },
     'zero_equal_64.txt': function (a, b) { return a.concat(b).orBits().not(); },
   }
 
