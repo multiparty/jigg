@@ -65,9 +65,20 @@ async function executeSimulationTests(filenames, index) {
 
   let raw = await fs.readFile('./circuits/bristol/' + filenames[index], 'utf8');
   let c = circuit.fromBristolFashion(raw);
-  let input1 = bits.random(c.wire_in_count/2, 1);
-  let input2 = bits.random(c.wire_in_count/2, 2);
-  var outEval = c.evaluate([input1, input2]);
+
+  var inputs = [];
+  for (var j = 0; j < c.value_in_count; j++) {
+    inputs.push(bits.random(c.value_in_length[j], i+j+1));
+  }
+  var outEval = c.evaluate(inputs);
+
+  // Split inputs into two halves (to be divided
+  // between garbler and evaluator agents).
+  var bs = [];
+  for (var i = 0; i < inputs.length; i++)
+    bs = bs.concat(inputs[i].bits);
+  var input1 = new bits.Bits(bs.slice(0, bs.length/2));
+  var input2 = new bits.Bits(bs.slice(bs.length/2, bs.length));
 
   // Start the server.
   var server = require('../../server');
@@ -110,7 +121,7 @@ async function executeSimulationTests(filenames, index) {
 let filenames = [
   'universal_1bit.txt',
   'and4.txt', 'and8.txt',
-  'adder_32bit.txt', 'adder_64bit.txt', 'sub64.txt',
+  'adder_32bit.txt', //'adder_64bit.txt', 'sub64.txt',
   'comparator_32bit_signed_lt.txt',
   'zero_equal_64.txt', //'zero_equal_128.txt',
   //'mult_32x32.txt', 'mult64.txt', 'divide64.txt'

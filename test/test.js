@@ -429,7 +429,15 @@ var add32_json = {
  * @param {Object} channel - Communications channel to use for test
  * @returns {number[]} Computed bit vector output
  */
-function protocolPureEndToEnd(circuit, input1, input2, chan) {
+function protocolPureEndToEnd(circuit, inputs, chan) {
+  // Split inputs into two halves (to be divided
+  // between garbler and evaluator agents).
+  var bs = [];
+  for (var i = 0; i < inputs.length; i++)
+    bs = bs.concat(inputs[i].bits);
+  var input1 = new bits.Bits(bs.slice(0, bs.length/2));
+  var input2 = new bits.Bits(bs.slice(bs.length/2, bs.length));
+
   chan = (chan == null) ? new channel.ChannelSimulated() : chan;
 
   // Steps performed by garbler.
@@ -478,7 +486,7 @@ describe('end-to-end', function() {
     var input1 = new bits.Bits("01"), input2 = new bits.Bits("10");
     var and4_circuit = circuit.fromBristolFashion(and4_bristol);
     var outEval = and4_circuit.evaluate([input1, input2]);
-    var outEtoE = protocolPureEndToEnd(and4_circuit, input1, input2);
+    var outEtoE = protocolPureEndToEnd(and4_circuit, [input1, input2]);
     expect(outEval.toString()).to.eql(outEtoE.toString());
   });
 
@@ -488,7 +496,7 @@ describe('end-to-end', function() {
       var input2 = bits.random(32, r + 1);
       var add32_circuit = circuit.fromBristolFashion(add32_bristol);
       var outEval = add32_circuit.evaluate([input1, input2]);
-      var outEtoE = protocolPureEndToEnd(add32_circuit, input1, input2);
+      var outEtoE = protocolPureEndToEnd(add32_circuit, [input1, input2]);
       expect(outEval.toString()).to.eql(outEtoE.toString());
     });
   }
@@ -511,7 +519,7 @@ describe('end-to-end', function() {
     'and8.txt': function (a, b) { return a.concat(b).andBits(); },
     'adder_32bit.txt': function (a, b) { return a.rev().add(b.rev()).pad(33).rev(); },
     'adder_64bit.txt': function (a, b) { return a.rev().add(b.rev()).pad(65).rev(); },
-    'sub64.txt': function (a, b) { return a.rev().sub(b.rev()).pad(64).rev(); },
+    //'sub64.txt': function (a, b) { return a.rev().sub(b.rev()).pad(64).rev(); },
     'mult_32x32.txt': function (a, b) { return a.rev().mul(b.rev()).pad(64).rev(); },
     'zero_equal_64.txt': function (a, b) { return a.concat(b).orBits().not(); }
   }
@@ -527,15 +535,18 @@ describe('end-to-end', function() {
       // Load circuit file and perform end-to-end test.
       let raw = await fs.readFile('./circuits/bristol/' + filenames[i], 'utf8');
       let c = circuit.fromBristolFashion(raw);
-      let input1 = bits.random(c.wire_in_count/2, 1);
-      let input2 = bits.random(c.wire_in_count/2, 2);
-      let outEval = c.evaluate([input1, input2]);
-      let outEtoE = protocolPureEndToEnd(c, input1, input2, chan);
+
+      var inputs = [];
+      for (var j = 0; j < c.value_in_count; j++) {
+        inputs.push(bits.random(c.value_in_length[j], i+j+1));
+      }
+      let outEval = c.evaluate(inputs);
+      let outEtoE = protocolPureEndToEnd(c, inputs, chan);
 
       // Confirm that the circuit is mathematically correct if a
       // reference function for the circuit is provided.
       if (filenames[i] in functions) {
-        let outRef = functions[filenames[i]](input1, input2);
+        let outRef = functions[filenames[i]](...inputs);
         expect(outEval.toString()).to.eql(outRef.toString());
       }
 
