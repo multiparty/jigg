@@ -1,6 +1,6 @@
 /**
  * End-to-end tests that simulate multiple parties running the protocol.
- * @module test/simulate
+ * @module test/suite/simulate
  */
  
 'use strict';
@@ -53,7 +53,7 @@ function runAgent(circuitFileName, role, input) {
 }
 
 /*
- *  Test a circuit's correctness for a known input-output pair.
+ * Test a circuit's correctness for a known input-output pair.
  * @param {string[]} filenames - File names of circuits to test
  * @param {number} index - Index of current test
  * @returns {Promise} Promise representing the completion of the tests.
@@ -68,7 +68,7 @@ async function executeSimulationTests(filenames, index) {
 
   var inputs = [];
   for (var j = 0; j < c.value_in_count; j++) {
-    inputs.push(bits.random(c.value_in_length[j], i+j+1));
+    inputs.push(bits.random(c.value_in_length[j], index+j+1));
   }
   var outEval = c.evaluate(inputs);
 
