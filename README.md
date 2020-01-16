@@ -83,8 +83,15 @@ To create a new circuit, write a macro with existing circuits as its gates and r
 
 ## Running Tests
 
+### Generating Precomputed Garbled Gates
+It is possible to generate a collection of precomputed label assignments and garbled gates for each circuit.
+```shell
+node test/suite/generate.js
+```
+These files represent what a dedicated service could precompute and make available on-demand in order to improve the performance of a deployed instance of the protocol. Unit tests make use of these files if they are present.
+
 ### Unit Tests
-Unit tests of functional components (single-process without sockets) can be run using [mocha](https://mochajs.org/):
+Unit tests of functional components (single-process without sockets) can be run using [mocha](https://mochajs.org/).
 ```shell
 mocha test
 ```
@@ -94,11 +101,11 @@ All of the built-in test vectors can be verified in `npm test` or, equivalently,
 ```shell
 npm test
 ```
-You may also run an individual test on a specific circuit file:
+You may also run an individual test on a specific circuit file.
 ```shell
 node test/suite/simulate.js <circuit-file-path>
 ```
-For example, execute the following to test a computation using the 8-bit conjunction circuit:
+For example, execute the following to test a computation using the 8-bit conjunction circuit.
 ```shell
 node test/suite/simulate.js and8.txt
 ```

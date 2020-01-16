@@ -424,12 +424,13 @@ var add32_json = {
 /**
  * Run pure (functions only) end-to-end execution of entire protocol.
  * @param {Object} circuit - Circuit to garble and evaluate
- * @param {Object} input1 - Bit vector for first input
- * @param {Object} input2 - Bit vector for second input
+ * @param {Object[]} inputs - Bit vector inputs
  * @param {Object} channel - Communications channel to use for test
+ * @param {Object} [assignment] - Optional precomputed wire-to-labels map
+ * @param {Object} [gatesGarbled] - Optional precomputed garbled gates
  * @returns {number[]} Computed bit vector output
  */
-function protocolPureEndToEnd(circuit, inputs, chan) {
+function protocolPureEndToEnd(circuit, inputs, chan, a, gg) {
   // Split inputs into two halves (to be divided
   // between garbler and evaluator agents).
   var bs = [];
@@ -441,8 +442,8 @@ function protocolPureEndToEnd(circuit, inputs, chan) {
   chan = (chan == null) ? new channel.ChannelSimulated() : chan;
 
   // Steps performed by garbler.
-  var wToLs_G = garble.generateWireToLabelsMap(circuit);
-  var gatesGarbled_G = garble.garbleGates(circuit, wToLs_G);
+  var wToLs_G = (a != null) ? a : garble.generateWireToLabelsMap(circuit);
+  var gatesGarbled_G = (gg != null) ? gg : garble.garbleGates(circuit, wToLs_G);
   garble.sendInputWireToLabelsMap(chan, circuit, wToLs_G, input1.bits);
   chan.sendDirect('gatesGarbled', gatesGarbled_G.toJSONString());
 
@@ -503,29 +504,29 @@ describe('end-to-end', function() {
 
   // Circuits to test.
   let filenames = [
-    'logic-bristol-test.txt', 'logic-universal-1-bit.txt',
-    'logic-and-4-bit.txt', 'logic-and-8-bit.txt',
-    'arith-add-32-bit-old.txt', 'arith-add-64-bit-old.txt',
-    'arith-add-64-bit-truncated.txt',
-    'arith-sub-64-bit.txt',
-    'arith-mul-32-bit-old.txt',
-    'arith-mul-64-bit.txt', 'arith-mul-64-bit-truncated.txt',
-    'arith-div-64-bit.txt',
-    'compare-eq-zero-64-bit.txt', //'zero_equal_128.txt',
-    'aes-128.txt', 'sha-256.txt'
+    'logic-bristol-test', 'logic-universal-1-bit',
+    'logic-and-4-bit', 'logic-and-8-bit',
+    'arith-add-32-bit-old', 'arith-add-64-bit-old',
+    'arith-add-64-bit-truncated',
+    'arith-sub-64-bit',
+    'arith-mul-32-bit-old',
+    'arith-mul-64-bit', 'arith-mul-64-bit-truncated',
+    'arith-div-64-bit',
+    'compare-eq-zero-64-bit', //'zero_equal_128',
+    'aes-128', 'sha-256'
   ];
 
   // Mathematical reference functions corresponding to circuits.
   let functions = {
-    'logic-and-4-bit.txt': function (a, b) { return a.concat(b).andBits(); },
-    'logic-and-8-bit.txt': function (a, b) { return a.concat(b).andBits(); },
-    'arith-add-32-bit-old.txt': function (a, b) { return a.rev().add(b.rev()).pad(33).rev(); },
-    'arith-add-64-bit-old.txt': function (a, b) { return a.rev().add(b.rev()).pad(65).rev(); },
-    'arith-add-64-bit-truncated.txt': function (a, b) { return a.rev().add(b.rev()).truncate(64).rev(); },
-    'sub64.txt': function (a, b) { return a.rev().sub(b.rev()).pad(64).rev(); },
-    'arith-mul-32-bit-old.txt': function (a, b) { return a.rev().mul(b.rev()).pad(64).rev(); },
-    'arith-mul-64-bit-truncated.txt': function (a, b) { return a.rev().mul(b.rev()).truncate(64).rev(); },
-    'compare-eq-zero-64-bit.txt': function (a) { return a.orBits().not(); }
+    'logic-and-4-bit': function (a, b) { return a.concat(b).andBits(); },
+    'logic-and-8-bit': function (a, b) { return a.concat(b).andBits(); },
+    'arith-add-32-bit-old': function (a, b) { return a.rev().add(b.rev()).pad(33).rev(); },
+    'arith-add-64-bit-old': function (a, b) { return a.rev().add(b.rev()).pad(65).rev(); },
+    'arith-add-64-bit-truncated': function (a, b) { return a.rev().add(b.rev()).truncate(64).rev(); },
+    'sub64': function (a, b) { return a.rev().sub(b.rev()).pad(64).rev(); },
+    'arith-mul-32-bit-old': function (a, b) { return a.rev().mul(b.rev()).pad(64).rev(); },
+    'arith-mul-64-bit-truncated': function (a, b) { return a.rev().mul(b.rev()).truncate(64).rev(); },
+    'compare-eq-zero-64-bit': function (a) { return a.orBits().not(); }
   }
 
   // Test each circuit.
@@ -537,7 +538,7 @@ describe('end-to-end', function() {
       var chan = new channel.ChannelSimulated();
 
       // Load circuit file and perform end-to-end test.
-      let raw = await fs.readFile('./circuits/bristol/' + filenames[i], 'utf8');
+      let raw = await fs.readFile('./circuits/bristol/' + filenames[i] + '.txt', 'utf8');
       let c = circuit.fromBristolFashion(raw);
 
       var inputs = [];
@@ -545,7 +546,17 @@ describe('end-to-end', function() {
         inputs.push(bits.random(c.value_in_length[j], i+j+1));
       }
       let outEval = c.evaluate(inputs);
-      let outEtoE = protocolPureEndToEnd(c, inputs, chan);
+
+      // Load precomputed data if it is available.
+      let a = null, gg = null;
+      try {
+        let aString = await fs.readFile('./circuits/gg/' + filenames[i] + '.assignment.json', 'utf8');
+        let ggString = await fs.readFile('./circuits/gg/' + filenames[i] + '.gg.json', 'utf8');
+        a = assignment.Assignment.prototype.fromJSONString(aString);
+        gg = gate.GatesGarbled.prototype.fromJSONString(ggString);
+      } catch (err) {}
+
+      let outEtoE = protocolPureEndToEnd(c, inputs, chan, a, gg);
 
       // Confirm that the circuit is mathematically correct if a
       // reference function for the circuit is provided.
