@@ -58,6 +58,21 @@ Bits.prototype.pad = function (length) {
 };
 
 /**
+ * Return a bit vector truncated to the specified length.
+ * @param {number} length - Target bit vector length
+ * @returns {number} Truncated bit vector
+ */
+Bits.prototype.truncate = function (length) {
+  var bits = [];
+  var length_new = Math.min(this.bits.length, length);
+  var diff = this.bits.length - length_new;
+  for (var i = 0; i < length_new; i++) {
+    bits.push(this.bits[i+diff]);
+  }
+  return new Bits(bits);
+};
+
+/**
  * Return a reversed bit vector.
  * @returns {Object} Reversed bit vector
  */
@@ -214,7 +229,7 @@ Bits.prototype.add = function (other) {
 Bits.prototype.sub = function (other) {
   var n = this.toNumber();
   var m = other.toNumber();
-  return Bits.prototype.fromNumber(n - m);
+  return Bits.prototype.fromNumber((n >= m) ? n - m : 0);
 };
 
 /**
