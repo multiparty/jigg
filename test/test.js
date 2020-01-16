@@ -503,31 +503,35 @@ describe('end-to-end', function() {
 
   // Circuits to test.
   let filenames = [
-    'universal_1bit.txt',
-    'and4.txt', 'and8.txt',
-    'adder_32bit.txt', 'adder_64bit.txt', 'sub64.txt',
-    'comparator_32bit_signed_lt.txt',
-    'zero_equal_64.txt', //'zero_equal_128.txt',
-    'mult_32x32.txt', 'mult64.txt', 'mult64_truncate.txt',
-    'divide64.txt',
-    'aes128.txt', 'sha256.txt'
+    'logic-bristol-test.txt', 'logic-universal-1-bit.txt',
+    'logic-and-4-bit.txt', 'logic-and-8-bit.txt',
+    'arith-add-32-bit-old.txt', 'arith-add-64-bit-old.txt',
+    'arith-add-64-bit-truncated.txt',
+    'arith-sub-64-bit.txt',
+    'arith-mul-32-bit-old.txt',
+    'arith-mul-64-bit.txt', 'arith-mul-64-bit-truncated.txt',
+    'arith-div-64-bit.txt',
+    'compare-eq-zero-64-bit.txt', //'zero_equal_128.txt',
+    'aes-128.txt', 'sha-256.txt'
   ];
 
   // Mathematical reference functions corresponding to circuits.
   let functions = {
-    'and4.txt': function (a, b) { return a.concat(b).andBits(); },
-    'and8.txt': function (a, b) { return a.concat(b).andBits(); },
-    'adder_32bit.txt': function (a, b) { return a.rev().add(b.rev()).pad(33).rev(); },
-    'adder_64bit.txt': function (a, b) { return a.rev().add(b.rev()).pad(65).rev(); },
-    //'sub64.txt': function (a, b) { return a.rev().sub(b.rev()).pad(64).rev(); },
-    'mult_32x32.txt': function (a, b) { return a.rev().mul(b.rev()).pad(64).rev(); },
-    'zero_equal_64.txt': function (a, b) { return a.concat(b).orBits().not(); }
+    'logic-and-4-bit.txt': function (a, b) { return a.concat(b).andBits(); },
+    'logic-and-8-bit.txt': function (a, b) { return a.concat(b).andBits(); },
+    'arith-add-32-bit-old.txt': function (a, b) { return a.rev().add(b.rev()).pad(33).rev(); },
+    'arith-add-64-bit-old.txt': function (a, b) { return a.rev().add(b.rev()).pad(65).rev(); },
+    'arith-add-64-bit-truncated.txt': function (a, b) { return a.rev().add(b.rev()).truncate(64).rev(); },
+    'sub64.txt': function (a, b) { return a.rev().sub(b.rev()).pad(64).rev(); },
+    'arith-mul-32-bit-old.txt': function (a, b) { return a.rev().mul(b.rev()).pad(64).rev(); },
+    'arith-mul-64-bit-truncated.txt': function (a, b) { return a.rev().mul(b.rev()).truncate(64).rev(); },
+    'compare-eq-zero-64-bit.txt': function (a) { return a.orBits().not(); }
   }
 
   // Test each circuit.
   for (let i = 0; i < filenames.length; i++) {
     it(filenames[i], async function() {
-      this.timeout(60000); // Necessary for larger circuits.
+      this.timeout(4*60*1000); // Necessary for larger circuits.
 
       // Create the simulated communications channel.
       var chan = new channel.ChannelSimulated();
