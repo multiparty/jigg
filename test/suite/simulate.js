@@ -119,12 +119,9 @@ async function executeSimulationTests(filenames, index) {
 }
 
 let filenames = [
-  'universal_1bit.txt',
-  'and4.txt', 'and8.txt',
-  'adder_32bit.txt', //'adder_64bit.txt', 'sub64.txt',
-  'comparator_32bit_signed_lt.txt',
-  'zero_equal_64.txt', //'zero_equal_128.txt',
-  //'mult_32x32.txt', 'mult64.txt', 'divide64.txt'
+  'logic-universal-1-bit.txt',
+  'logic-and-4-bit.txt', 'logic-and-8-bit.txt',
+  'arith-add-32-bit-old.txt'
 ];
 
 if (process.argv.length === 2) {
