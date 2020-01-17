@@ -25,7 +25,7 @@ const simulateLog = console.log; console.log = Function();
  * @returns {Promise} Promise representing agent output
  */
 function runAgent(circuitFileName, role, input) {
-  const circuitPathURL = 'circuits/bristol/' + circuitFileName;
+  const circuitPathURL = 'circuits/bristol/' + circuitFileName + '.txt';
 
   const progress = function (start, total) {
     console.log(role, ':', start, '/', total);
@@ -63,7 +63,7 @@ async function executeSimulationTests(filenames, index) {
     return null;
   }
 
-  let raw = await fs.readFile('./circuits/bristol/' + filenames[index], 'utf8');
+  let raw = await fs.readFile('./circuits/bristol/' + filenames[index] + '.txt', 'utf8');
   let c = circuit.fromBristolFashion(raw);
 
   var inputs = [];
@@ -72,13 +72,19 @@ async function executeSimulationTests(filenames, index) {
   }
   var outEval = c.evaluate(inputs);
 
-  // Split inputs into two halves (to be divided
-  // between garbler and evaluator agents).
-  var bs = [];
-  for (var i = 0; i < inputs.length; i++)
-    bs = bs.concat(inputs[i].bits);
-  var input1 = new bits.Bits(bs.slice(0, bs.length/2));
-  var input2 = new bits.Bits(bs.slice(bs.length/2, bs.length));
+  var input1, input2;
+  if (inputs.length == 2) {
+    input1 = inputs[0];
+    input2 = inputs[1];
+  } else {
+    // Split inputs into two halves (to be divided
+    // between garbler and evaluator agents).
+    var bs = [];
+    for (var i = 0; i < inputs.length; i++)
+      bs = bs.concat(inputs[i].bits);
+    input1 = new bits.Bits(bs.slice(0, bs.length/2));
+    input2 = new bits.Bits(bs.slice(bs.length/2, bs.length));
+  }
 
   // Start the server.
   var server = require('../../server');
@@ -119,9 +125,11 @@ async function executeSimulationTests(filenames, index) {
 }
 
 let filenames = [
-  'logic-universal-1-bit.txt',
-  'logic-and-4-bit.txt', 'logic-and-8-bit.txt',
-  'arith-add-32-bit-old.txt'
+  'logic-bristol-test', 'logic-universal-1-bit',
+  'logic-and-4-bit', 'logic-and-8-bit',
+  'arith-add-32-bit-old', 'arith-add-64-bit-old',
+  'arith-add-64-bit-truncated',
+  'arith-sub-64-bit'
 ];
 
 if (process.argv.length === 2) {
