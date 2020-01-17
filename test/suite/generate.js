@@ -20,6 +20,7 @@ global.fetch = require('node-fetch');
  * @returns {Promise} Promise representing the rest of the process
  */
 async function generateGarbledGates(filenames, index) {
+  await sodium.ready;
   if (index >= filenames.length) {
     return null;
   }
@@ -67,6 +68,7 @@ let filenames = [
 if (process.argv.length === 2) {
   // Generate all garbled gate files.
   console.log("\nGenerating garbled gates for all circuits:");
+  try { fs.mkdirSync('./circuits/gg/'); } catch (err) {}
   generateGarbledGates(filenames, 0);
 }
 
