@@ -1,4 +1,7 @@
 const sodium = require('libsodium-wrappers-sumo');
+const elliptic = require('elliptic');
+const lib = elliptic.ec('ed25519');
+const rand = elliptic.rand;  // random bytes buffer
 
 // Generic pairwise XOR for any indexed data structure
 function xor_array(a, b, l) {
@@ -18,15 +21,21 @@ function xor_array(a, b, l) {
 }
 
 sodium.ready.then(function () {
-  console.log(sodium);
-  const random = sodium.crypto_core_ristretto255_random;
-  const add = sodium.crypto_core_ristretto255_add;
-  const sub = sodium.crypto_core_ristretto255_sub;
-  const mult = sodium.crypto_core_ristretto255_scalar_mul;
-  const inverse = sodium.crypto_core_ristretto255_scalar_inverse;
-  const valid = sodium.crypto_core_ristretto255_is_valid_point;
-  const mult_g = sodium.crypto_scalarmult_ristretto255_base;
-  const hash = (a, l) => sodium.crypto_pwhash_scryptsalsa208sha256(l, a, a, 0, 0);
+  // console.log(sodium);
+  const add = (p, o) => p.add(o);
+  const sub = (p, o) => p.add(o.neg());
+  const mult = (p, o) => p.mul(o.x);
+  const inverse = p => p.neg();
+  const valid = p => p.validate();
+  const mult_g = p => mult(lib.g, p);
+  const random = () => mult_g(lib.curve.point(rand(32)));
+  const point_to_hash = (p, len) => {
+      const e = new Uint8Array(p.encode());  // 64 bytes, or p.encodeCompressed() for 32 bytes
+      const salt = new Uint8Array(32);  // constant is fine
+      const digest = sodium.crypto_pwhash_scryptsalsa208sha256(len, e, salt, 0, 0);
+      console.log(e, digest);
+      return digest;
+  };
   const enc = (m, k) => xor_array(m, k);
   const dec = (c, k) => xor_array(c, k);
 
@@ -50,10 +59,11 @@ sodium.ready.then(function () {
   // /*/////*/return;
   // /////////
 
-  let m0 = random();  // new Uint8Array(16).fill(0);
-  let m1 = random();  // new Uint8Array(16).fill(1);
+  const bytes = 32;
+  let m0 = new Uint8Array(bytes).fill(0);  // random();
+  let m1 = new Uint8Array(bytes).fill(1);  // random();
 
-  let c = 0;
+  let c = 1;
 
   let a = random();
   let A = mult_g(a);
@@ -64,14 +74,14 @@ sodium.ready.then(function () {
   // send B
 
   // invalid group elements  v v v  becasue clamping
-  console.log(a, b, mult(mult_g(a), b), mult(mult_g(b), a));
-  let k0 = hash(mult(B, a), 32);
-  let k1 = hash(mult(sub(B, A), a), 32);
+  // console.log(a, b, mult(mult_g(a), b), mult(mult_g(b), a));
+  let k0 = point_to_hash(mult(B, a), bytes);
+  let k1 = point_to_hash(mult(sub(B, A), a), bytes);
   let e0 = enc(m0, k0);
   let e1 = enc(m1, k1);
   // send e0, e1
 
-  let kR = hash(mult(A, b), 32);
+  let kR = point_to_hash(mult(A, b), 32);
   let mc = dec(c ? e1 : e0, kR);
 
   console.log(m0, m1, mc);

@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "app-module-path": "^2.2.0",
+    "elliptic": "^6.5.2",
     "express": "^4.17.1",
     "libsodium": "^0.7.5",
     "libsodium-wrappers": "^0.7.5",
