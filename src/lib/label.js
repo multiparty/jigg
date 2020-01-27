@@ -9,7 +9,7 @@ var Label = function (init) {
   } else if (typeof(init) === 'string') {
     init = JSON.parse(init);
   } else if (init instanceof Uint8Array) {
-    init = JSON.parse('['+init+']');
+    init = JSON.parse('['+init.slice(0, 9)+']');
   }
   if (init.length === bytes) {
     init.concat(0);
@@ -39,6 +39,11 @@ Label.prototype.point = function (point) {
 };
 Label.prototype.xor = function (b) {
   return crypto.xor_array(this, b, this.length);
+};
+Label.prototype.toBytes = function (len = 32) {
+  let bytes = new Uint8Array(len);
+  bytes.set(this, 0);
+  return bytes;
 };
 
 module.exports = Label;

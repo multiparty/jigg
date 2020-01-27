@@ -25,7 +25,7 @@ function random_oracle(m, t = 0) {
 
 // Generic encryption
 function encrypt_generic(plaintext, key, nonce) {
-  return plaintext.xor_array(k).xor_array(random_oracle(k, nonce));
+  return xor_array(xor_array(plaintext, key), random_oracle(key, nonce), plaintext.length);
 }
 
 /*
@@ -33,29 +33,39 @@ function encrypt_generic(plaintext, key, nonce) {
  */
 function public_encrypt(plaintext, publicKey) {
   // CODE
+  throw new Error('Function `public_encrypt` not implemented yet');
   return plaintext;
 }
 
 function private_decrypt(ciphertext, privateKey) {
   // CODE
+  throw new Error('Function `private_decrypt` not implemented yet');
   return ciphertext;
 }
 
 // Generic pairwise XOR for any indexed data structure
 function xor_array(a, b, l) {
   if (l == null) {
-    l = a.length;
+    if (a.length !== b.length) {
+      throw new Error('array length mismatch: ' + a.length + ', ' + b.length + ', ' + l);
+    } else {
+      l = a.length;
+    }
   }
 
-  if (a.length !== b.length) {
-    throw new Error('array length mismatch: ' + a.length + ', ' + b.length + ', ' + l);
-  }
-
-  var c = a.constructor(l);
+  var c = new a.constructor(l);
   for (var i = 0; i < l; i++) {
     c[i] = a[i] ^ b[i];
   }
   return c;
+}
+
+function bytes2str(bytes) {
+    return '['+bytes.toString()+']';
+}
+
+function str2bytes(str) {
+    return new Uint8Array(JSON.parse(str));
 }
 
 module.exports = {
@@ -66,5 +76,9 @@ module.exports = {
   public_encrypt: public_encrypt,  // asymmetric encryption
   private_decrypt: private_decrypt,  // asymmetric decryption
   xor_array: xor_array,
+  util: {
+    str2bytes: str2bytes,
+    bytes2str: bytes2str
+  },
   ed25519: ed25519
 };

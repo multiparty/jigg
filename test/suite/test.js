@@ -1,4 +1,4 @@
-global.sodium = require('libsodium-wrappers');
+global.sodium = require('libsodium-wrappers-sumo');
 global.fetch = require('node-fetch');
 
 /*
@@ -86,7 +86,7 @@ module.exports = test;
 if (process.argv.length >= 4) {
   const log = console.log;
   let debug = true;
-  if (process.argv[4] != '-v') {
+  if (process.argv[4] != 'vv') {
     console.log = Function();  // TEMPORARY anti-logging hack
     debug = false;
   }

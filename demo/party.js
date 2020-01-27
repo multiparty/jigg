@@ -1,4 +1,4 @@
-global.sodium = require('libsodium-wrappers');
+global.sodium = require('libsodium-wrappers-sumo');
 global.fetch = require('node-fetch');
 
 // command line arguments

@@ -3,8 +3,6 @@ const init = function(socket) {
   const curve = crypto.ed25519;
   const Label = require('./label.js');
 
-  const bytes = 8;
-
   /*
   *  Oblivious Transfer primitive
   *  Sender calls send(a, b)
@@ -12,6 +10,8 @@ const init = function(socket) {
   */
   const send = function(m0, m1) {
     var msg_id = socket.nextid();
+    m0 = m0.toBytes();  // shadow cast as bytes
+    m1 = m1.toBytes();
 
     return new Promise(function (resolve) {
       let a = curve.random();
@@ -20,11 +20,11 @@ const init = function(socket) {
       socket.get(msg_id + 'B').then(function (B_str) {
         let B = curve.str2point(B_str);
 
-        let k0 = curve.hash(curve.mult(B, a));
-        let k1 = curve.hash(curve.mult(curve.sub(B, A), a));
+        let k0 = curve.point2hash(curve.mult(B, a));
+        let k1 = curve.point2hash(curve.mult(curve.sub(B, A), a));
         let e0 = crypto.encrypt_generic(m0, k0);
         let e1 = crypto.encrypt_generic(m1, k1);
-        socket.give(msg_id + 'e', JSON.stringify([curve.str2point(e0), curve.str2point(e1)]));
+        socket.give(msg_id + 'e', JSON.stringify([crypto.util.bytes2str(e0), crypto.util.bytes2str(e1)]));
 
         resolve();
       });
@@ -34,6 +34,11 @@ const init = function(socket) {
   const receive = function(c) {
     var msg_id = socket.nextid();
 
+    if (typeof(c) !== 'number') {
+        console.warn('Possible wrong input.  Defaulting to 0 bit(s)');
+        c = 0;
+    }
+
     return new Promise(function (resolve) {
       socket.get(msg_id + 'A').then(function (A_str) {
         let A = curve.str2point(A_str);
@@ -42,12 +47,12 @@ const init = function(socket) {
         let B = c ? curve.add(A, curve.mult_g(b)) : curve.mult_g(b);
         socket.give(msg_id + 'B', curve.point2str(B));
         socket.get(msg_id + 'e').then(function (e_JSON) {
-          let e = curve.str2point(JSON.parse(e_JSON)[c]);
+          let e = crypto.util.str2bytes(JSON.parse(e_JSON)[c]);
 
-          let k = curve.hash(curve.mult(A, b));
+          let k = curve.point2hash(curve.mult(A, b));
           let m_c = crypto.decrypt_generic(e, k);
 
-          resolve(m_c);
+          resolve(Label(m_c));  // return transfered bytes as a Label object
         });
       });
     });
