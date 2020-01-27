@@ -67,7 +67,7 @@ function private_decrypt(ciphertext, privateKey) {
  * @param {number} l - Length of inputs
  * @returns {Array} Result of XOR operation on inputs
  */
-function xor_array(a, b, l) {
+function xorArray(a, b, l) {
   if (l == null) {
     if (a.length !== b.length) {
       throw new Error('array length mismatch: ' + a.length + ', ' + b.length + ', ' + l);
@@ -98,7 +98,7 @@ module.exports = {
   decrypt_generic: encrypt_generic,
   public_encrypt: public_encrypt,  // asymmetric encryption
   private_decrypt: private_decrypt,  // asymmetric decryption
-  xor_array: xor_array,
+  xorArray: xorArray,
   util: {
     str2bytes: str2bytes,
     bytes2str: bytes2str
