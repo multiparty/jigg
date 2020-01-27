@@ -84,11 +84,11 @@ function xorArray(a, b, l) {
 }
 
 function bytes2str(bytes) {
-    return '['+bytes.toString()+']';
+  return '['+bytes.toString()+']';
 }
 
 function str2bytes(str) {
-    return new Uint8Array(JSON.parse(str));
+  return new Uint8Array(JSON.parse(str));
 }
 
 module.exports = {

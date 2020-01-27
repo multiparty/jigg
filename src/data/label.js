@@ -193,9 +193,9 @@ Label.prototype.getOccurrenceIndexIn = function (labels) {
  * @returns {Object} Uint8Array object
  */
 Label.prototype.toBytes = function (len = 32) {
-    let bytes = new Uint8Array(len);
-    bytes.set(this, 0);
-    return bytes;
+  let bytes = new Uint8Array(len);
+  bytes.set(this, 0);
+  return bytes;
 };
 
 module.exports = {

@@ -45,7 +45,7 @@ const init = function(socket) {
         resolve();
       });
     });
-  }
+  };
 
   /**
    * Oblivious transfer receiving primitive:
@@ -58,8 +58,8 @@ const init = function(socket) {
     var msg_id = socket.nextid();
 
     if (typeof(c) !== 'number') {
-        console.warn('Possible wrong input.  Defaulting to 0 bit(s)');
-        c = 0;
+      console.warn('Possible wrong input.  Defaulting to 0 bit(s)');
+      c = 0;
     }
 
     return new Promise(function (resolve) {
@@ -79,12 +79,12 @@ const init = function(socket) {
         });
       });
     });
-  }
+  };
 
   return {
     send: send,
     receive: receive
   };
-}
+};
 
 module.exports = init;

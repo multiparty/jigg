@@ -27,11 +27,11 @@ const bytes = 16;
  * @constructor
  */
 function Circuit(
-    wire_count, gate_count,
-    value_in_count, value_in_length, value_out_count, value_out_length,
-    wire_in_count, wire_in_index, wire_out_count, wire_out_index,
-    gate
-  ) {
+  wire_count, gate_count,
+  value_in_count, value_in_length, value_out_count, value_out_length,
+  wire_in_count, wire_in_index, wire_out_count, wire_out_index,
+  gate
+) {
   this.wire_count = wire_count == null ? 0 : wire_count;
   this.gate_count = gate_count == null ? 0 : gate_count;
   this.value_in_count = value_in_count == null ? 0 : value_in_count;
@@ -76,7 +76,7 @@ Circuit.prototype.fromBristolFashion = function (raw) {
   var rows =
     raw.split('\n').map(function (line) {
       return line.split(' ')
-                 .map(function (tok) { return tok.trim(); });
+        .map(function (tok) { return tok.trim(); });
     });
   circuit.gate_count = +parseInt(rows[0][0]);
   circuit.wire_count = +parseInt(rows[0][1]);
@@ -120,7 +120,7 @@ Circuit.prototype.fromBristolFashion = function (raw) {
   }
 
   return circuit;
-}
+};
 
 /**
  * Directly evaluate a circuit on an input bit vector.
@@ -150,17 +150,17 @@ Circuit.prototype.evaluate = function (inputs) {
       wire[c.gate[i].wire_out_index[0]] =
         ((wire[c.gate[i].wire_in_index[0]] == 1) &&
          (wire[c.gate[i].wire_in_index[1]] == 1)) ?
-        1 : 0;
+          1 : 0;
     }
     if (c.gate[i].operation == 'xor') {
       wire[c.gate[i].wire_out_index[0]] =
         (wire[c.gate[i].wire_in_index[0]] != wire[c.gate[i].wire_in_index[1]]) ?
-        1 : 0;
+          1 : 0;
     }
     if (c.gate[i].operation == 'not') {
       wire[c.gate[i].wire_out_index[0]] =
         (wire[c.gate[i].wire_in_index[0]] == 0) ?
-        1 : 0;
+          1 : 0;
     }
   }
 
@@ -171,7 +171,7 @@ Circuit.prototype.evaluate = function (inputs) {
   }
 
   return new bits.Bits(outputBits);
-}
+};
 
 module.exports = {
   Circuit: Circuit,

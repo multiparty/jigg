@@ -26,14 +26,14 @@ const io = function(port) {
         resolve(msg);
       });
     });
-  }
+  };
 
   /*
   *  Direct call to the server.
   */
   const call = function(tag, msg) {
     socket.emit(tag, msg);
-  }
+  };
 
   /*
   *  Get a string given by the other party.
@@ -45,27 +45,27 @@ const io = function(port) {
         resolve(msg);
       });
     });
-  }
+  };
 
   /*
   *  Give a string to the other party.
   */
   const give = function(tag, msg) {
     socket.emit('send', tag, msg);
-  }
+  };
 
   /*
   *  Connect to the server.
   */
   const join = function(role) {
     socket.emit('join', role);
-  }
+  };
 
   var idnumber = 0;
   const nextid = function() {
     idnumber++;  // DEBUG SOON: idnumber is getting mutated somehow
     return parseInt(String(idnumber));
-  }
+  };
 
   return {
     nextid: nextid,
@@ -77,7 +77,7 @@ const io = function(port) {
     socket: socket,
     port: port
   };
-}
+};
 
 /**
  * Obtain data from specified URL.
@@ -92,7 +92,7 @@ const geturl = function(path, type, port) {
       resolve(response[type]());
     });
   });
-}
+};
 
 module.exports = {
   io: io,

@@ -75,10 +75,10 @@ const valid = (p) => p.validate();
  * @returns {Object} hash digest - 32 byte Uint8Array object
  */
 const point2hash = (p, len = 32) => {
-    const e = new Uint8Array(p.encode());  // 64 bytes, or p.encodeCompressed() for 32 bytes
-    const salt = new Uint8Array(32);  // constant is fine
-    const digest = sodium.crypto_pwhash_scryptsalsa208sha256(len, e, salt, 0, 0);
-    return digest;
+  const e = new Uint8Array(p.encode());  // 64 bytes, or p.encodeCompressed() for 32 bytes
+  const salt = new Uint8Array(32);  // constant is fine
+  const digest = sodium.crypto_pwhash_scryptsalsa208sha256(len, e, salt, 0, 0);
+  return digest;
 };
 
 /**

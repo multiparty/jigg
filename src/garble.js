@@ -26,7 +26,7 @@ function generateWireToLabelsMap(circuit) {
     var i = circuit.wire_in_index[j];
 
     var labelNew = label.randomLabel();
-    wireToLabels.set(i, [labelNew, labelNew.xor(R)])
+    wireToLabels.set(i, [labelNew, labelNew.xor(R)]);
 
     var point = random.randomBit();  // Generate a 'select bit' for point-and-permute sorting
     wireToLabels.get(i)[0].pointer(point);
@@ -83,22 +83,22 @@ function garbleGate(gateFromCircuit, wToLs) {
     var t = [0,0,0,1];
     var values = [
       [crypto.encrypt(wToLs.get(i)[0], wToLs.get(j)[0], k, wToLs.get(k)[t[0]])
-             .toJSON(),
-        (2 * wToLs.get(i)[0].pointer()) + wToLs.get(j)[0].pointer()],
+        .toJSON(),
+      (2 * wToLs.get(i)[0].pointer()) + wToLs.get(j)[0].pointer()],
       [crypto.encrypt(wToLs.get(i)[0], wToLs.get(j)[1], k, wToLs.get(k)[t[1]])
-             .toJSON(),
-        (2 * wToLs.get(i)[0].pointer()) + wToLs.get(j)[1].pointer()],
+        .toJSON(),
+      (2 * wToLs.get(i)[0].pointer()) + wToLs.get(j)[1].pointer()],
       [crypto.encrypt(wToLs.get(i)[1], wToLs.get(j)[0], k, wToLs.get(k)[t[2]])
-             .toJSON(),
-        (2 * wToLs.get(i)[1].pointer()) + wToLs.get(j)[0].pointer()],
+        .toJSON(),
+      (2 * wToLs.get(i)[1].pointer()) + wToLs.get(j)[0].pointer()],
       [crypto.encrypt(wToLs.get(i)[1], wToLs.get(j)[1], k, wToLs.get(k)[t[3]])
-             .toJSON(),
-        (2 * wToLs.get(i)[1].pointer()) + wToLs.get(j)[1].pointer()]
+        .toJSON(),
+      (2 * wToLs.get(i)[1].pointer()) + wToLs.get(j)[1].pointer()]
     ];
     // Point-and-permute.  Sort by select bits.
     values = values.sort(function (c1, c2) {
       return c1[1] - c2[1];
-    })
+    });
     values = values.map(function (c) { return c = c[0]; });
     return new gate.GateGarbled(values);
   }
