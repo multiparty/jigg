@@ -105,41 +105,6 @@ io.on('connection', function (socket) {
       }
     }
   });
-
-  socket.on('oblv', function(params) {
-    console.log('oblv', params);
-    const msg_id = params.msg_id;
-    const length = params.length;
-
-    var r0, r1;
-    if (cache[msg_id] === undefined || cache[msg_id].unused) {
-      if (cache[msg_id] === undefined) {
-        cache[msg_id] = {unused: true};  // or with just {}
-      }
-      r0 = [];
-      r1 = [];
-      for (var i = 0; i < length; i++) {  // or with map(...)
-        r0[i] = sodium.randombytes_uniform(256);
-        r1[i] = sodium.randombytes_uniform(256);
-      }
-      cache[msg_id].r0 = r0;
-      cache[msg_id].r1 = r1;
-      cache[msg_id].unused = false;
-    } else {
-      r0 = cache[msg_id].r0;
-      r1 = cache[msg_id].r1;
-      cache[msg_id] = {unused: true};  // clear cache
-    }
-
-    if (socket.id === party.garbler) {
-      socket.emit('oblv'+msg_id, JSON.stringify([r0, r1]));
-    }
-
-    if (socket.id === party.evaluator) {
-      const d = sodium.randombytes_uniform(2);
-      socket.emit('oblv'+msg_id, JSON.stringify([d, d ? r1 : r0]));
-    }
-  });
 });
 
 const close = function () {
