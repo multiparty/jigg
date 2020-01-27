@@ -6,6 +6,7 @@
 'use strict';
 
 const crypto = require('../util/crypto');
+const curve = crypto.ed25519;
 const label = require('../data/label');
 
 /**
@@ -14,33 +15,34 @@ const label = require('../data/label');
  * @returns {Object} OT-based I/O object
  */
 const init = function(socket) {
-  const bytes = 8;
 
   /**
    * Oblivious transfer sending primitive:
    *   sender calls send(a, b);
    *   receiver calls receive(c) and gets c?a:b.
-   * @param {Array} a - First argument
-   * @param {Array} b - Second argument
+   * @param {Array} m0 - First argument
+   * @param {Array} m1 - Second argument
    * @returns {Promise} Promise object that executes action
    */
-  const send = function(a, b) {
-    var msgId = socket.nextid();
-    socket.call('oblv', {msgId: msgId, length: bytes + 1});
+  const send = function(m0, m1) {
+    var msg_id = socket.nextid();
+    m0 = m0.toBytes();  // shadow cast as bytes
+    m1 = m1.toBytes();
 
     return new Promise(function (resolve) {
-      socket.hear('oblv' + msgId).then(function (r0_r1_JSON) {
-        const r0_r1 = label.labelsFromJSONString(r0_r1_JSON);
-        const r0 = r0_r1[0];
-        const r1 = r0_r1[1];
+      let a = curve.random();
+      let A = curve.mult_g(a);
+      socket.give(msg_id + 'A', curve.point2str(A));
+      socket.get(msg_id + 'B').then(function (B_str) {
+        let B = curve.str2point(B_str);
 
-        socket.get('e' + msgId).then(function (e_JSON) {
-          const e = parseInt(e_JSON);
-          const f0 = crypto.xorArray(a, e ? r1 : r0);
-          const f1 = crypto.xorArray(b, e ? r0 : r1);
-          socket.give('f' + msgId, label.labelsToJSONString([f0, f1]));
-          resolve();
-        });
+        let k0 = curve.point2hash(curve.mult(B, a));
+        let k1 = curve.point2hash(curve.mult(curve.sub(B, A), a));
+        let e0 = crypto.encrypt_generic(m0, k0);
+        let e1 = crypto.encrypt_generic(m1, k1);
+        socket.give(msg_id + 'e', JSON.stringify([crypto.util.bytes2str(e0), crypto.util.bytes2str(e1)]));
+
+        resolve();
       });
     });
   }
@@ -53,24 +55,27 @@ const init = function(socket) {
    * @returns {Promise} Promise object that executes action
    */
   const receive = function(c) {
-    var msgId = socket.nextid();
-    socket.call('oblv', {msgId: msgId, length: bytes + 1});
+    var msg_id = socket.nextid();
+
+    if (typeof(c) !== 'number') {
+        console.warn('Possible wrong input.  Defaulting to 0 bit(s)');
+        c = 0;
+    }
 
     return new Promise(function (resolve) {
-      socket.hear('oblv' + msgId).then(function (d_rd_JSON) {
-        const d_rd = JSON.parse(d_rd_JSON); // This has the form [int, Label].
-        const d = d_rd[0];
-        const r_d = d_rd[1];
+      socket.get(msg_id + 'A').then(function (A_str) {
+        let A = curve.str2point(A_str);
 
-        socket.give('e' + msgId, c ^ d);
-        socket.get('f' + msgId).then(function (f_JSON) {
-          const f = label.labelsFromJSONString(f_JSON);
-          const f0 = f[0];
-          const f1 = f[1];
+        let b = curve.random();
+        let B = c ? curve.add(A, curve.mult_g(b)) : curve.mult_g(b);
+        socket.give(msg_id + 'B', curve.point2str(B));
+        socket.get(msg_id + 'e').then(function (e_JSON) {
+          let e = crypto.util.str2bytes(JSON.parse(e_JSON)[c]);
 
-          const m_c = crypto.xorArray(r_d, c ? f1 : f0);
-          const labelNew = label.Label(m_c);
-          resolve(labelNew);
+          let k = curve.point2hash(curve.mult(A, b));
+          let m_c = crypto.decrypt_generic(e, k);
+
+          resolve(Label(m_c));  // return transfered bytes as a Label object
         });
       });
     });
