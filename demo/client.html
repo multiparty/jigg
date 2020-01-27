@@ -86,7 +86,7 @@
       }
 
       if (role === 'garbler') {
-        var garbler = new jigg.Garbler(circuitURL, input, callback, progress);
+        var garbler = new jigg.Agent('Garbler', circuitURL, input, callback, progress);
         garbler.start();
       } else if (role === 'evaluator') {
         if (circuitURL === "circuits/universal_1bit.txt") {
@@ -94,7 +94,7 @@
           // garbler's additional bit (the 1-bit program)
           input.push(null);
         }
-        var evaluator = new jigg.Evaluator(circuitURL, input, callback, progress);
+        var evaluator = new jigg.Agent('Evaluator', circuitURL, input, callback, progress);
         evaluator.start();
       }
     };

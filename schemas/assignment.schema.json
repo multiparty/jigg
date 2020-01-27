@@ -1,0 +1,30 @@
+{
+  "$id": "https://github.com/multiparty/sigg/blob/master/schemas/assignment.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Representation of a map from wire indices to ordered collections of labels",
+  "type": "object",
+  "patternProperties": {
+    "^[0-9]+$": {
+      "oneOf": [
+        { "$ref": "#/definitions/labels" }
+      ]
+    }
+  },
+  "definitions": {
+    "uint8": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "label": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/uint8" },
+      "minItems": 1
+    },
+    "labels": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/label" },
+      "minItems": 1
+    }
+  }
+}

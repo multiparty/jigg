@@ -1,0 +1,38 @@
+{
+  "$id": "https://github.com/multiparty/sigg/blob/master/schemas/gates.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Representation of an indexed collection of gates",
+  "type": "object",
+  "patternProperties": {
+    "^[0-9]+$": { "$ref": "#/definitions/gate" }
+  },
+  "definitions": {
+    "nonnegative": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "arrayOfNonnegative": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/nonnegative" }
+    },
+    "gate": {
+      "type": "object",
+      "properties": {
+        "wire_in_count": { "$ref": "#/definitions/nonnegative" },
+        "wire_in_index": { "$ref": "#/definitions/arrayOfNonnegative" },
+        "wire_out_count": { "$ref": "#/definitions/nonnegative" },
+        "wire_out_index": { "$ref": "#/definitions/arrayOfNonnegative" },
+        "operation": { "$ref": "#/definitions/operation" }
+      },
+      "required":[
+        "wire_in_index",
+        "wire_out_index",
+        "operation"
+      ]
+    },
+    "operation": {
+      "type": "string",
+      "enum": ["not", "xor", "and"]
+    }
+  }
+}

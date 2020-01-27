@@ -1,3 +1,10 @@
+/**
+ * Communications server module.
+ * @module server
+ */
+
+'use strict';
+
 // require('./src/.dep/node_modules/app-module-path').addPath(__dirname+'/src/.dep/node_modules/');
 var express = require('express');
 var app = express();
@@ -9,13 +16,13 @@ var io = require('socket.io')(http, {
 var sodium = require('libsodium-wrappers');
 
 app.use('/dist', express.static(__dirname + '/dist/'));
-app.use('/circuits', express.static(__dirname + '/circuits/'));
+app.use('/circuits/bristol', express.static(__dirname + '/circuits/bristol/'));
 app.get('/', (request, response) => response.sendFile(__dirname + '/demo/client.html'));
 app.get('/sha', (request, response) => response.sendFile(__dirname + '/demo/sha256.html'));
 
 const open = (port) => http.listen(port, () => console.log('listening on *:'+port));
 
-// If command line, open right away
+// If invoked via command line, open right away.
 if (require.main === module) {
   let port = (process.argv.length === 3)? process.argv[2] : 3000;
   open(port);
@@ -24,21 +31,22 @@ if (require.main === module) {
 var party = {garbler: null, evaluator: null};
 var mailbox = {garbler: {}, evaluator: {}};
 var cache = [];
+
 io.on('connection', function (socket) {
   socket.on('join', function (msg) {
-    if (msg === 'garbler' || (!(msg === 'evaluator') && party.garbler == null)) {
+    if (msg === 'Garbler' || (!(msg === 'Evaluator') && party.garbler == null)) {
       party.garbler = socket.id;
       console.log('connect garbler');
-      socket.emit('whoami', 'garbler');
+      socket.emit('whoami', 'Garbler');
       socket.on('disconnect', function() {
         party.garbler = null;
         mailbox.garbler = {};
         console.log('garbler disconnected');
       });
-    } else if (msg === 'evaluator' || party.evaluator == null) {
+    } else if (msg === 'Evaluator' || party.evaluator == null) {
       party.evaluator = socket.id;
       console.log('connect evaluator');
-      socket.emit('whoami', 'evaluator');
+      socket.emit('whoami', 'Evaluator');
       socket.on('disconnect', function() {
         party.evaluator = null;
         mailbox.evaluator = {};
@@ -109,14 +117,14 @@ io.on('connection', function (socket) {
 
 const close = function () {
   try {
-    console.log('Closing server');
+    console.log('Closing server.');
     io.to(party.garbler).emit('shutdown', 'finished');
     io.to(party.evaluator).emit('shutdown', 'finished');
     io.close();
     http.close();
-    console.log('Server closed');
+    console.log('Server closed.');
   } catch (e) {
-    console.log('Closing with error', e);
+    console.log('Closing with error:', e);
   }
 };
 
