@@ -5,8 +5,10 @@
 
 'use strict';
 
+const hex2bin = require('../util/hexutils').hex2bin;
+
 /**
- * Create a new bit vector instance. 
+ * Create a new bit vector instance.
  * @param {*} argument - Bits specified using some type and representation
  * @param {string} representation - Representation format of argument
  * @constructor
@@ -16,8 +18,11 @@ function Bits(argument, representation) {
   // which each number is either 0 or 1, with the right-most
   // digit being the least significant.
   if (typeof(argument) == 'string') {
+    if (representation === 'hexadecimal') {
+      this.bits = hex2bin(argument).split('').map(Number);
+    }
     if (representation == null || representation === 'binary') {
-      this.bits = argument.split('');
+      this.bits = argument.split('').map(Number);
     }
   }
   if (Object.prototype.toString.call(argument) === '[object Array]') {
@@ -108,8 +113,8 @@ Bits.prototype.toNumber = function () {
   var n = BigInt(0);
   var multiplier = BigInt(1);
   for (var i = this.bits.length-1; i >= 0; i--) {
-      n += BigInt(this.bits[i]) * multiplier;
-      multiplier *= BigInt(2);
+    n += BigInt(this.bits[i]) * multiplier;
+    multiplier *= BigInt(2);
   }
   return n;
 };
@@ -125,8 +130,8 @@ Bits.prototype.fromNumber = function (n) {
   var zero = (typeof n === 'bigint') ? BigInt(0) : 0;
   var two = (typeof n === 'bigint') ? BigInt(2) : 2;
   while (n > zero) {
-      bits = [((n%two)==BigInt(0)) ? 0 : 1].concat(bits);
-      n = n / two;
+    bits = [((n%two)==BigInt(0)) ? 0 : 1].concat(bits);
+    n = n / two;
   }
   return new Bits(bits);
 };
@@ -264,8 +269,8 @@ function zero(length) {
   for (var i = 0; i < length; i++) {
     bits.push(0);
   }
-  return new Bits(bits);  
-};
+  return new Bits(bits);
+}
 
 /**
  * Return a random (uniformly) bit vector of specified length.
@@ -279,14 +284,14 @@ function random(length, index) {
   var primes2 = [
     1120211, 1193911, 1390931, 1761671, 3001003, 3321233, 3673763,
     3836383, 7069607, 7257527, 7632367, 9620269, 9809089, 9980899
-  ]
+  ];
   var base = index * length;
   var bits = [];
   for (var i = 0; i < length; i++) {
     bits.push(((primes2[i % primes2.length] * (1 + i + base)) % prime1) % 2);
   }
-  return new Bits(bits);  
-};
+  return new Bits(bits);
+}
 
 module.exports = {
   Bits: Bits,

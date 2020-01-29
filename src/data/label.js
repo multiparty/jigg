@@ -22,7 +22,7 @@ var Label = function (init) {
   } else if (typeof(init) === 'string') {
     init = JSON.parse(init);
   } else if (init instanceof Uint8Array) {
-    init = JSON.parse('['+init+']');
+    init = JSON.parse('['+init.slice(0, 9)+']');
   }
   if (init.length === bytes) {
     init.concat(0);
@@ -185,6 +185,17 @@ Label.prototype.withoutLastElement = function (labels) {
  */
 Label.prototype.getOccurrenceIndexIn = function (labels) {
   return labels.map(Label.prototype.serializeAsString).indexOf(this.serializeAsString());
+};
+
+/**
+ * Return the equivelant of the data stored in a Label object as an array of bytes
+ * @param {number} len = 32 bytes
+ * @returns {Object} Uint8Array object
+ */
+Label.prototype.toBytes = function (len = 32) {
+  let bytes = new Uint8Array(len);
+  bytes.set(this, 0);
+  return bytes;
 };
 
 module.exports = {

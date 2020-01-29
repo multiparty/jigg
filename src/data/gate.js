@@ -26,9 +26,9 @@ function Gate(wire_in_index, wire_out_index, operation) {
  */
 Gate.prototype.toJSON = function () {
   return {
-    "wire_in_index": this.wire_in_index,
-    "wire_out_index": this.wire_out_index,
-    "operation": this.operation
+    'wire_in_index': this.wire_in_index,
+    'wire_out_index': this.wire_out_index,
+    'operation': this.operation
   };
 };
 

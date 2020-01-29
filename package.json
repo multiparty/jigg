@@ -6,24 +6,27 @@
   "dependencies": {
     "app-module-path": "^2.2.0",
     "casm": "^0.2.2",
+    "elliptic": "^6.5.2",
     "express": "^4.17.1",
     "libsodium": "^0.7.5",
     "libsodium-wrappers": "^0.7.5",
+    "libsodium-wrappers-sumo": "^0.7.6",
     "node-fetch": "^2.6.0",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
     "browserify": "^16.5.0",
-    "eslint": "^5.16.0",
-    "eslint-plugin-requirejs": "^4.0.0",
     "chai": "^4.2.0",
     "chai-json-schema": "^1.5.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-requirejs": "^4.0.0",
     "mocha": "^4.0.1"
   },
   "scripts": {
     "test": "node test/suite/simulate.js",
     "build": "browserify src/jigg.js --debug --s jigg -o dist/jigg.js",
-    "casm": "node node_modules/casm/casm.js"
+    "casm": "node node_modules/casm/casm.js",
+    "lint": "eslint ./src/ --ext .js"
   },
   "repository": {
     "type": "git",

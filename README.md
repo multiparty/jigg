@@ -114,8 +114,6 @@ node test/suite/simulate.js and8.txt
 JIGG is designed for semi-honest parties (in either node or in the browser). We support point-and-permute, free-XOR, free single-input gates, and encryption from a random oracle (fixed-key XChaCha20). The half-AND optimization is compatible but not yet supported. The default label size is 128 bits and relies on JavaScript's Uint8Array class. The [`simple-labels`](https://github.com/wyatt-howe/jigg/tree/simple-labels) branch demonstrates dynamically-sized labels (that are 53 bits in length or less) without using arrays. Some potential improvements are listed in the to-do section.
 
 ## To Do
-- Change the current oblivious transfer to use ECC from libsodium
-- Encrypt communications between parties (or use ECC)
 - Half-AND gate optimization
 - Standardize JSON, serialized, and compressed formats for inter-party messages
 

@@ -16,7 +16,8 @@ var io = require('socket.io')(http, {
 var sodium = require('libsodium-wrappers');
 
 app.use('/dist', express.static(__dirname + '/dist/'));
-app.use('/circuits/bristol', express.static(__dirname + '/circuits/bristol/'));
+app.use('/circuits/', express.static(__dirname + '/circuits/bristol/'));
+app.use('/circuits/bristol/', express.static(__dirname + '/circuits/bristol/'));
 app.get('/', (request, response) => response.sendFile(__dirname + '/demo/client.html'));
 app.get('/sha', (request, response) => response.sendFile(__dirname + '/demo/sha256.html'));
 
@@ -111,41 +112,6 @@ io.on('connection', function (socket) {
           mailbox.evaluator[tag] = null;
         });
       }
-    }
-  });
-
-  socket.on('oblv', function(params) {
-    console.log('oblv', params);
-    const msgId = params.msgId;
-    const length = params.length;
-
-    var r0, r1;
-    if (cache[msgId] === undefined || cache[msgId].unused) {
-      if (cache[msgId] === undefined) {
-        cache[msgId] = {unused: true};  // or with just {}
-      }
-      r0 = [];
-      r1 = [];
-      for (var i = 0; i < length; i++) {  // or with map(...)
-        r0[i] = sodium.randombytes_uniform(256);
-        r1[i] = sodium.randombytes_uniform(256);
-      }
-      cache[msgId].r0 = r0;
-      cache[msgId].r1 = r1;
-      cache[msgId].unused = false;
-    } else {
-      r0 = cache[msgId].r0;
-      r1 = cache[msgId].r1;
-      cache[msgId] = {unused: true};  // clear cache
-    }
-
-    if (socket.id === party.garbler) {
-      socket.emit('oblv'+msgId, JSON.stringify([r0, r1]));
-    }
-
-    if (socket.id === party.evaluator) {
-      const d = sodium.randombytes_uniform(2);
-      socket.emit('oblv'+msgId, JSON.stringify([d, d ? r1 : r0]));
     }
   });
 });

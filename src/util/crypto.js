@@ -6,14 +6,15 @@
 'use strict';
 
 //const sodium = require('../sodium');
+const ed25519 = require('./ed25519.js');
 const bytes = 8;
 
 /**
  * Encryption based on fixed-key AES;
  * proposed in Bellare et al. IEEE SP.2013.39.
- * @param {string} a - ...
- * @param {string} b - ...
- * @param {string} t - ...
+ * @param {string} a - Left-side input label
+ * @param {string} b - Right-side input label
+ * @param {string} t - Unused tweak
  * @param {string} m - Message to encrypt
  * @returns {string} Encrypted message
  */
@@ -22,7 +23,6 @@ function encrypt(a, b, t, m) {
   const k = a.xor(b);
   return m.xor(k).xor(randomOracle(k, t));
 }
-const decrypt = encrypt;
 
 /**
  * Fixed-key 1-block cipher as the Random Oracle.
@@ -39,6 +39,28 @@ function randomOracle(m, t = 0) {
 }
 
 /**
+ *  Generic encryption
+ */
+function encrypt_generic(plaintext, key, nonce) {
+  return xorArray(xorArray(plaintext, key), randomOracle(key, nonce), plaintext.length);
+}
+
+/*
+ *  Asymmetric cryptography functionalities
+ */
+function public_encrypt(plaintext, publicKey) {
+  // CODE
+  throw new Error('Function `public_encrypt` not implemented yet');
+  return plaintext;
+}
+
+function private_decrypt(ciphertext, privateKey) {
+  // CODE
+  throw new Error('Function `private_decrypt` not implemented yet');
+  return ciphertext;
+}
+
+/**
  * Generic element-wise XOR for any indexed data structure
  * @param {Array} a - First input to XOR
  * @param {Array} b - Second input to XOR
@@ -47,22 +69,39 @@ function randomOracle(m, t = 0) {
  */
 function xorArray(a, b, l) {
   if (l == null) {
-    l = a.length;
+    if (a.length !== b.length) {
+      throw new Error('array length mismatch: ' + a.length + ', ' + b.length + ', ' + l);
+    } else {
+      l = a.length;
+    }
   }
 
-  if (a.length !== b.length) {
-    throw new Error('Array length mismatch: ' + a.length + ', ' + b.length + ', ' + l);
-  }
-
-  var c = a.constructor(l);
+  var c = new a.constructor(l);
   for (var i = 0; i < l; i++) {
     c[i] = a[i] ^ b[i];
   }
   return c;
 }
 
+function bytes2str(bytes) {
+  return '['+bytes.toString()+']';
+}
+
+function str2bytes(str) {
+  return new Uint8Array(JSON.parse(str));
+}
+
 module.exports = {
-  encrypt: encrypt,
-  decrypt: decrypt,
-  xorArray: xorArray
+  encrypt: encrypt,  // label encryption
+  decrypt: encrypt,
+  encrypt_generic: encrypt_generic,  // symmetric encryption
+  decrypt_generic: encrypt_generic,
+  public_encrypt: public_encrypt,  // asymmetric encryption
+  private_decrypt: private_decrypt,  // asymmetric decryption
+  xorArray: xorArray,
+  util: {
+    str2bytes: str2bytes,
+    bytes2str: bytes2str
+  },
+  ed25519: ed25519
 };
