@@ -2,7 +2,7 @@
  * Generation of garbled gate files for circuits.
  * @module test/suite/generate
  */
- 
+
 'use strict';
 
 const fs = require('fs').promises;
@@ -10,7 +10,7 @@ const fs = require('fs').promises;
 const circuit = require('../../src/data/circuit');
 const garble = require('../../src/garble');
 
-global.sodium = require('libsodium-wrappers');
+global.sodium = require('libsodium-wrappers-sumo');
 global.fetch = require('node-fetch');
 
 /*

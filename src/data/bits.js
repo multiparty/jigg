@@ -5,8 +5,10 @@
 
 'use strict';
 
+const hex2bin = require('../util/hexutils').hex2bin;
+
 /**
- * Create a new bit vector instance. 
+ * Create a new bit vector instance.
  * @param {*} argument - Bits specified using some type and representation
  * @param {string} representation - Representation format of argument
  * @constructor
@@ -16,8 +18,11 @@ function Bits(argument, representation) {
   // which each number is either 0 or 1, with the right-most
   // digit being the least significant.
   if (typeof(argument) == 'string') {
+    if (representation === 'hexadecimal') {
+      this.bits = hex2bin(argument).split('').map(Number);
+    }
     if (representation == null || representation === 'binary') {
-      this.bits = argument.split('');
+      this.bits = argument.split('').map(Number);
     }
   }
   if (Object.prototype.toString.call(argument) === '[object Array]') {
@@ -264,7 +269,7 @@ function zero(length) {
   for (var i = 0; i < length; i++) {
     bits.push(0);
   }
-  return new Bits(bits);  
+  return new Bits(bits);
 }
 
 /**
@@ -285,7 +290,7 @@ function random(length, index) {
   for (var i = 0; i < length; i++) {
     bits.push(((primes2[i % primes2.length] * (1 + i + base)) % prime1) % 2);
   }
-  return new Bits(bits);  
+  return new Bits(bits);
 }
 
 module.exports = {

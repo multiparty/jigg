@@ -42,7 +42,7 @@ function randomOracle(m, t = 0) {
  *  Generic encryption
  */
 function encrypt_generic(plaintext, key, nonce) {
-  return xor_array(xor_array(plaintext, key), random_oracle(key, nonce), plaintext.length);
+  return xorArray(xorArray(plaintext, key), randomOracle(key, nonce), plaintext.length);
 }
 
 /*

@@ -10,6 +10,7 @@ const label = require('./data/label');
 const gate = require('./data/gate');
 const circuit = require('./data/circuit');
 const assignment = require('./data/assignment');
+const hexutils = require('./util/hexutils');
 const garble = require('./garble');
 const evaluate = require('./evaluate');
 const channel = require('./comm/channel');
@@ -47,7 +48,7 @@ const OT = require('./comm/ot');
 function Agent(role, circuitURL, input, callback, progress, parallel, throttle, port, debug) {
   this.role = role;
   this.circuitURL = circuitURL;
-  this.input = input.bits;
+  this.input = input.bits;  // to be backwards compatible do, !input instanceof bits.Bits ? new bits.Bits(input).bits
   this.callback = callback;
   this.parallel = parallel == null ? 30 : parallel;
   this.throttle = throttle == null ? 1 : throttle;
@@ -187,5 +188,6 @@ Agent.prototype.finishEvaluator = function (circuit, wireToLabels) {
 };
 
 module.exports = {
-  Agent: Agent
+  Agent: Agent,
+  utils: Object.assign(bits, hexutils)
 };

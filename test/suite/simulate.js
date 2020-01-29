@@ -2,7 +2,7 @@
  * End-to-end tests that simulate multiple parties running the protocol.
  * @module test/suite/simulate
  */
- 
+
 'use strict';
 
 const fs = require('fs').promises;
@@ -11,7 +11,7 @@ const bits = require('../../src/data/bits');
 const circuit = require('../../src/data/circuit');
 const jigg = require('../../src/jigg');
 
-global.sodium = require('libsodium-wrappers');
+global.sodium = require('libsodium-wrappers-sumo');
 global.fetch = require('node-fetch');
 
 // Disable output from invoked components.

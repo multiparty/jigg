@@ -16,7 +16,8 @@ var io = require('socket.io')(http, {
 var sodium = require('libsodium-wrappers');
 
 app.use('/dist', express.static(__dirname + '/dist/'));
-app.use('/circuits/bristol', express.static(__dirname + '/circuits/bristol/'));
+app.use('/circuits/', express.static(__dirname + '/circuits/bristol/'));
+app.use('/circuits/bristol/', express.static(__dirname + '/circuits/bristol/'));
 app.get('/', (request, response) => response.sendFile(__dirname + '/demo/client.html'));
 app.get('/sha', (request, response) => response.sendFile(__dirname + '/demo/sha256.html'));
 

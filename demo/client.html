@@ -11,17 +11,66 @@
     <h3 style="margin-top: 0em;">64-bit Equal to Zero Test (<a href="https://homes.esat.kuleuven.be/~nsmart/MPC/zero_equal.txt">Circuit</a> & <a href="https://homes.esat.kuleuven.be/~nsmart/MPC/">Others</a>)</h3>
 
     <select id="circuit">
-      <option value="zero_equal_64.txt">64-bit Equal to Zero (input 32-bits each)</option>
-      <option value="adder_32bit.txt">32-bit Adder</option>
-      <option value="mult_32x32.txt">32x32-bit Multiplier</option>
-      <option value="comparator_32bit_signed_lt.txt">32-bit Signed Less Than Comparison</option>
-      <option value="adder_64bit.txt">64-bit Adder</option>
-      <option value="sub64.txt">64-bit Subtract</option>
-      <option value="mult64.txt">64x64-bit Multiplier</option>
-      <option value="divide64.txt">64x64-bit Division</option>
-      <option value="sha256.txt">SHA256 (input 256-bits each)</option>
-      <option value="aes128.txt">AES128 (input 128-bits key/block)</option>
-      <option value="universal_1bit.txt">Universal Circuit (1-bit program & inputs)</option>
+      <optgroup label="Arithmetic">
+        <option value="arith-add-32-bit-old.txt">32-bit Addition</option>
+        <option value="arith-add-64-bit-old.txt">64-bit Addition</option>
+        <option value="arith-add-64-bit-truncated.txt">64-bit Truncated Addition</option>
+        <option value="arith-div-64-bit.txt">64-bit Division</option>
+        <option value="arith-mul-32-bit-old.txt">32-bit Multiplication</option>
+        <option value="arith-mul-64-bit-truncated.txt">64-bit Truncated Multiplication</option>
+        <option value="arith-mul-64-bit.txt">64-bit Multiplication</option>
+        <option value="arith-sub-64-bit.txt">64-bit Subtraction</option>
+      </optgroup>
+
+      <optgroup label="Comparison">
+        <option value="compare-eq-zero-64-bit.txt" selected="selected">64-bit Equal to Zero (input 32-bits each)</option>
+        <option value="compare-eq-zero-128-bit-with-nan.txt">128-bit Equal to Zero</option>
+        <option value="compare-lt-32-bit-signed-old.txt">32-bit Signed Less Than</option>
+        <option value="compare-lt-32-bit-unsigned-old.txt">32-bit Unsigned Less Than</option>
+        <option value="compare-lteq-32-bit-signed-old.txt">32-bit Signed Less Than or Equal</option>
+        <option value="compare-lteq-32-bit-unsigned-old.txt">32-bit Unsigned Less Than or Equal</option>
+      </optgroup>
+
+      <optgroup label="Logical">
+        <option value="logic-and-4-bit.txt">4-bit AND</option>
+        <option value="logic-and-8-bit.txt">8-bit AND</option>
+        <option value="logic-bristol-test.txt">Bristol logical test</option>
+        <option value="logic-universal-1-bit.txt">1-bit Universal Circuit</option>
+      </optgroup>
+
+      <optgroup label="Ciphers">
+        <option value="des-expanded-old.txt">DES (expanded)</option>
+        <option value="des-non-expanded-old.txt">DES (non-expanded)</option>
+        <option value="aes-128-expanded-old.txt">AES-128 (expanded)</option>
+        <option value="aes-128-non-expanded-old.txt">AES-128 (non-expanded)</option>
+        <option value="aes-128.txt">AES-128</option>
+        <option value="aes-192.txt">AES-192</option>
+        <option value="aes-256.txt">AES-256</option>
+      </optgroup>
+
+      <optgroup label="Hashing">
+        <option value="md5-old.txt">MD5</option>
+        <option value="sha-1-old.txt">SHA-1</option>
+        <option value="sha-256-old.txt">SHA-256 (old)</option>
+        <option value="sha-256-two-block.txt">SHA-256 double block</option>
+        <option value="sha-256.txt">SHA-256</option>
+        <option value="sha-512.txt">SHA-512</option>
+        <option value="keccak-f.txt">SHA-3</option>
+      </optgroup>
+
+      <optgroup label="[OLD NAMES]">
+        <option value="zero_equal_64.txt">64-bit Equal to Zero (input 32-bits each)</option>
+        <option value="adder_32bit.txt">32-bit Adder</option>
+        <option value="mult_32x32.txt">32x32-bit Multiplier</option>
+        <option value="comparator_32bit_signed_lt.txt">32-bit Signed Less Than Comparison</option>
+        <option value="adder_64bit.txt">64-bit Adder</option>
+        <option value="sub64.txt">64-bit Subtract</option>
+        <option value="mult64.txt">64x64-bit Multiplier</option>
+        <option value="divide64.txt">64x64-bit Division</option>
+        <option value="sha256.txt">SHA256 (input 256-bits each)</option>
+        <option value="aes128.txt">AES128 (input 128-bits key/block)</option>
+        <option value="universal_1bit.txt">Universal Circuit (1-bit program & inputs)</option>
+      </optgroup>
     </select>
 
     <select id="partytype">
@@ -61,10 +110,10 @@
     };
     const callback = function (results) {
       const base = $('#base').val();
+      results = results.toString();
       if (base === 'hex') {
-        results = jigg.bin2hex(results);
+        results = jigg.utils.bin2hex(results);
       }
-      results = results.split('').join('');
 
       $('#results').text('Results: ' + results);
     };
@@ -74,10 +123,10 @@
 
       const base = $('#base').val();
       if (base === 'hex') {
-        input = jigg.hex2bin(input);
+        input = jigg.utils.hex2bin(input);
       }
       input = input.split('');
-      input = input.map(JSON.parse);
+      input = input.map(Number);
 
       const role = $('#partytype').val();
       if (role === '-') {
@@ -86,7 +135,7 @@
       }
 
       if (role === 'garbler') {
-        var garbler = new jigg.Agent('Garbler', circuitURL, input, callback, progress);
+        var garbler = new jigg.Agent('Garbler', circuitURL, new jigg.utils.Bits(input), callback, progress);
         garbler.start();
       } else if (role === 'evaluator') {
         if (circuitURL === "circuits/universal_1bit.txt") {
@@ -94,7 +143,7 @@
           // garbler's additional bit (the 1-bit program)
           input.push(null);
         }
-        var evaluator = new jigg.Agent('Evaluator', circuitURL, input, callback, progress);
+        var evaluator = new jigg.Agent('Evaluator', circuitURL, new jigg.utils.Bits(input), callback, progress);
         evaluator.start();
       }
     };

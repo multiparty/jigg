@@ -39,7 +39,7 @@ var add32_bristol = "375 439\n2 32 32\n1 33\n2 1 0 32 406 XOR\n2 1 5 37 373 AND\
 var add32_json = {
   "wire_count":439, "gate_count":375,
   "value_in_count":2, "value_in_length":[32,32],
-  "value_out_count":1, "value_out_length":[33],  
+  "value_out_count":1, "value_out_length":[33],
   "wire_in_count":64, "wire_in_index":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64],
   "wire_out_count":33, "wire_out_index":[407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439],
   "gate":[
@@ -478,7 +478,7 @@ describe('circuit', async function() {
 });
 
 // The unit tests below assume that libsodium has been loaded.
-global.sodium = require('libsodium-wrappers');
+global.sodium = require('libsodium-wrappers-sumo');
 beforeEach(async function() {
   await sodium.ready; // Wait for libsodium to load.
 });

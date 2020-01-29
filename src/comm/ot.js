@@ -75,7 +75,7 @@ const init = function(socket) {
           let k = curve.point2hash(curve.mult(A, b));
           let m_c = crypto.decrypt_generic(e, k);
 
-          resolve(Label(m_c));  // return transfered bytes as a Label object
+          resolve(label.Label(m_c));  // return transfered bytes as a Label object
         });
       });
     });
