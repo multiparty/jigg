@@ -5,7 +5,7 @@
 
 'use strict';
 
-const fs = require('fs').promises;
+const fs = require('fs');
 
 const circuit = require('../../src/data/circuit');
 const garble = require('../../src/garble');
@@ -26,16 +26,16 @@ async function generateGarbledGates(filenames, index) {
   }
 
   var timeStart = (new Date()).getTime();
-  let raw = await fs.readFile('./circuits/bristol/' + filenames[index] + '.txt', 'utf8');
+  let raw = await fs.promises.readFile('./circuits/bristol/' + filenames[index] + '.txt', 'utf8');
   let c = circuit.fromBristolFashion(raw);
 
   let wToLs_G = garble.generateWireToLabelsMap(c);
   let assignmentPathAndFile = './circuits/gg/' + filenames[index] + '.assignment.json';
-  fs.writeFile(assignmentPathAndFile, wToLs_G.toJSONString());
+  fs.promises.writeFile(assignmentPathAndFile, wToLs_G.toJSONString());
 
   let gatesGarbled_G = garble.garbleGates(c, wToLs_G);
   let ggPathAndFile = './circuits/gg/' + filenames[index] + '.gg.json';
-  fs.writeFile(ggPathAndFile, gatesGarbled_G.toJSONString());
+  fs.promises.writeFile(ggPathAndFile, gatesGarbled_G.toJSONString());
 
   var timeEnd = (new Date()).getTime();
   console.log('  * generated ' + filenames[index] + '.*.json (' + (timeEnd-timeStart) + 'ms)')
