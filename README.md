@@ -110,12 +110,27 @@ For example, execute the following to test a computation using the 8-bit conjunc
 node test/suite/simulate.js and8.txt
 ```
 
+#### Legacy End-to-end Tests
+All of the built-in test vectors can be verified in `npm run test-old` or `node test/suite/all.js`.  Communcations between the server, garbler and evaluator are automated.  You do not need to already have a server running – tests are run over port 3001.
+
+You may also access the test function directly, by running `test.js`.
+```shell
+node test/suite/test.js <circuit> <testvector>
+```
+For example to test an equal-to-zero computation with the zero vector, write:
+```shell
+node test/suite/test.js compare-eq-zero-64-bit.txt '["00000000","00000000","1"]'
+```
+
+Predefined test cases (circuit name, test vector) for the circuits can be configured in `test/suite/defaults.json` or specified as in another file such as running `test/sample-tests.txt`.  Test vectors are written as `[input1, input2, output]` as shown above.
+
 ## Capabilities
 JIGG is designed for semi-honest parties (in either node or in the browser). We support point-and-permute, free-XOR, free single-input gates, and encryption from a random oracle (fixed-key XChaCha20). The half-AND optimization is compatible but not yet supported. The default label size is 128 bits and relies on JavaScript's Uint8Array class. The [`simple-labels`](https://github.com/wyatt-howe/jigg/tree/simple-labels) branch demonstrates dynamically-sized labels (that are 53 bits in length or less) without using arrays. Some potential improvements are listed in the to-do section.
 
 ## To Do
 - Half-AND gate optimization
 - Standardize JSON, serialized, and compressed formats for inter-party messages
+- Create a single unified test suite
 
 ## Information and Collaborators
 
