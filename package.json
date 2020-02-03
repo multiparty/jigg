@@ -24,6 +24,7 @@
   },
   "scripts": {
     "test": "node test/suite/simulate.js",
+    "test-old": "node test/suite/all.js test/sample-tests.txt",
     "build": "browserify src/jigg.js --debug --s jigg -o dist/jigg.js",
     "casm": "node node_modules/casm/casm.js",
     "lint": "eslint ./src/ --ext .js"
