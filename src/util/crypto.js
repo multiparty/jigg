@@ -27,8 +27,8 @@ function encrypt(a, b, t, m) {
 /**
  * Fixed-key 1-block cipher as the Random Oracle.
  * @param {string} m - Message
- * @param {string} t - ...
- * @returns {string} ...
+ * @param {string} t - Tweak
+ * @returns {string} Pseudorandom bytes for ephemeral OTP key
  */
 function randomOracle(m, t = 0) {
   return sodium.crypto_secretbox_easy(
