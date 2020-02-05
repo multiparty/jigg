@@ -24,6 +24,19 @@ function encrypt(a, b, t, m) {
   return m.xor(k).xor(randomOracle(k, t));
 }
 
+function longToByteArray(long) {
+  // we want to represent the input as a 8-bytes array
+  var byteArray = new Uint8Array(sodium.crypto_secretbox_NONCEBYTES);
+
+  for ( var index = 0; index < byteArray.length; index ++ ) {
+    var byte = long & 0xff;
+    byteArray [ index ] = byte;
+    long = (long - byte) / 256 ;
+  }
+
+  return byteArray;
+}
+
 /**
  * Fixed-key 1-block cipher as the Random Oracle.
  * @param {string} m - Message
@@ -31,9 +44,9 @@ function encrypt(a, b, t, m) {
  * @returns {string} Pseudorandom bytes for ephemeral OTP key
  */
 function randomOracle(m, t = 0) {
-  return sodium.crypto_secretbox_easy(
+    return sodium.crypto_secretbox_easy(
     m,
-    new Uint8Array(24).fill(t),  // Nonce 24 bytes because this sodium uses 192 bit blocks.
+    longToByteArray(t),  // Nonce 24 bytes because this sodium uses 192 bit blocks.
     sodium.from_hex('da5698be17b9b46962335799779fbeca8ce5d491c0d26243bafef9ea1837a9d8')  // SHA(0).
   ).subarray(0, bytes+1);  // Prune back to the correct number of bytes.
 }

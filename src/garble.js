@@ -70,7 +70,7 @@ function generateWireToLabelsMap(circuit) {
  * @param {Object} wToLs - Mapping from each wire index to two labels
  * @returns {Object} Garbled gate
  */
-function garbleGate(gateFromCircuit, wToLs) {
+function garbleGate(gate_id, gateFromCircuit, wToLs) {
   const i = gateFromCircuit.wire_in_index[0];
   const j = (gateFromCircuit.wire_in_index.length === 2) ? gateFromCircuit.wire_in_index[1] : i;
   const k = gateFromCircuit.wire_out_index[0];
@@ -82,16 +82,16 @@ function garbleGate(gateFromCircuit, wToLs) {
   } else if (gateFromCircuit.operation === 'and') {
     var t = [0,0,0,1];
     var values = [
-      [crypto.encrypt(wToLs.get(i)[0], wToLs.get(j)[0], k, wToLs.get(k)[t[0]])
+      [crypto.encrypt(wToLs.get(i)[0], wToLs.get(j)[0], gate_id, wToLs.get(k)[t[0]])
         .toJSON(),
       (2 * wToLs.get(i)[0].pointer()) + wToLs.get(j)[0].pointer()],
-      [crypto.encrypt(wToLs.get(i)[0], wToLs.get(j)[1], k, wToLs.get(k)[t[1]])
+      [crypto.encrypt(wToLs.get(i)[0], wToLs.get(j)[1], gate_id, wToLs.get(k)[t[1]])
         .toJSON(),
       (2 * wToLs.get(i)[0].pointer()) + wToLs.get(j)[1].pointer()],
-      [crypto.encrypt(wToLs.get(i)[1], wToLs.get(j)[0], k, wToLs.get(k)[t[2]])
+      [crypto.encrypt(wToLs.get(i)[1], wToLs.get(j)[0], gate_id, wToLs.get(k)[t[2]])
         .toJSON(),
       (2 * wToLs.get(i)[1].pointer()) + wToLs.get(j)[0].pointer()],
-      [crypto.encrypt(wToLs.get(i)[1], wToLs.get(j)[1], k, wToLs.get(k)[t[3]])
+      [crypto.encrypt(wToLs.get(i)[1], wToLs.get(j)[1], gate_id, wToLs.get(k)[t[3]])
         .toJSON(),
       (2 * wToLs.get(i)[1].pointer()) + wToLs.get(j)[1].pointer()]
     ];
@@ -103,20 +103,6 @@ function garbleGate(gateFromCircuit, wToLs) {
     return new gate.GateGarbled(values);
   }
   // Define cases for any other gate operations here.
-}
-
-/**
- * Garble all the gates (stateless version).
- * @param {Object} circuit - Circuit in which to garble the gates
- * @param {Object} wireToLabels - Mapping from each wire index to two labels
- * @returns {Object} Ordered collection of garbled gates
- */
-function garbleGates(circuit, wireToLabels) {
-  var gatesGarbled = new gate.GatesGarbled();
-  for (var i = 0; i < circuit.gate_count; i++) {
-    gatesGarbled.set(i, garbleGate(circuit.gate[i], wireToLabels));
-  }
-  return gatesGarbled;
 }
 
 /**
@@ -176,7 +162,6 @@ function outputLabelsToBits(circuit, wireToLabels, outputWireToLabels) {
 module.exports = {
   generateWireToLabelsMap: generateWireToLabelsMap,
   garbleGate: garbleGate,
-  garbleGates: garbleGates,
   sendInputWireToLabelsMap: sendInputWireToLabelsMap,
   outputLabelsToBits: outputLabelsToBits
 };
