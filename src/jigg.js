@@ -99,19 +99,19 @@ Agent.prototype.loadCircuit = function () {
  */
 Agent.prototype.gatesThrottled = function (circuit, gatesGarbled, wireToLabels, index) {
   for (var i = index; i < index + this.parallel && i < circuit.gate_count; i++) {
-    if (this.role == 'Garbler')
-      gatesGarbled.set(i, garble.garbleGate(circuit.gate[i], wireToLabels));
-    else if (this.role == 'Evaluator')
-      evaluate.evaluateGate(circuit.gate[i], gatesGarbled.get(i), wireToLabels);
+    if (this.role === 'Garbler')
+      gatesGarbled.set(i, garble.garbleGate(i, circuit.gate[i], wireToLabels));
+    else if (this.role === 'Evaluator')
+      evaluate.evaluateGate(i, circuit.gate[i], gatesGarbled.get(i), wireToLabels);
   }
 
   index += this.parallel;
   this.progress(Math.min(index, circuit.gate_count), circuit.gate_count);
 
   if (index >= circuit.gate_count) {
-    if (this.role == 'Garbler')
+    if (this.role === 'Garbler')
       this.finishGarbler(circuit, gatesGarbled, wireToLabels);
-    else if (this.role == 'Evaluator')
+    else if (this.role === 'Evaluator')
       this.finishEvaluator(circuit, wireToLabels);
     return;
   }

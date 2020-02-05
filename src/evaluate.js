@@ -7,7 +7,6 @@
 
 const label = require('./data/label');
 const gate = require('./data/gate');
-const circuit = require('./data/circuit');
 const assignment = require('./data/assignment');
 const crypto = require('./util/crypto');
 
@@ -57,7 +56,7 @@ function processMessages(circuit, messages) {
  * @param {Object} gateGarbled - Garbled gate to evaluate
  * @param {Object} wireToLabels - Mapping from each wire index to two labels
  */
-function evaluateGate(gate, gateGarbled, wireToLabels) {
+function evaluateGate(gate_id, gate, gateGarbled, wireToLabels) {
   const i = gate.wire_in_index[0];
   const j = (gate.wire_in_index.length === 2) ? gate.wire_in_index[1] : i;
   const k = (gate.wire_out_index != null) ? gate.wire_out_index[0] : 0; // If null, just return decrypted.
@@ -68,27 +67,12 @@ function evaluateGate(gate, gateGarbled, wireToLabels) {
   } else if (gate.operation === 'not') {
     wireToLabels.set(k, [wireToLabels.get(i)[0]]);  // Already inverted.
   } else if (gate.operation === 'and') {
-    wireToLabels.set(k, [crypto.decrypt(wireToLabels.get(i)[0], wireToLabels.get(j)[0], k, label.Label(gateGarbled.get(l)))]);
+    wireToLabels.set(k, [crypto.decrypt(wireToLabels.get(i)[0], wireToLabels.get(j)[0], gate_id, label.Label(gateGarbled.get(l)))]);
   }
-}
-
-/**
- * Evaluate all the gates (stateless version).
- * @param {Object} circuit - Circuit in which to garble the gates
- * @param {Object} gatesGarbled - Ordered collection of garbled gates
- * @param {Object} wireToLabels - Labeled wire data structure
- * @returns {Object} Mapping from each wire index to two labels
- */
-function evaluateGates(circuit, gatesGarbled, wireToLabels) {
-  for (var i = 0; i < circuit.gate_count; i++) {
-    this.evaluateGate(circuit.gate[i], gatesGarbled.get(i), wireToLabels);
-  }
-  return wireToLabels;
 }
 
 module.exports = {
   receiveMessages: receiveMessages,
   processMessages: processMessages,
   evaluateGate: evaluateGate,
-  evaluateGates: evaluateGates
 };
