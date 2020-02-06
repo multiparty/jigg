@@ -19,6 +19,8 @@ const crypto = require('./util/crypto');
  */
 function receiveMessages(channel, circuit, input) {
   const inputPair = (new Array(1 + input.length)).concat(input);
+  
+  // Receive the list of garbled gates.
   var messages = [channel.receiveDirect('gatesGarbled')];
 
   // Receive each of the garbler's input labels.
@@ -26,7 +28,8 @@ function receiveMessages(channel, circuit, input) {
     messages.push(channel.receiveDirect('wire[' + circuit.wire_in_index[i] + ']'));
   }
 
-  // Promises to each of the evaluator's input labels.
+  // Receive each of the evaluator's input labels using the input bits
+  // available to the evaluator.
   for (var i = circuit.wire_in_count/2; i < circuit.wire_in_count; i++) {
     messages.push(channel.receiveOblivious(inputPair[circuit.wire_in_index[i]]));
   }
@@ -71,8 +74,23 @@ function evaluateGate(gate_id, gate, gateGarbled, wireToLabels) {
   }
 }
 
+/**
+ * Evaluate all the gates (stateless version).
+ * @param {Object} circuit - Circuit in which to garble the gates
+ * @param {Object} gatesGarbled - Ordered collection of garbled gates
+ * @param {Object} wireToLabels - Labeled wire data structure
+ * @returns {Object} Mapping from each wire index to two labels
+ */
+function evaluateGates(circuit, gatesGarbled, wireToLabels) {
+  for (var i = 0; i < circuit.gate_count; i++) {
+    this.evaluateGate(i, circuit.gate[i], gatesGarbled.get(i), wireToLabels);
+  }
+  return wireToLabels;
+}
+
 module.exports = {
   receiveMessages: receiveMessages,
   processMessages: processMessages,
   evaluateGate: evaluateGate,
+  evaluateGates: evaluateGates
 };

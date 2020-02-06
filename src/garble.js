@@ -159,9 +159,24 @@ function outputLabelsToBits(circuit, wireToLabels, outputWireToLabels) {
   return output;
 }
 
+/**
+ * Garble all the gates (stateless version).
+ * @param {Object} circuit - Circuit in which to garble the gates
+ * @param {Object} wireToLabels - Mapping from each wire index to two labels
+ * @returns {Object} Ordered collection of garbled gates
+ */
+function garbleGates(circuit, wireToLabels) {
+  var gatesGarbled = new gate.GatesGarbled();
+  for (var i = 0; i < circuit.gate_count; i++) {
+    gatesGarbled.set(i, garbleGate(i, circuit.gate[i], wireToLabels));
+  }
+  return gatesGarbled;
+}
+
 module.exports = {
   generateWireToLabelsMap: generateWireToLabelsMap,
   garbleGate: garbleGate,
+  garbleGates: garbleGates,
   sendInputWireToLabelsMap: sendInputWireToLabelsMap,
   outputLabelsToBits: outputLabelsToBits
 };

@@ -111,7 +111,7 @@ ChannelSimulated.prototype.sendOblivious = function (pair) {
 };
 
 /**
- * Receive the specified value under the specified key.
+ * Receive the bit-specified value from first pair in queue. 
  * @param {number} bit - Bit to determine which value to receive
  * @returns {string} Next available value
  */

@@ -431,6 +431,7 @@ var add32_json = {
  * @returns {number[]} Computed bit vector output
  */
 function protocolPureEndToEnd(circuit, inputs, chan, a, gg) {
+
   // Split inputs into two halves (to be divided
   // between garbler and evaluator agents).
   var bs = [];
@@ -529,61 +530,83 @@ describe('end-to-end', function() {
     'compare-eq-zero-64-bit': function (a) { return a.orBits().not(); }
   }
 
+  // Check for command-line arguments.
+  var trials = 1;
+  var filename_only = "*";
+  if (process.argv.length === 5 || process.argv.length === 7) {
+    for (var i = 3; i <= 5; i += 2)
+      if (process.argv[i] === '--trials')
+        trials = parseInt(process.argv[i+1]);
+    for (var i = 3; i <= 5; i += 2)
+      if (process.argv[i] === '--circuit')
+        filename_only = process.argv[i+1];
+    console.log(filename_only);
+  }
+
   // Test each circuit.
   for (let i = 0; i < filenames.length; i++) {
-    it(filenames[i], async function() {
-      this.timeout(4*60*1000); // Necessary for larger circuits.
 
-      // Create the simulated communications channel.
-      var chan = new channel.ChannelSimulated();
+    // Only test the specified circuit if a user specified one.
+    console.log(filenames[i], filename_only === filenames[i]);
+    if (filename_only === "*" || filename_only === filenames[i]) {
 
-      // Load circuit file and perform end-to-end test.
-      let raw = await fs.readFile('./circuits/bristol/' + filenames[i] + '.txt', 'utf8');
-      let c = circuit.fromBristolFashion(raw);
+      // Test the circuit on each input.
+      for (let trial = 0; trial < trials; trial++) {
+        it(filenames[i], async function() {
+          this.timeout(4*60*1000); // Necessary for larger circuits.
 
-      var inputs = [];
-      for (var j = 0; j < c.value_in_count; j++) {
-        inputs.push(bits.random(c.value_in_length[j], i+j+1));
-      }
-      let outEval = c.evaluate(inputs);
+          // Create the simulated communications channel.
+          var chan = new channel.ChannelSimulated();
 
-      // Load precomputed data if it is available.
-      let a = null, gg = null;
-      try {
-        let aString = await fs.readFile('./circuits/gg/' + filenames[i] + '.assignment.json', 'utf8');
-        let ggString = await fs.readFile('./circuits/gg/' + filenames[i] + '.gg.json', 'utf8');
-        a = assignment.Assignment.prototype.fromJSONString(aString);
-        gg = gate.GatesGarbled.prototype.fromJSONString(ggString);
-      } catch (err) {}
+          // Load circuit file and perform end-to-end test.
+          let raw = await fs.readFile('./circuits/bristol/' + filenames[i] + '.txt', 'utf8');
+          let c = circuit.fromBristolFashion(raw);
 
-      let outEtoE = protocolPureEndToEnd(c, inputs, chan, a, gg);
+          var inputs = [];
+          for (var j = 0; j < c.value_in_count; j++) {
+            inputs.push(bits.random(c.value_in_length[j], 1+trial+j));
+          }
+          let outEval = c.evaluate(inputs);
 
-      // Confirm that the circuit is mathematically correct if a
-      // reference function for the circuit is provided.
-      if (filenames[i] in functions) {
-        let outRef = functions[filenames[i]](...inputs);
-        expect(outEval.toString()).to.eql(outRef.toString());
-      }
+          // Load precomputed data if it is available.
+          let a = null, gg = null;
+          try {
+            let aString = await fs.readFile('./circuits/gg/' + filenames[i] + '.assignment.json', 'utf8');
+            let ggString = await fs.readFile('./circuits/gg/' + filenames[i] + '.gg.json', 'utf8');
+            a = assignment.Assignment.prototype.fromJSONString(aString);
+            gg = gate.GatesGarbled.prototype.fromJSONString(ggString);
+          } catch (err) {}
 
-      // Do the evaluation and end-to-end protocol output bit vectors match?
-      expect(outEval.toString()).to.eql(outEtoE.toString());
+          let outEtoE = protocolPureEndToEnd(c, inputs, chan, a, gg);
 
-      // Confirm that communicated messages conform to schemas.
-      let gatesGarbledSchemaString = await fs.readFile('./schemas/gates.garbled.schema.json', 'utf8');
-      let gatesGarbledSchema = JSON.parse(gatesGarbledSchemaString);
-      expect(JSON.parse(chan.direct['gatesGarbled'])).to.be.jsonSchema(gatesGarbledSchema);
+          // Confirm that the circuit is mathematically correct if a
+          // reference function for the circuit is provided.
+          if (filenames[i] in functions) {
+            let outRef = functions[filenames[i]](...inputs);
+            expect(outEval.toString()).to.eql(outRef.toString());
+          }
 
-      let assignmentSchemaString = await fs.readFile('./schemas/assignment.schema.json', 'utf8');
-      let assignmentSchema = JSON.parse(assignmentSchemaString);
-      expect(JSON.parse(chan.direct['outputWireToLabels'])).to.be.jsonSchema(assignmentSchema);
+          // Do the evaluation and end-to-end protocol output bit vectors match?
+          expect(outEval.toString()).to.eql(outEtoE.toString());
 
-      let labelSchemaString = await fs.readFile('./schemas/label.schema.json', 'utf8');
-      let labelSchema = JSON.parse(labelSchemaString);
-      for (var key in chan.direct) {
-        if (key.startsWith("wire[")) {
-          expect(JSON.parse(chan.direct[key])).to.be.jsonSchema(labelSchema);
-        }
-      }
-    });
-  }
+          // Confirm that communicated messages conform to schemas.
+          let gatesGarbledSchemaString = await fs.readFile('./schemas/gates.garbled.schema.json', 'utf8');
+          let gatesGarbledSchema = JSON.parse(gatesGarbledSchemaString);
+          expect(JSON.parse(chan.direct['gatesGarbled'])).to.be.jsonSchema(gatesGarbledSchema);
+
+          let assignmentSchemaString = await fs.readFile('./schemas/assignment.schema.json', 'utf8');
+          let assignmentSchema = JSON.parse(assignmentSchemaString);
+          expect(JSON.parse(chan.direct['outputWireToLabels'])).to.be.jsonSchema(assignmentSchema);
+
+          let labelSchemaString = await fs.readFile('./schemas/label.schema.json', 'utf8');
+          let labelSchema = JSON.parse(labelSchemaString);
+          for (var key in chan.direct) {
+            if (key.startsWith("wire[")) {
+              expect(JSON.parse(chan.direct[key])).to.be.jsonSchema(labelSchema);
+            }
+          }
+        }); // it()
+      } // for each trial
+    } // if a specified circuit
+  } // for each circuit
 });

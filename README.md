@@ -95,6 +95,18 @@ Unit tests of functional components (single-process without sockets) can be run 
 ```shell
 mocha test
 ```
+It is possible to restrict the end-to-end unit tests to only test inputs on a specific circuit (note that the `.txt` circuit file extension is omitted).
+```shell
+mocha test --circuit logic-and-4-bit
+```
+The number of distinct inputs on which to run the circuits being tested can be specified.
+```shell
+mocha test --trials 3
+```
+The two options can also be combined.
+```shell
+mocha test --circuit logic-and-8-bit --trials 10
+```
 
 ### End-to-end Tests
 All of the built-in test vectors can be verified in `npm test` or, equivalently, `node test/suite/simulate.js`. Communications between the server, garbler and evaluator are automated. You do not need to already have a server running; tests are run over port 3001.

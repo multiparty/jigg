@@ -21,7 +21,7 @@ function Assignment() {
 /**
  * Assign an ordered collection of labels to a wire index.
  * @param {number} index - Index of wire to which to assign labels
- * @param {Object[]} labels - Array of one or two labels
+ * @param {Object[]} labels - Ordered collection of labels
  */
 Assignment.prototype.set = function (index, labels) {
   this.mapping[index] = labels;
@@ -29,8 +29,8 @@ Assignment.prototype.set = function (index, labels) {
 
 /**
  * Get the labels at the specified wire index.
- * @param {number} index - Index of wire for which to return the label
- * @param {Object[]} labels - Array of one or two labels
+ * @param {number} index - Index of wire for which to return labels
+ * @returns {Object[]} Ordered collection of labels
  */
 Assignment.prototype.get = function (index) {
   return this.mapping[index];
@@ -52,7 +52,7 @@ Assignment.prototype.toJSON = function () {
 };
 
 /**
- * Return the data structure instance as a JSON string.
+ * Turn an assignment instance into a JSON string.
  * @returns {string} Data structure as a JSON string
  */
 Assignment.prototype.toJSONString = function () {
@@ -61,6 +61,7 @@ Assignment.prototype.toJSONString = function () {
 
 /**
  * Build a data structure instance from its JSON representation.
+ * @param {string} json - Assignment instance as a JSON object
  * @returns {Object} Instance of the data structure
  */
 Assignment.prototype.fromJSON = function (json) {
@@ -73,6 +74,7 @@ Assignment.prototype.fromJSON = function (json) {
 
 /**
  * Build a data structure instance from its JSON string representation.
+ * @param {string} json - Assignment instance in JSON string form
  * @returns {Object} Instance of the data structure
  */
 Assignment.prototype.fromJSONString = function (s) {
@@ -82,7 +84,7 @@ Assignment.prototype.fromJSONString = function (s) {
 /**
  * Return a subset of the map corresponding to the supplied indices.
  * @param {number[]} indices - Indices of map entries to keep in result
- * @returns {Object} Data structure as a JSON object
+ * @returns {Object} New assignment data structure instance
  */
 Assignment.prototype.copyWithOnlyIndices = function (indices) {
   var assignment = new Assignment();
