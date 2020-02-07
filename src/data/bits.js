@@ -5,7 +5,7 @@
 
 'use strict';
 
-const hex2bin = require('../util/hexutils').hex2bin;
+const hex2bin = require('../util/hexutils.js').hex2bin;
 
 /**
  * Create a new bit vector instance.
@@ -17,7 +17,7 @@ function Bits(argument, representation) {
   // The internal representation is an array of numbers in
   // which each number is either 0 or 1, with the right-most
   // digit being the least significant.
-  if (typeof(argument) == 'string') {
+  if (typeof(argument) === 'string') {
     if (representation === 'hexadecimal') {
       this.bits = hex2bin(argument).split('').map(Number);
     }
@@ -56,7 +56,7 @@ Bits.prototype.pad = function (length) {
   for (var i = 0; i < Math.max(0, length - this.bits.length); i++) {
     bits.push(0);
   }
-  for (var i = 0; i < this.bits.length; i++) {
+  for (i = 0; i < this.bits.length; i++) {
     bits.push(this.bits[i]);
   }
   return new Bits(bits);
@@ -99,7 +99,7 @@ Bits.prototype.concat = function (other) {
   for (var i = 0; i < this.bits.length; i++) {
     bits.push(this.bits[i]);
   }
-  for (var i = 0; i < other.bits.length; i++) {
+  for (i = 0; i < other.bits.length; i++) {
     bits.push(other.bits[i]);
   }
   return new Bits(bits);
@@ -127,10 +127,10 @@ Bits.prototype.toNumber = function () {
  */
 Bits.prototype.fromNumber = function (n) {
   var bits = [];
-  var zero = (typeof n === 'bigint') ? BigInt(0) : 0;
-  var two = (typeof n === 'bigint') ? BigInt(2) : 2;
+  var zero = (typeof(n) === 'bigint') ? BigInt(0) : 0;
+  var two = (typeof(n) === 'bigint') ? BigInt(2) : 2;
   while (n > zero) {
-    bits = [((n%two)==BigInt(0)) ? 0 : 1].concat(bits);
+    bits = [((n%two) === BigInt(0)) ? 0 : 1].concat(bits);
     n = n / two;
   }
   return new Bits(bits);
@@ -143,9 +143,9 @@ Bits.prototype.fromNumber = function (n) {
  */
 Bits.prototype.and = function (other) {
   var bits = [];
-  if (this.bits.length == other.bits.length) {
+  if (this.bits.length === other.bits.length) {
     for (var i = 0; i < this.bits.length; i++) {
-      bits.push((this.bits[i] == 1 && other.bits[i] == 1) ? 1 : 0);
+      bits.push((this.bits[i] === 1 && other.bits[i] === 1) ? 1 : 0);
     }
   }
   return new Bits(bits);
@@ -158,9 +158,9 @@ Bits.prototype.and = function (other) {
  */
 Bits.prototype.or = function (other) {
   var bits = [];
-  if (this.bits.length == other.bits.length) {
+  if (this.bits.length === other.bits.length) {
     for (var i = 0; i < this.bits.length; i++) {
-      bits.push((this.bits[i] == 1 || other.bits[i] == 1) ? 1 : 0);
+      bits.push((this.bits[i] === 1 || other.bits[i] === 1) ? 1 : 0);
     }
   }
   return new Bits(bits);
@@ -173,9 +173,9 @@ Bits.prototype.or = function (other) {
  */
 Bits.prototype.xor = function (other) {
   var bits = [];
-  if (this.bits.length == other.bits.length) {
+  if (this.bits.length === other.bits.length) {
     for (var i = 0; i < this.bits.length; i++) {
-      bits.push((this.bits[i] != other.bits[i]) ? 1 : 0);
+      bits.push((this.bits[i] !== other.bits[i]) ? 1 : 0);
     }
   }
   return new Bits(bits);
@@ -199,7 +199,7 @@ Bits.prototype.not = function () {
  */
 Bits.prototype.andBits = function () {
   for (var i = 0; i < this.bits.length; i++)
-    if (this.bits[i] == 0)
+    if (this.bits[i] === 0)
       return new Bits([0]);
   return new Bits([1]);
 };
@@ -210,7 +210,7 @@ Bits.prototype.andBits = function () {
  */
 Bits.prototype.orBits = function () {
   for (var i = 0; i < this.bits.length; i++)
-    if (this.bits[i] == 1)
+    if (this.bits[i] === 1)
       return new Bits([1]);
   return new Bits([0]);
 };

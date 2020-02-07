@@ -11,9 +11,6 @@ const bits = require('../../src/data/bits');
 const circuit = require('../../src/data/circuit');
 const jigg = require('../../src/jigg');
 
-global.sodium = require('libsodium-wrappers-sumo');
-global.fetch = require('node-fetch');
-
 // Disable output from invoked components.
 const simulateLog = console.log; console.log = Function();
 

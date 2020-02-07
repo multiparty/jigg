@@ -5,11 +5,8 @@
 
 'use strict';
 
-const bits = require('./bits');
-const gate = require('./gate');
-const socket = require('../comm/socket');
-
-const bytes = 16;
+const bits = require('./bits.js');
+const gate = require('./gate.js');
 
 /**
  * Create a new circuit data structure instance.
@@ -38,7 +35,7 @@ function Circuit(
   this.value_in_length = value_in_length == null ? [] : value_in_length;
   this.value_out_count = value_out_count == null ? 0 : value_out_count;
   this.value_out_length = value_out_length == null ? [] : value_out_length;
-  
+
   // The four fields below are technically redundant but included
   // to support cleaner algorithm implementations.
   this.wire_in_count = wire_in_count == null ? 0 : wire_in_count;
@@ -60,7 +57,9 @@ Circuit.prototype.toJSON = function () {
     value_out_count: this.value_out_count, value_out_length: this.value_out_length,
     wire_in_count: this.wire_in_count, wire_in_index: this.wire_in_index,
     wire_out_count: this.wire_out_count, wire_out_index: this.wire_out_index,
-    gate: this.gate.map(function (g) { return g.toJSON(); })
+    gate: this.gate.map(function (g) {
+      return g.toJSON();
+    })
   };
 };
 
@@ -76,7 +75,9 @@ Circuit.prototype.fromBristolFashion = function (raw) {
   var rows =
     raw.split('\n').map(function (line) {
       return line.split(' ')
-        .map(function (tok) { return tok.trim(); });
+        .map(function (tok) {
+          return tok.trim();
+        });
     });
   circuit.gate_count = +parseInt(rows[0][0]);
   circuit.wire_count = +parseInt(rows[0][1]);
@@ -90,18 +91,18 @@ Circuit.prototype.fromBristolFashion = function (raw) {
     circuit.value_in_length.push(length);
     circuit.wire_in_count += length;
   }
-  for (var i = 1; i < rows[2].length; i++) {
-    var length = parseInt(rows[2][i]);
+  for (i = 1; i < rows[2].length; i++) {
+    length = parseInt(rows[2][i]);
     circuit.value_out_count += 1;
     circuit.value_out_length.push(length);
     circuit.wire_out_count += length;
   }
 
   // Collect input/output wire indices for easier processing.
-  for (var i = 1; i <= circuit.wire_in_count; i++) {
+  for (i = 1; i <= circuit.wire_in_count; i++) {
     circuit.wire_in_index.push(i);
   }
-  for (var i = 1+circuit.wire_count-circuit.wire_out_count; i <= circuit.wire_count; i++) {
+  for (i = 1+circuit.wire_count-circuit.wire_out_count; i <= circuit.wire_count; i++) {
     circuit.wire_out_index.push(i);
   }
 
@@ -128,10 +129,9 @@ Circuit.prototype.fromBristolFashion = function (raw) {
  * @returns {Object} Output bit vector
  */
 Circuit.prototype.evaluate = function (inputs) {
-  
   var c = this;
   var wire = {};
-  
+
   // Assign input bits to corresponding input wires.
   // It is assumed that the number of input wires
   // in the circuit matches the total number of bits
@@ -145,28 +145,28 @@ Circuit.prototype.evaluate = function (inputs) {
   }
 
   // Evaluate the gate.
-  for (var i = 0; i < c.gate_count; i++) {
-    if (c.gate[i].operation == 'and') {
+  for (i = 0; i < c.gate_count; i++) {
+    if (c.gate[i].operation === 'and') {
       wire[c.gate[i].wire_out_index[0]] =
-        ((wire[c.gate[i].wire_in_index[0]] == 1) &&
-         (wire[c.gate[i].wire_in_index[1]] == 1)) ?
+        ((wire[c.gate[i].wire_in_index[0]] === 1) &&
+         (wire[c.gate[i].wire_in_index[1]] === 1)) ?
           1 : 0;
     }
-    if (c.gate[i].operation == 'xor') {
+    if (c.gate[i].operation === 'xor') {
       wire[c.gate[i].wire_out_index[0]] =
-        (wire[c.gate[i].wire_in_index[0]] != wire[c.gate[i].wire_in_index[1]]) ?
+        (wire[c.gate[i].wire_in_index[0]] !== wire[c.gate[i].wire_in_index[1]]) ?
           1 : 0;
     }
-    if (c.gate[i].operation == 'not') {
+    if (c.gate[i].operation === 'not') {
       wire[c.gate[i].wire_out_index[0]] =
-        (wire[c.gate[i].wire_in_index[0]] == 0) ?
+        (wire[c.gate[i].wire_in_index[0]] === 0) ?
           1 : 0;
     }
   }
 
   // Retrieve the output bits.
   var outputBits = [];
-  for (var i = 0; i < c.wire_out_count; i++) {
+  for (i = 0; i < c.wire_out_count; i++) {
     outputBits.push(wire[c.wire_out_index[i]]);
   }
 

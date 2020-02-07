@@ -5,8 +5,8 @@
 
 'use strict';
 
-const crypto = require('../util/crypto');
-const random = require('../util/random');
+const crypto = require('../util/crypto.js');
+const random = require('../util/random.js');
 
 const bytes = 8;
 const labels = [];

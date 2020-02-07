@@ -5,7 +5,7 @@
 
 'use strict';
 
-//const sodium = require('../sodium');
+const sodium = require('libsodium-wrappers-sumo');
 const ed25519 = require('./ed25519.js');
 const bytes = 8;
 
@@ -44,7 +44,7 @@ function longToByteArray(long) {
  * @returns {string} Pseudorandom bytes for ephemeral OTP key
  */
 function randomOracle(m, t = 0) {
-    return sodium.crypto_secretbox_easy(
+  return sodium.crypto_secretbox_easy(
     m,
     longToByteArray(t),  // Nonce 24 bytes because this sodium uses 192 bit blocks.
     sodium.from_hex('da5698be17b9b46962335799779fbeca8ce5d491c0d26243bafef9ea1837a9d8')  // SHA(0).
@@ -64,13 +64,11 @@ function encrypt_generic(plaintext, key, nonce) {
 function public_encrypt(plaintext, publicKey) {
   // CODE
   throw new Error('Function `public_encrypt` not implemented yet');
-  return plaintext;
 }
 
 function private_decrypt(ciphertext, privateKey) {
   // CODE
   throw new Error('Function `private_decrypt` not implemented yet');
-  return ciphertext;
 }
 
 /**

@@ -5,16 +5,16 @@
 
 'use strict';
 
-const crypto = require('../util/crypto');
+const label = require('../data/label.js');
+const crypto = require('../util/crypto.js');
 const curve = crypto.ed25519;
-const label = require('../data/label');
 
 /**
  * Create a communication object that uses OT.
  * @param {Object} socket - Socket to use for communications
  * @returns {Object} OT-based I/O object
  */
-const init = function(socket) {
+const init = function (socket) {
 
   /**
    * Oblivious transfer sending primitive:
@@ -24,7 +24,7 @@ const init = function(socket) {
    * @param {Array} m1 - Second argument
    * @returns {Promise} Promise object that executes action
    */
-  const send = function(m0, m1) {
+  const send = function (m0, m1) {
     var msg_id = socket.nextid();
     m0 = m0.toBytes();  // shadow cast as bytes
     m1 = m1.toBytes();
@@ -54,7 +54,7 @@ const init = function(socket) {
    * @param {boolean} c - Criteria parameter
    * @returns {Promise} Promise object that executes action
    */
-  const receive = function(c) {
+  const receive = function (c) {
     var msg_id = socket.nextid();
 
     if (typeof(c) !== 'number') {

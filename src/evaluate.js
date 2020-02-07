@@ -5,10 +5,10 @@
 
 'use strict';
 
-const label = require('./data/label');
-const gate = require('./data/gate');
-const assignment = require('./data/assignment');
-const crypto = require('./util/crypto');
+const label = require('./data/label.js');
+const gate = require('./data/gate.js');
+const assignment = require('./data/assignment.js');
+const crypto = require('./util/crypto.js');
 
 /**
  * Receive garbled gates and wire-to-label map from garbler.
@@ -19,7 +19,7 @@ const crypto = require('./util/crypto');
  */
 function receiveMessages(channel, circuit, input) {
   const inputPair = (new Array(1 + input.length)).concat(input);
-  
+
   // Receive the list of garbled gates.
   var messages = [channel.receiveDirect('gatesGarbled')];
 
@@ -30,7 +30,7 @@ function receiveMessages(channel, circuit, input) {
 
   // Receive each of the evaluator's input labels using the input bits
   // available to the evaluator.
-  for (var i = circuit.wire_in_count/2; i < circuit.wire_in_count; i++) {
+  for (i = circuit.wire_in_count/2; i < circuit.wire_in_count; i++) {
     messages.push(channel.receiveOblivious(inputPair[circuit.wire_in_index[i]]));
   }
 

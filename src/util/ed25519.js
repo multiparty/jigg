@@ -7,6 +7,7 @@
  *  on to provide for random data.
  */
 
+const sodium = require('libsodium-wrappers-sumo');
 const elliptic = require('elliptic');
 const lib = elliptic.ec('ed25519');
 

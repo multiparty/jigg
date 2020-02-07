@@ -10,9 +10,6 @@ const fs = require('fs');
 const circuit = require('../../src/data/circuit');
 const garble = require('../../src/garble');
 
-global.sodium = require('libsodium-wrappers-sumo');
-global.fetch = require('node-fetch');
-
 /*
  * Test a circuit's correctness for a known input-output pair.
  * @param {string[]} filenames - File names of circuits

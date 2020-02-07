@@ -5,17 +5,15 @@
 
 'use strict';
 
-const bits = require('./data/bits');
-const label = require('./data/label');
-const gate = require('./data/gate');
-const circuit = require('./data/circuit');
-const assignment = require('./data/assignment');
-const hexutils = require('./util/hexutils');
-const garble = require('./garble');
-const evaluate = require('./evaluate');
-const channel = require('./comm/channel');
-const socket = require('./comm/socket');
-const OT = require('./comm/ot');
+const bits = require('./data/bits.js');
+const gate = require('./data/gate.js');
+const circuit = require('./data/circuit.js');
+const assignment = require('./data/assignment.js');
+const hexutils = require('./util/hexutils.js');
+const garble = require('./garble.js');
+const evaluate = require('./evaluate.js');
+const channel = require('./comm/channel.js');
+const socket = require('./comm/socket.js');
 
 /**
  * This callback handles the result bit string.
@@ -83,10 +81,11 @@ Agent.prototype.loadCircuit = function () {
     });
   });
   promise.then(function (circuit) {
-    if (that.role == 'Garbler')
+    if (that.role === 'Garbler') {
       that.runGarbler(circuit);
-    else if (that.role == 'Evaluator')
+    } else if (that.role === 'Evaluator') {
       that.runEvaluator(circuit);
+    }
   });
 };
 
@@ -99,20 +98,22 @@ Agent.prototype.loadCircuit = function () {
  */
 Agent.prototype.gatesThrottled = function (circuit, gatesGarbled, wireToLabels, index) {
   for (var i = index; i < index + this.parallel && i < circuit.gate_count; i++) {
-    if (this.role === 'Garbler')
+    if (this.role === 'Garbler') {
       gatesGarbled.set(i, garble.garbleGate(i, circuit.gate[i], wireToLabels));
-    else if (this.role === 'Evaluator')
+    } else if (this.role === 'Evaluator') {
       evaluate.evaluateGate(i, circuit.gate[i], gatesGarbled.get(i), wireToLabels);
+    }
   }
 
   index += this.parallel;
   this.progress(Math.min(index, circuit.gate_count), circuit.gate_count);
 
   if (index >= circuit.gate_count) {
-    if (this.role === 'Garbler')
+    if (this.role === 'Garbler') {
       this.finishGarbler(circuit, gatesGarbled, wireToLabels);
-    else if (this.role === 'Evaluator')
+    } else if (this.role === 'Evaluator') {
       this.finishEvaluator(circuit, wireToLabels);
+    }
     return;
   }
 
@@ -189,5 +190,5 @@ Agent.prototype.finishEvaluator = function (circuit, wireToLabels) {
 
 module.exports = {
   Agent: Agent,
-  utils: Object.assign(bits, hexutils)
+  utils: Object.assign({}, bits, hexutils)
 };

@@ -29,11 +29,11 @@ sodium.ready.then(function () {
   const mult_g = p => mult(lib.g, p);
   const random = () => mult_g(lib.curve.point(rand(32)));
   const point_to_hash = (p, len) => {
-      const e = new Uint8Array(p.encode());  // 64 bytes, or p.encodeCompressed() for 32 bytes
-      const salt = new Uint8Array(32);  // constant is fine
-      const digest = sodium.crypto_pwhash_scryptsalsa208sha256(len, e, salt, 0, 0);
-      // console.log(e, digest);
-      return digest;
+    const e = new Uint8Array(p.encode());  // 64 bytes, or p.encodeCompressed() for 32 bytes
+    const salt = new Uint8Array(32);  // constant is fine
+    const digest = sodium.crypto_pwhash_scryptsalsa208sha256(len, e, salt, 0, 0);
+    // console.log(e, digest);
+    return digest;
   };
   const enc = (m, k) => xor_array(m, k);
   const dec = (c, k) => xor_array(c, k);

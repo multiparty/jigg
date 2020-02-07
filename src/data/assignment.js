@@ -5,9 +5,7 @@
 
 'use strict';
 
-const gate = require('./gate');
-const circuit = require('./circuit');
-const label = require('./label');
+const label = require('./label.js');
 
 /**
  * Create a new wire-to-labels map data structure instance;

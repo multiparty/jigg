@@ -5,12 +5,11 @@
 
 'use strict';
 
-const label = require('./data/label');
-const gate = require('./data/gate');
-const circuit = require('./data/circuit');
-const assignment = require('./data/assignment');
-const random = require('./util/random');
-const crypto = require('./util/crypto');
+const label = require('./data/label.js');
+const gate = require('./data/gate.js');
+const assignment = require('./data/assignment.js');
+const random = require('./util/random.js');
+const crypto = require('./util/crypto.js');
 
 /**
  * Generate labels and encode each state of every wire
@@ -22,8 +21,9 @@ function generateWireToLabelsMap(circuit) {
   const R = label.randomLabel();  // R in {0, 1}^N.
   var wireToLabels = new assignment.Assignment();
 
+  var i;
   for (var j = 0; j < circuit.wire_in_count; j++) {
-    var i = circuit.wire_in_index[j];
+    i = circuit.wire_in_index[j];
 
     var labelNew = label.randomLabel();
     wireToLabels.set(i, [labelNew, labelNew.xor(R)]);
@@ -33,7 +33,7 @@ function generateWireToLabelsMap(circuit) {
     wireToLabels.get(i)[1].pointer(1-point);
   }
 
-  for (var i = 0; i < circuit.gate_count; i++) {
+  for (i = 0; i < circuit.gate_count; i++) {
     var gate = circuit.gate[i];
     var k;
     if (gate.operation === 'xor') {
@@ -99,7 +99,9 @@ function garbleGate(gate_id, gateFromCircuit, wToLs) {
     values = values.sort(function (c1, c2) {
       return c1[1] - c2[1];
     });
-    values = values.map(function (c) { return c = c[0]; });
+    values = values.map(function (c) {
+      return c[0];
+    });
     return new gate.GateGarbled(values);
   }
   // Define cases for any other gate operations here.
@@ -118,13 +120,13 @@ function sendInputWireToLabelsMap(channel, circuit, wireToLabels, input) {
   // Send the evaluator the first half of the input labels directly.
   for (var i = 0; i < circuit.wire_in_count/2; i++) {
     var j = circuit.wire_in_index[i]; // Index of ith input gate.
-    var inputBit = (inputPair[j] == 0) ? 0 : 1;
+    var inputBit = (inputPair[j] === 0) ? 0 : 1;
     var label = wireToLabels.get(j)[inputBit];
     channel.sendDirect('wire['+j+']', label.toJSONString());
   }
 
   // Use oblivious transfer for the second half of the input labels.
-  for (var i = circuit.wire_in_count/2; i < circuit.wire_in_count; i++) {
+  for (i = circuit.wire_in_count/2; i < circuit.wire_in_count; i++) {
     channel.sendOblivious([
       wireToLabels.get(circuit.wire_in_index[i])[0],
       wireToLabels.get(circuit.wire_in_index[i])[1]
@@ -145,12 +147,14 @@ function outputLabelsToBits(circuit, wireToLabels, outputWireToLabels) {
     var labelsForFalseAndTrue =
       wireToLabels
         .get(circuit.wire_out_index[i])
-        .map(function (l) { return l.withoutLastElement(); }); // Drop last bits.
+        .map(function (l) {
+          // Drop last bits
+          return l.withoutLastElement();
+        });
 
     var outputLabel =
       outputWireToLabels
-        .get(circuit.wire_out_index[i])
-        [0] // Only one label in assignment from evaluator.
+        .get(circuit.wire_out_index[i])[0] // Only one label in assignment from evaluator.
         .withoutLastElement(); // Drop last bit.
 
     var bit = outputLabel.getOccurrenceIndexIn(labelsForFalseAndTrue);

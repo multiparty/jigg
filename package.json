@@ -6,10 +6,7 @@
   "dependencies": {
     "app-module-path": "^2.2.0",
     "casm": "^0.2.2",
-    "elliptic": "^6.5.2",
     "express": "^4.17.1",
-    "libsodium": "^0.7.5",
-    "libsodium-wrappers": "^0.7.5",
     "libsodium-wrappers-sumo": "^0.7.6",
     "node-fetch": "^2.6.0",
     "socket.io": "^2.2.0"
@@ -27,7 +24,7 @@
     "test-old": "node test/suite/all.js test/sample-tests.txt",
     "build": "browserify src/jigg.js --debug --s jigg -o dist/jigg.js",
     "casm": "node node_modules/casm/casm.js",
-    "lint": "eslint ./src/ --ext .js"
+    "lint": "./node_modules/.bin/eslint ./src"
   },
   "repository": {
     "type": "git",

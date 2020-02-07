@@ -13,7 +13,6 @@ var io = require('socket.io')(http, {
   pingTimeout: 25000,
   pingInterval: 50000
 });
-var sodium = require('libsodium-wrappers');
 
 app.use('/dist', express.static(__dirname + '/dist/'));
 app.use('/circuits/', express.static(__dirname + '/circuits/bristol/'));

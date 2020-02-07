@@ -1,7 +1,3 @@
-global.sodium = require('libsodium-wrappers-sumo');
-global.fetch = require('node-fetch');
-
-const hexutils = require('../src/utils/hexutils');
 const jigg = require('../src/jigg');
 
 // Command line arguments.
@@ -11,7 +7,7 @@ var input = args[3];
 const circuitURL = 'circuits/bristol/sha256.txt';
 
 // Application code.
-input = hexutils.hex2bin(input);
+input = jigg.utils.hex2bin(input);
 input = input.split('').reverse().map(JSON.parse);
 
 const progress = function (start, total) {
@@ -19,7 +15,7 @@ const progress = function (start, total) {
 };
 
 const callback = function (results) {
-  results = hexutils.bin2hex(results);
+  results = jigg.utils(results);
   console.log('Results: ' + results);
   console.timeEnd('time');
 };

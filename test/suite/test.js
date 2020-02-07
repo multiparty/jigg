@@ -1,6 +1,3 @@
-global.sodium = require('libsodium-wrappers-sumo');
-global.fetch = require('node-fetch');
-
 /*
  *  Equivilant of running the following command:
  *  `node demo/party.js <circuit> <role> <input>`

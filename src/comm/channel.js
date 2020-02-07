@@ -5,8 +5,8 @@
 
 'use strict';
 
-const socket = require('./socket');
-const OT = require('./ot');
+const socket = require('./socket.js');
+const OT = require('./ot.js');
 
 /**
  * This callback defines what happens once the protocol begins.
@@ -111,7 +111,7 @@ ChannelSimulated.prototype.sendOblivious = function (pair) {
 };
 
 /**
- * Receive the bit-specified value from first pair in queue. 
+ * Receive the bit-specified value from first pair in queue.
  * @param {number} bit - Bit to determine which value to receive
  * @returns {string} Next available value
  */

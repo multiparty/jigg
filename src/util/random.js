@@ -3,8 +3,7 @@
  * @module src/util/random
  */
 
-//var sodium = require('../sodium.js');
-
+const sodium = require('libsodium-wrappers-sumo');
 const bytes = 16;
 
 /**

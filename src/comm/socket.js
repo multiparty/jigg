@@ -5,12 +5,14 @@
 
 'use strict';
 
+const fetch = require('node-fetch');
+
 /**
  * Create a communication object.
  * @param {number} port - Port to use
  * @returns {Object} I/O object
  */
-const io = function(port) {
+const io = function (port) {
   port = port == null ? 3000 : port;
   var socket = require('socket.io-client')('http://localhost:'+port, {forceNew: true});
   socket.on('shutdown', function (msg) {
@@ -20,7 +22,7 @@ const io = function(port) {
   /*
   *  Listen from server.
   */
-  const hear = function(tag) {
+  const hear = function (tag) {
     return new Promise(function (resolve) {
       socket.on(tag, function (msg) {
         resolve(msg);
@@ -31,14 +33,14 @@ const io = function(port) {
   /*
   *  Direct call to the server.
   */
-  const call = function(tag, msg) {
+  const call = function (tag, msg) {
     socket.emit(tag, msg);
   };
 
   /*
   *  Get a string given by the other party.
   */
-  const get = function(tag) {
+  const get = function (tag) {
     socket.emit('listening for', tag);
     return new Promise(function (resolve) {
       socket.on(tag, function (msg) {
@@ -50,19 +52,19 @@ const io = function(port) {
   /*
   *  Give a string to the other party.
   */
-  const give = function(tag, msg) {
+  const give = function (tag, msg) {
     socket.emit('send', tag, msg);
   };
 
   /*
   *  Connect to the server.
   */
-  const join = function(role) {
+  const join = function (role) {
     socket.emit('join', role);
   };
 
   var idnumber = 0;
-  const nextid = function() {
+  const nextid = function () {
     idnumber++;  // DEBUG SOON: idnumber is getting mutated somehow
     return parseInt(String(idnumber));
   };
@@ -86,7 +88,7 @@ const io = function(port) {
  * @param {number} port - Port to use
  * @returns {Object} I/O object.
  */
-const geturl = function(path, type, port) {
+const geturl = function (path, type, port) {
   return new Promise(function (resolve) {
     fetch('http://localhost:' + (port == null ? 3000 : port) + '/' + path).then(function (response) {
       resolve(response[type]());
