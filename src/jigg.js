@@ -33,7 +33,7 @@ function Agent(role, hostname, options) {
   const self = this;
 
   this.role = role;
-  this.socket = new Socket(hostname);
+  this.socket = new Socket(hostname, this);
   this.OT = new OT(this.socket);
 
   this.listeners = [];
@@ -75,49 +75,61 @@ Agent.prototype.loadCircuit = function (circuit, encoding) {
 /**
  * Sets the input of this party.
  * @param {number[]} input - the input to the circuit
- * @param [encoding='bits'] - the encoding of the input, defaults to 'bits' for array of 0|1 from most to least significant.
+ * @param [encoding='bits'] - the encoding of the input, defaults to 'bits' for array of 0|1. The order of bits depends on the
+ *                            underlying circuit, but typically, index 0 represents the least significant bit.
  *                            Alternatively, it accepts 'number' and 'hex' for a number and a hex string.
  */
 Agent.prototype.setInput = function (input, encoding) {
+  const size = (this.role === 'Garbler' ? this.circuit.garblerInputSize : this.circuit.evaluatorInputSize);
+
   if (encoding === 'number') {
     this.input = input.toString(2).split('').map(function (bit) {
       return parseInt(bit);
-    });
+    }).reverse();
 
-    const size = (this.role === 'Garbler' ? this.circuit.garblerInputSize : this.circuit.evaluatorInputSize);
     while (this.input.length < size) {
-      this.input.unshift(0);
+      this.input.push(0);
     }
   }
 
   if (encoding === 'hex') {
-    this.input = hexutils.hex2bin(input).map(function (bit) {
+    this.input = hexutils.hex2bin(input).split('').map(function (bit) {
       return parseInt(bit);
-    });
+    }).reverse();
+
+    while (this.input.length < size) {
+      this.input.push(0);
+    }
   }
 
   if (encoding === 'bits' || encoding == null) {
+    if (input.length !== size) {
+      throw new Error('Input has wrong length');
+    }
+
     this.input = input.slice();
   }
 };
 
 /**
  * Returns a promise to the output encoded as specified by the encoding.
- * @param [encoding='bits'] - the encoding of the input, defaults to 'bits' for array of 0|1 from most to least significant.
+ * @param [encoding='bits'] - the encoding of the input, defaults to 'bits' for array of 0|1. The order of bits depends on the
+ *                            underlying circuit, but typically, index 0 represents the least significant bit.
  *                            Alternatively, it accepts 'number' and 'hex' for a number and a hex string.
  */
 Agent.prototype.getOutput = function (encoding) {
   return this._outputPromise.then(function (output) {
+    output = output.slice();
     if (encoding == null || encoding === 'bits') {
-      return output.slice();
+      return output;
     }
 
     if (encoding === 'hex') {
-      return hexutils.bin2hex(output.join(''));
+      return hexutils.bin2hex(output.reverse().join(''));
     }
 
     if (encoding === 'number') {
-      return parseInt(output.join(''), 2);
+      return parseInt(output.reverse().join(''), 2);
     }
   });
 };

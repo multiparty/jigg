@@ -2,7 +2,7 @@
 
 const socketio = require('socket.io-client');
 
-function ClientSocket(hostname) {
+function ClientSocket(hostname, agent) {
   const self = this;
 
   this._nextId = 0;
@@ -11,6 +11,23 @@ function ClientSocket(hostname) {
   // events
   this.socket.on('shutdown', function () {
     self.socket.disconnect();
+  });
+
+  // mailbox and listeners
+  this.listeners = {};
+  this.mailbox = {};
+  this.socket.on('receive', function (tag, msg) {
+    if (self.listeners[tag] != null) {
+      self.listeners[tag](msg);
+      delete self.listeners[tag];
+    } else {
+      self.mailbox[tag] = msg;
+    }
+  });
+
+  // handle error
+  this.socket.on('error', function (error) {
+    agent.progress('error', null, null, error);
   });
 }
 
@@ -25,9 +42,17 @@ ClientSocket.prototype.hear = function (tag, _id) {
 
   const self = this;
   return new Promise(function (resolve) {
-    self.socket.emit('listening for', tag + _id);
-    self.socket.on(tag + _id, resolve);
+    self.on(tag + _id, resolve);
   });
+};
+
+ClientSocket.prototype.on = function (tag, callback) {
+  if (this.mailbox[tag] != null) {
+    callback(this.mailbox[tag]);
+    delete this.mailbox[tag];
+  } else {
+    this.listeners[tag] = callback;
+  }
 };
 
 ClientSocket.prototype.emit = function (tag, msg, _id) {

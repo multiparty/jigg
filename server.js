@@ -1,134 +1,57 @@
-/**
- * Communications server module.
- * @module server
- */
-
 'use strict';
 
-// require('./src/.dep/node_modules/app-module-path').addPath(__dirname+'/src/.dep/node_modules/');
-var express = require('express');
-var app = express();
-var http = require('http').createServer(app);
-var io = require('socket.io')(http, {
-  pingTimeout: 25000,
-  pingInterval: 50000
-});
+const express = require('express');
+const app = express();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
 
-app.use('/dist', express.static(__dirname + '/dist/'));
-app.use('/circuits/', express.static(__dirname + '/circuits/bristol/'));
-app.use('/circuits/bristol/', express.static(__dirname + '/circuits/bristol/'));
 app.get('/', (request, response) => response.sendFile(__dirname + '/demo/client.html'));
 app.get('/sha', (request, response) => response.sendFile(__dirname + '/demo/sha256.html'));
+app.use('/dist', express.static(__dirname + '/dist/'));
+app.use('/circuits', express.static(__dirname + '/circuits/'));
 
-const open = (port) => http.listen(port, () => console.log('listening on *:'+port));
-
-// If invoked via command line, open right away.
-if (require.main === module) {
-  let port = (process.argv.length === 3)? process.argv[2] : 3000;
-  open(port);
-}
-
-var party = {garbler: null, evaluator: null};
-var mailbox = {garbler: {}, evaluator: {}};
-var cache = [];
+const parties = {
+  Garbler: null,
+  Evaluator: null
+};
 
 io.on('connection', function (socket) {
-  socket.on('join', function (msg) {
-    if (msg === 'Garbler' || (!(msg === 'Evaluator') && party.garbler == null)) {
-      party.garbler = socket.id;
-      console.log('connect garbler');
-      socket.emit('whoami', 'Garbler');
-      socket.on('disconnect', function() {
-        party.garbler = null;
-        mailbox.garbler = {};
-        console.log('garbler disconnected');
-      });
-    } else if (msg === 'Evaluator' || party.evaluator == null) {
-      party.evaluator = socket.id;
-      console.log('connect evaluator');
-      socket.emit('whoami', 'Evaluator');
-      socket.on('disconnect', function() {
-        party.evaluator = null;
-        mailbox.evaluator = {};
-        console.log('evaluator disconnected');
-      });
+  socket.on('join', function (role) {
+    console.log('join', role);
+    if (role !== 'Garbler' && role !== 'Evaluator') {
+      socket.emit('error', 'Invalid role!');
+      return;
     }
-    if (party.garbler != null && party.evaluator != null) {
+
+    if (parties[role] != null) {
+      socket.emit('error', 'Role already taken!');
+      return;
+    }
+
+    parties[role] = socket.id;
+    socket.on('disconnect', function () {
+      parties[role] = null;
+    });
+
+    if (parties['Garbler'] != null && parties['Evaluator'] != null) {
       console.log('Both parties connected.');
-      io.to(party.garbler).emit('go0');
-      io.to(party.evaluator).emit('go0');
+      io.to(parties['Garbler']).emit('receive', 'go0');
+      io.to(parties['Evaluator']).emit('receive', 'go0');
     }
   });
 
   socket.on('send', function (tag, msg) {
-    console.log('send', tag, msg);
-    if (socket.id === party.garbler) {
-      if (typeof(mailbox.evaluator[tag]) !== 'undefined' && mailbox.evaluator[tag] != null) {
-        mailbox.evaluator[tag](msg);
-      } else {
-        mailbox.evaluator[tag] = msg;
-      }
+    console.log('send', tag);
+    let target = parties['Evaluator'];
+    if (socket.id === parties['Evaluator']) {
+      target = parties['Garbler'];
     }
-    if (socket.id === party.evaluator) {
-      if (typeof(mailbox.garbler[tag]) !== 'undefined' && mailbox.garbler[tag] != null) {
-        mailbox.garbler[tag](msg);
-      } else {
-        mailbox.garbler[tag] = msg;
-      }
-    }
-  });
 
-  socket.on('listening for', function (tag) {
-    console.log('listening for', tag);
-    if (socket.id === party.garbler) {
-      if (typeof(mailbox.garbler[tag]) !== 'undefined' && mailbox.garbler[tag] != null) {
-        const msg = mailbox.garbler[tag];
-        console.log('sent', tag, msg, 'to garbler');
-        io.to(party.garbler).emit(tag, msg);
-        mailbox.garbler[tag] = null;
-      } else {
-        (new Promise(function(resolve, reject) {
-          mailbox.garbler[tag] = resolve;
-        })).then(function (msg) {
-          console.log('sent', tag, msg, 'to garbler (as promised)');
-          io.to(party.garbler).emit(tag, msg);
-          mailbox.garbler[tag] = null;
-        });
-      }
-    }
-    if (socket.id === party.evaluator) {
-      if (typeof(mailbox.evaluator[tag]) !== 'undefined' && mailbox.evaluator[tag] != null) {
-        const msg = mailbox.evaluator[tag];
-        console.log('sent', tag, msg, 'to evaluator');
-        io.to(party.evaluator).emit(tag, msg);
-        mailbox.evaluator[tag] = null;
-      } else {
-        (new Promise(function(resolve, reject) {
-          mailbox.evaluator[tag] = resolve;
-        })).then(function (msg) {
-          console.log('sent', tag, msg, 'to evaluator (as promised)');
-          io.to(party.evaluator).emit(tag, msg);
-          mailbox.evaluator[tag] = null;
-        });
-      }
-    }
+    io.to(target).emit('receive', tag, msg);
   });
 });
 
-const close = function () {
-  try {
-    console.log('Closing server.');
-    io.to(party.garbler).emit('shutdown', 'finished');
-    io.to(party.evaluator).emit('shutdown', 'finished');
-    io.close();
-    http.close();
-    console.log('Server closed.');
-  } catch (e) {
-    console.log('Closing with error:', e);
-  }
-};
 
-module.exports = {
-  open: open,
-  close: close
-};
+http.listen(3000, function () {
+  console.log('listening on *: 3000');
+});

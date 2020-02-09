@@ -66,7 +66,7 @@ const garbleInv = function (agent, gate, R, garbledAssignment) {
   const in1 = gate.inputWires[0];
   const out = gate.outputWire;
 
-  garbledAssignment[out] = garbledAssignment[in1].reverse();
+  garbledAssignment[out] = [garbledAssignment[in1][1], garbledAssignment[in1][0]];
 
   return gate;
 };
