@@ -134,12 +134,15 @@ For example to test an equal-to-zero computation with the zero vector, write:
 node test/suite/test.js compare-eq-zero-64-bit.txt '["00000000","00000000","1"]'
 ```
 
-Predefined test cases (circuit name, test vector) for the circuits can be configured in `test/suite/defaults.json` or specified as in another file such as running `test/sample-tests.txt`.  Test vectors are written as `[input1, input2, output]` as shown above.
+Predefined test cases (circuit name, test vector) for the circuits can be configured in `test/suite/defaults.json` or specified inside another file such as `test/sample-tests.txt`.  Test vectors are written as `[input1, input2, output]` as shown above.
 
 ## Capabilities
 JIGG is designed for semi-honest parties (in either node or in the browser). We support point-and-permute, free-XOR, free single-input gates, and encryption from a random oracle (fixed-key XChaCha20). The half-AND optimization is compatible but not yet supported. The default label size is 128 bits and relies on JavaScript's Uint8Array class. The [`simple-labels`](https://github.com/wyatt-howe/jigg/tree/simple-labels) branch demonstrates dynamically-sized labels (that are 53 bits in length or less) without using arrays. Some potential improvements are listed in the to-do section.
 
-## To Do
+## Contributing
+JIGG is fully functional as it is now, but there's still more to do (see the list below) before version 1.  Pull requests are welcome for any improvement.  The JIGG source is maintained with the help of [ESLint](https://eslint.org/) for style and the [included test suite](https://github.com/multiparty/jigg#legacy-end-to-end-tests) for stability.
+
+### To Do
 - Half-AND gate optimization
 - Standardize JSON, serialized, and compressed formats for inter-party messages
 - Create a single unified test suite
