@@ -4,11 +4,9 @@
   "description": "JavaScript Implementation of Garbled Gates (two-party computation library for boolean circuits)",
   "main": "server.js",
   "dependencies": {
-    "app-module-path": "^2.2.0",
     "casm": "^0.2.2",
     "express": "^4.17.1",
     "libsodium-wrappers-sumo": "^0.7.6",
-    "node-fetch": "^2.6.0",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
