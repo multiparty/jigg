@@ -18,7 +18,7 @@ const receiveInputLabels = function (agent, circuit) {
   // Send the evaluator the first half of the input labels directly.
   for (let i = 0; i < evaluatorInputSize; i++) {
     const index = i + garblerInputSize;
-    promises.push(agent.OT.receive('wire'+index, agent.input[i], circuit.labelSize));
+    promises.push(agent.OT.receive('wire'+index, agent.input[i]));
   }
 
   return Promise.all(promises);
