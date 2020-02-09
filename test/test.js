@@ -12,11 +12,11 @@ chai.use(require('chai-json-schema'));
 
 const fs = require('fs').promises;
 
-const bits = require('../src/data/bits');
-const gate = require('../src/data/gate');
-const circuit = require('../src/data/circuit');
-const label = require('../src/data/label');
-const assignment = require('../src/data/assignment');
+const bits = require('../src/dataOld/bits');
+const gate = require('../src/dataOld/gate');
+const circuit = require('../src/dataOld/circuit');
+const label = require('../src/dataOld/label');
+const assignment = require('../src/dataOld/assignment');
 const channel = require('../src/comm/channel');
 const garble = require('../src/garble');
 const evaluate = require('../src/evaluate');

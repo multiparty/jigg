@@ -1,31 +1,23 @@
-const jigg = require('../src/jigg');
+const JIGG = require('../src/jigg');
+const fs = require('fs');
 
 // Handle command line arguments.
-var args = process.argv;
-var role = args[3];
-var input = args[4];
-const circuitURL = 'circuits/bristol/' + args[2];
+const role = process.argv[2];
+const input = parseInt(process.argv[3]);
+
+const circuitPath = __dirname + '/../circuits/bristol/arith-add-32-bit-old.txt';
+const circuit = fs.readFileSync(circuitPath, 'utf8');
 
 // Application code.
-input = jigg.utils.hex2bin(input);
-input = input.split('').reverse().map(JSON.parse);
-
-const progress = function (start, total) {
-  console.log('Progress', start, '/', total);
-};
-
-const callback = function (results) {
-  results = jigg.utils.bin2hex(results);
-  console.log('Results: ' + results);
-  console.timeEnd('time');
-  // process.exit();
-};
-
 console.time('time');
-if (role === 'garbler') {
-  var garbler = new jigg.Agent('Garbler', circuitURL, input, callback, progress, 0, 0);
-  garbler.start();
-} else if (role === 'evaluator') {
-  var evaluator = new jigg.Agent('Evaluator', circuitURL, input, callback, progress, 0, 0);
-  evaluator.start();
-}
+
+const agent = new JIGG(role, 'http://localhost:3000', {debug: true});
+agent.loadCircuit(circuit);
+agent.setInput(input, 'number');
+agent.start();
+
+agent.getOutput('number').then(function (output) {
+  console.log('Output is:', output);
+  console.timeEnd('time');
+  agent.socket.disconnect();
+});

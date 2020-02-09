@@ -7,8 +7,8 @@
 
 const fs = require('fs').promises;
 
-const bits = require('../../src/data/bits');
-const circuit = require('../../src/data/circuit');
+const bits = require('../../src/dataOld/bits');
+const circuit = require('../../src/dataOld/circuit');
 const jigg = require('../../src/jigg');
 
 // Disable output from invoked components.

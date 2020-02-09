@@ -5,190 +5,173 @@
 
 'use strict';
 
-const bits = require('./data/bits.js');
-const gate = require('./data/gate.js');
-const circuit = require('./data/circuit.js');
-const assignment = require('./data/assignment.js');
-const hexutils = require('./util/hexutils.js');
+const LABEL_SIZE = 16; // 16 bytes => 128 bits
+
 const garble = require('./garble.js');
 const evaluate = require('./evaluate.js');
-const channel = require('./comm/channel.js');
-const socket = require('./comm/socket.js');
 
-/**
- * This callback handles the result bit string.
- *
- * @callback resultCallback
- * @param {string} result - Result bit string to process
- */
+const circuitParser = require('./parse/parse.js');
 
-/**
- * This callback logs or displays progress.
- *
- * @callback progressCallback
- * @param {number} current - Progress so far (i.e., numerator)
- * @param {number} total - Target total (i.e., the denominator)
- */
+const Socket = require('./comm/clientSocket.js');
+const OT = require('./comm/ot.js');
+
+const hexutils = require('./util/hexutils.js');
+
 
 /**
  * Create a new agent for the circuit at the given URL with the given input.
  * @param {string} role - Agent role ('Garbler' or 'Evaluator')
- * @param {string} circuitURL - Circuit URL relative to server path
- * @param {number[]} input - The party's input as an array of bits
- * @param {resultCallback} callback - The function to apply to the result bit string
- * @param {progressCallback} callback - The function to log or display progress
- * @param {number} parallel - Parallelization parameter
- * @param {number} throttle - Throttling parameter
- * @param {number} port - Port to use for communications
- * @param {boolean} debug - Debugging mode flag
+ * @param {string} hostname - hostname and port of the server, should be acceptable by socket.io
+ * @param {object} [options] - additional optional options including:
+ *                             debug - boolean defaults to false
+ *                             throttle - number defaults to no throttling
+ *                             parallel - number defaults to infinity
+ *                             labelSize - number defaults to 16 bytes
  * @constructor
  */
-function Agent(role, circuitURL, input, callback, progress, parallel, throttle, port, debug) {
-  this.role = role;
-  this.circuitURL = circuitURL;
-  this.input = input.bits;  // to be backwards compatible do, !input instanceof bits.Bits ? new bits.Bits(input).bits
-  this.callback = callback;
-  this.parallel = parallel == null ? 30 : parallel;
-  this.throttle = throttle == null ? 1 : throttle;
-  this.progress = progress == null ? function () {} : progress;
-  this.channel = new channel.Channel(port);
-  this.debug = debug;
-  this.log = this.debug ? function () {
-    console.log.apply(console, [this.role, ...arguments]);
-  } : new Function();
+function Agent(role, hostname, options) {
+  const self = this;
 
-  if (this.parallel === 0) {
-    this.parallel = Number.MAX_VALUE;
+  this.role = role;
+  this.socket = new Socket(hostname);
+  this.OT = new OT(this.socket);
+
+  this.listeners = [];
+  this.log = function () {};
+
+  this._outputPromise = new Promise (function (resolve) {
+    self._outputResolve = resolve;
+  });
+  this._outputPromise.then(this.socket.disconnect.bind(this.socket));
+
+  if (options == null) {
+    options = {};
+  }
+
+  this.throttle = options.throttle == null ? 0 : options.throttle;
+  this.parallel = options.parallel == null ? Number.MAX_VALUE : options.parallel;
+  this.labelSize = options.labelSize == null ? LABEL_SIZE : options.labelSize;
+
+  if (options.debug) {
+    this.log = console.log.bind(console, this.role);
+    this.addProgressListener(this.log);
   }
 }
+
+/**
+ * Loads the given circuit.
+ * @param {string|Circuit} circuit - the circuit encoded as specified in encoding
+ * @param {string} [encoding='text'] - the encoding of the circuit, defaults to 'text' indicating a text encoding of a bristol fashion circuit.
+ *                                     Alternatively, 'object' can be used for parsed circuits provided as a Circuit object
+ */
+Agent.prototype.loadCircuit = function (circuit, encoding) {
+  if (encoding == null || encoding === 'text') {
+    this.circuit = circuitParser(circuit);
+  } else {
+    this.circuit = circuit;
+  }
+};
+
+/**
+ * Sets the input of this party.
+ * @param {number[]} input - the input to the circuit
+ * @param [encoding='bits'] - the encoding of the input, defaults to 'bits' for array of 0|1 from most to least significant.
+ *                            Alternatively, it accepts 'number' and 'hex' for a number and a hex string.
+ */
+Agent.prototype.setInput = function (input, encoding) {
+  if (encoding === 'number') {
+    this.input = input.toString(2).split('').map(function (bit) {
+      return parseInt(bit);
+    });
+
+    const size = (this.role === 'Garbler' ? this.circuit.garblerInputSize : this.circuit.evaluatorInputSize);
+    while (this.input.length < size) {
+      this.input.unshift(0);
+    }
+  }
+
+  if (encoding === 'hex') {
+    this.input = hexutils.hex2bin(input).map(function (bit) {
+      return parseInt(bit);
+    });
+  }
+
+  if (encoding === 'bits' || encoding == null) {
+    this.input = input.slice();
+  }
+};
+
+/**
+ * Returns a promise to the output encoded as specified by the encoding.
+ * @param [encoding='bits'] - the encoding of the input, defaults to 'bits' for array of 0|1 from most to least significant.
+ *                            Alternatively, it accepts 'number' and 'hex' for a number and a hex string.
+ */
+Agent.prototype.getOutput = function (encoding) {
+  return this._outputPromise.then(function (output) {
+    if (encoding == null || encoding === 'bits') {
+      return output.slice();
+    }
+
+    if (encoding === 'hex') {
+      return hexutils.bin2hex(output.join(''));
+    }
+
+    if (encoding === 'number') {
+      return parseInt(output.join(''), 2);
+    }
+  });
+};
+
+/**
+ * This callback logs or displays progress.
+ *
+ * @callback progressListener
+ * @param {string} state - one of of the following states: 'connected', 'garbling', 'OT', 'evaluating', 'output', 'error'.
+ *                         OT is called after oblivious transfer is executed for the current party, if
+ *                         state is garbling or evaluating, then current and total are provided
+ * @param {number} [current] - Progress so far (i.e., numerator)
+ * @param {number} [total] - Target total (i.e., the denominator)
+ * @param {string|Error} [error] - If any error occured, this will be passed with state 'error'
+ */
+
+/**
+ * Adds a listener for progress events.
+ * @param {progressListener} progressListener
+ */
+Agent.prototype.addProgressListener = function (progressListener) {
+  this.listeners.push(progressListener);
+};
+
+/**
+ * Report progress to all listeners
+ * @param {string} state - one of of the following states: 'connected', 'garbling', 'OT', 'evaluating', 'error'.
+ *                         OT is called after oblivious transfer is executed for the current party, if
+ *                         state is garbling or evaluating, then current and total are provided
+ * @param {number} [current] - Progress so far (i.e., numerator)
+ * @param {number} [total] - Target total (i.e., the denominator)
+ * @param {string|Error} [error] - If any error occured, this will be passed with state 'error'
+ */
+Agent.prototype.progress = function (state, current, total, error) {
+  for (let i = 0; i < this.listeners.length; i++) {
+    this.listeners[i](state, current, total, error);
+  }
+};
 
 /**
  * Run the agent on the circuit.
  */
 Agent.prototype.start = function () {
-  this.channel.socket.join(this.role);
-  this.channel.socket.hear('go').then(this.loadCircuit.bind(this));
-};
+  const self = this;
 
-/**
- * Parse and load the circuit, then initialize the agent.
- */
-Agent.prototype.loadCircuit = function () {
-  const that = this;
-  var promise = new Promise(function (resolve) {
-    socket.geturl(that.circuitURL, 'text', that.channel.socket.port).then(function (txt) {
-      resolve(circuit.fromBristolFashion(txt));
-    });
-  });
-  promise.then(function (circuit) {
-    if (that.role === 'Garbler') {
-      that.runGarbler(circuit);
-    } else if (that.role === 'Evaluator') {
-      that.runEvaluator(circuit);
+  this.socket.join(this.role);
+  this.socket.hear('go').then(function () {
+    self.progress('connected');
+    if (self.role === 'Garbler') {
+      garble(self);
+    } else {
+      evaluate(self);
     }
   });
 };
 
-/**
- * Garble or evaluate (depending on agent role) all gates (with throttling).
- * @param {Object} circuit - Original circuit
- * @param {Object} gatesGarbled - Ordered collection of garbled gates
- * @param {Object} wireToLabels - Mapping from gate indices to labels
- * @param {number} index - Gate index at which to begin/continue processing
- */
-Agent.prototype.gatesThrottled = function (circuit, gatesGarbled, wireToLabels, index) {
-  for (var i = index; i < index + this.parallel && i < circuit.gate_count; i++) {
-    if (this.role === 'Garbler') {
-      gatesGarbled.set(i, garble.garbleGate(i, circuit.gate[i], wireToLabels));
-    } else if (this.role === 'Evaluator') {
-      evaluate.evaluateGate(i, circuit.gate[i], gatesGarbled.get(i), wireToLabels);
-    }
-  }
-
-  index += this.parallel;
-  this.progress(Math.min(index, circuit.gate_count), circuit.gate_count);
-
-  if (index >= circuit.gate_count) {
-    if (this.role === 'Garbler') {
-      this.finishGarbler(circuit, gatesGarbled, wireToLabels);
-    } else if (this.role === 'Evaluator') {
-      this.finishEvaluator(circuit, wireToLabels);
-    }
-    return;
-  }
-
-  if (this.throttle > 0) {
-    setTimeout(this.gatesThrottled.bind(this, circuit, gatesGarbled, wireToLabels, index), this.throttle);
-  } else {
-    this.gatesThrottled(circuit, gatesGarbled, wireToLabels, index);
-  }
-};
-
-/**
- * Initialize the garbler.
- * @param {Object} circuit - Circuit in which to garble the gates
- */
-Agent.prototype.runGarbler = function (circuit) {
-  var wireToLabels = garble.generateWireToLabelsMap(circuit);
-  garble.sendInputWireToLabelsMap(this.channel, circuit, wireToLabels, this.input);
-  var gatesGarbled = new gate.GatesGarbled();
-  this.gatesThrottled(circuit, gatesGarbled, wireToLabels, 0);
-};
-
-/**
- * Give garbled gates to evaluator, decode output, and run callback on results.
- * @param {Object} circuit - Circuit in which to garble the gates
- * @param {Object} gatesGarbled - Ordered collection of garbled gates
- * @param {Object} wireToLabels - Mapping from gate indices to labels
- */
-Agent.prototype.finishGarbler = function (circuit, gatesGarbled, wireToLabels) {
-  const that = this;
-
-  // Give the garbled gates to evaluator.
-  this.channel.sendDirect('gatesGarbled', gatesGarbled.toJSONString());
-
-  // Get output labels and decode them back to their original values.
-  this.channel.receiveDirect('outputWireToLabels').then(function (outputWireToLabelsString) {
-    var outputWireToLabels =
-      assignment.fromJSONString(outputWireToLabelsString);
-    var outputBits = garble.outputLabelsToBits(circuit, wireToLabels, outputWireToLabels);
-    that.channel.sendDirect('outputBits', outputBits);
-    that.callback(new bits.Bits(outputBits));
-  }.bind(this));
-};
-
-/**
- * Initialize the evaluator.
- * @param {Object} circuit - Original circuit
- */
-Agent.prototype.runEvaluator = function (circuit) {
-  const that = this;
-  var messages = evaluate.receiveMessages(this.channel, circuit, this.input);
-  Promise.all(messages).then(function (messages) {
-    var [gatesGarbled, wireToLabels] = evaluate.processMessages(circuit, messages);
-    that.gatesThrottled(circuit, gatesGarbled, wireToLabels, 0);
-  });
-};
-
-/**
- * Give wires back to garbler, receive decoded output states, and run callback on results.
- * @param {Object} circuit - Original circuit
- * @param {Object} wireToLabels - Mapping from gate indices to labels
- */
-Agent.prototype.finishEvaluator = function (circuit, wireToLabels) {
-  const that = this;
-
-  // Collect all output wires' labels; send them back to garbler for decoding.
-  var outputWireToLabels = wireToLabels.copyWithOnlyIndices(circuit.wire_out_index);
-  this.channel.sendDirect('outputWireToLabels', outputWireToLabels.toJSONString());
-
-  // Receive decoded output states.
-  this.channel.receiveDirect('outputBits').then(function (output) {
-    that.callback(new bits.Bits(output));
-  }.bind(this));
-};
-
-module.exports = {
-  Agent: Agent,
-  utils: Object.assign({}, bits, hexutils)
-};
+module.exports = Agent;

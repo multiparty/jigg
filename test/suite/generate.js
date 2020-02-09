@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 
-const circuit = require('../../src/data/circuit');
+const circuit = require('../../src/dataOld/circuit');
 const garble = require('../../src/garble');
 
 /*

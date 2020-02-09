@@ -55,12 +55,12 @@ io.on('connection', function (socket) {
     }
     if (party.garbler != null && party.evaluator != null) {
       console.log('Both parties connected.');
-      io.to(party.garbler).emit('go');
-      io.to(party.evaluator).emit('go');
+      io.to(party.garbler).emit('go0');
+      io.to(party.evaluator).emit('go0');
     }
   });
 
-  socket.on('send', function(tag, msg) {
+  socket.on('send', function (tag, msg) {
     console.log('send', tag, msg);
     if (socket.id === party.garbler) {
       if (typeof(mailbox.evaluator[tag]) !== 'undefined' && mailbox.evaluator[tag] != null) {
@@ -78,7 +78,7 @@ io.on('connection', function (socket) {
     }
   });
 
-  socket.on('listening for', function(tag) {
+  socket.on('listening for', function (tag) {
     console.log('listening for', tag);
     if (socket.id === party.garbler) {
       if (typeof(mailbox.garbler[tag]) !== 'undefined' && mailbox.garbler[tag] != null) {
