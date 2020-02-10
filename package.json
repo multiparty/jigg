@@ -6,6 +6,7 @@
   "dependencies": {
     "casm": "^0.2.2",
     "express": "^4.17.1",
+    "jsdoc": "^3.6.3",
     "libsodium-wrappers-sumo": "^0.7.6",
     "socket.io": "^2.2.0"
   },
@@ -21,6 +22,7 @@
     "test": "node test/suite/simulate.js",
     "test-old": "node test/suite/all.js test/sample-tests.txt",
     "build": "browserify src/jiggClient.js --debug --s jigg -o dist/jigg.js",
+    "build-docs": "jsdoc -r src -d docs",
     "casm": "node node_modules/casm/casm.js",
     "lint": "./node_modules/.bin/eslint ./src"
   },
