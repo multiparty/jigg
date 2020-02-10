@@ -44,6 +44,7 @@ function Agent(role, hostname, options) {
   }
   this.role = role;
   this.OT = new OT(this.socket);
+  this.hexutils = hexutils;
 
   this.listeners = [];
   this.log = function () {};

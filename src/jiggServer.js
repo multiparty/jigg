@@ -20,6 +20,10 @@ const ServerSocket = require('./comm/serverSocket.js');
 function Server(http, options) {
   const self = this;
 
+  if (options == null) {
+    options = {};
+  }
+
   this.http = http;
   this.io = io(http);
 

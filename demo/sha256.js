@@ -1,30 +1,24 @@
-const jigg = require('../src/jigg');
+const JIGG = require('../src/jigg.js');
+const fs = require('fs');
 
-// Command line arguments.
-var args = process.argv;
-var role = args[2];
-var input = args[3];
-const circuitURL = 'circuits/bristol/sha256.txt';
+// Handle command line arguments.
+const role = process.argv[2];
+const input = process.argv[3];
+
+const circuitPath = __dirname + '/../circuits/bristol/sha-256.txt';
+const circuit = fs.readFileSync(circuitPath, 'utf8');
 
 // Application code.
-input = jigg.utils.hex2bin(input);
-input = input.split('').reverse().map(JSON.parse);
-
-const progress = function (start, total) {
-  console.log('Progress', start, '/', total);
-};
-
-const callback = function (results) {
-  results = jigg.utils(results);
-  console.log('Results: ' + results);
-  console.timeEnd('time');
-};
-
 console.time('time');
-if (role === 'garbler') {
-  var garbler = new jigg.Agent('Garbler', circuitURL, input, callback, progress, 0, 0);
-  garbler.start();
-} else if (role === 'evaluator') {
-  var evaluator = new jigg.Agent('Evaluator', circuitURL, input, callback, progress, 0, 0);
-  evaluator.start();
-}
+
+const agent = new JIGG.Client(role, 'http://localhost:3000', {debug: true});
+agent.loadCircuit(circuit);
+agent.setInput(agent.hexutils.hex2bin(input).split('').map(Number));
+agent.start();
+
+agent.getOutput().then(function (output) {
+  output = agent.hexutils.bin2hex(output.join(''));
+  console.log('Output is:', output);
+  console.timeEnd('time');
+  agent.socket.disconnect();
+});
