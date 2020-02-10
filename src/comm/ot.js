@@ -16,7 +16,7 @@ OT.prototype.send = function (tag, m0, m1) {
   const a = sodium.crypto_core_ristretto255_scalar_random();
   const A = sodium.crypto_scalarmult_ristretto255_base(a);
 
-  this.socket.emit('A', Array.from(A), _id);
+  this.socket.send('A', Array.from(A), _id);
   this.socket.hear('B', _id).then(function (B) {
     B = Uint8Array.from(B);
     let k0 = sodium.crypto_scalarmult_ristretto255(a, B);
@@ -28,7 +28,7 @@ OT.prototype.send = function (tag, m0, m1) {
     const e0 = crypto.encrypt_generic(m0, k0, 0);
     const e1 = crypto.encrypt_generic(m1, k1, 0);
 
-    self.socket.emit('e', [e0.serialize(), e1.serialize()], _id);
+    self.socket.send('e', [e0.serialize(), e1.serialize()], _id);
   });
 };
 
@@ -46,7 +46,7 @@ OT.prototype.receive = function (tag, c) {
         B = sodium.crypto_core_ristretto255_add(A, B);
       }
 
-      self.socket.emit('B', Array.from(B), _id);
+      self.socket.send('B', Array.from(B), _id);
       self.socket.hear('e', _id).then(function (e) {
         e = labelParser(e[c]);
 

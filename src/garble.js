@@ -79,7 +79,7 @@ const sendInputLabels = function (agent, garbledAssignment) {
   // send garbler input labels
   for (let i = 0; i < garblerInputSize; i++) {
     const label = garbledAssignment[i][agent.input[i]];
-    agent.socket.emit('wire'+i, label.serialize());
+    agent.socket.send('wire'+i, label.serialize());
   }
 
   // Send the evaluator the first half of the input labels directly.
@@ -136,7 +136,7 @@ const run = function (agent) {
   }
 
   // send circuit
-  agent.socket.emit('circuit', garbledCircuit.serialize());
+  agent.socket.send('circuit', garbledCircuit.serialize());
 
   // send garbler inputs and OT for evaluator inputs
   agent.progress('OT');
@@ -150,7 +150,7 @@ const run = function (agent) {
     const bits = degarbleOutput(agent, garbledAssignment, labels);
 
     // send output
-    agent.socket.emit('output', bits);
+    agent.socket.send('output', bits);
 
     // resolve promise
     agent._outputResolve(bits);

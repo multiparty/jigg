@@ -8,11 +8,6 @@ function ClientSocket(hostname, agent) {
   this._nextId = 0;
   this.socket = socketio(hostname, {forceNew: true});
 
-  // events
-  this.socket.on('shutdown', function () {
-    self.socket.disconnect();
-  });
-
   // mailbox and listeners
   this.listeners = {};
   this.mailbox = {};
@@ -28,6 +23,7 @@ function ClientSocket(hostname, agent) {
   // handle error
   this.socket.on('error', function (error) {
     agent.progress('error', null, null, error);
+    throw error;
   });
 }
 
@@ -55,7 +51,7 @@ ClientSocket.prototype.on = function (tag, callback) {
   }
 };
 
-ClientSocket.prototype.emit = function (tag, msg, _id) {
+ClientSocket.prototype.send = function (tag, msg, _id) {
   if (_id == null) {
     _id = this._nextId++;
   }

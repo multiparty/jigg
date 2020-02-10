@@ -81,7 +81,7 @@ const run = function (agent) {
       // send garbled output to garbler
       agent.progress('output');
       const garbledOutput = garbledAssignment.slice(circuit.wiresCount - circuit.outputSize);
-      agent.socket.emit('output', garbledOutput.map(function (label) {
+      agent.socket.send('output', garbledOutput.map(function (label) {
         return label.serialize();
       }));
 

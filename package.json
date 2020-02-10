@@ -2,7 +2,7 @@
   "name": "jigg",
   "version": "0.0.1",
   "description": "JavaScript Implementation of Garbled Gates (two-party computation library for boolean circuits)",
-  "main": "server.js",
+  "main": "src/jigg.js",
   "dependencies": {
     "casm": "^0.2.2",
     "express": "^4.17.1",
@@ -20,7 +20,7 @@
   "scripts": {
     "test": "node test/suite/simulate.js",
     "test-old": "node test/suite/all.js test/sample-tests.txt",
-    "build": "browserify src/jigg.js --debug --s jigg -o dist/jigg.js",
+    "build": "browserify src/jiggClient.js --debug --s jigg -o dist/jigg.js",
     "casm": "node node_modules/casm/casm.js",
     "lint": "./node_modules/.bin/eslint ./src"
   },
