@@ -18,6 +18,7 @@ const Socket = require('./comm/clientSocket.js');
 const OT = require('./comm/ot.js');
 
 const hexutils = require('./util/hexutils.js');
+const sodium = require('libsodium-wrappers-sumo');
 
 /**
  * Create a new JIGG agent with the given role.
@@ -42,6 +43,7 @@ function Agent(role, hostname, options) {
   } else {
     this.socket = new Socket(hostname, this);
   }
+
   this.role = role;
   this.OT = new OT(this.socket);
   this.hexutils = hexutils;
@@ -182,15 +184,24 @@ Agent.prototype.progress = function (state, current, total, error) {
 Agent.prototype.start = function () {
   const self = this;
 
-  this.socket.join(this.role);
-  this.socket.hear('go').then(function () {
-    self.progress('connected');
-    if (self.role === 'Garbler') {
-      garble(self);
-    } else {
-      evaluate(self);
-    }
+  sodium.ready.then(function () {
+    self.socket.join(self.role);
+    self.socket.hear('go').then(function () {
+      self.progress('connected');
+      if (self.role === 'Garbler') {
+        garble(self);
+      } else {
+        evaluate(self);
+      }
+    });
   });
+};
+
+/**
+ * Disconnects the socket with the server.
+ */
+Agent.prototype.disconnect = function () {
+  this.socket.disconnect();
 };
 
 module.exports = Agent;

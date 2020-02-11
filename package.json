@@ -12,17 +12,16 @@
   },
   "devDependencies": {
     "browserify": "^16.5.0",
-    "chai": "^4.2.0",
-    "chai-json-schema": "^1.5.1",
+    "child_process": "^1.0.2",
     "eslint": "^5.16.0",
+    "eslint-plugin-mocha": "^6.2.2",
     "eslint-plugin-requirejs": "^4.0.0",
     "mocha": "^4.0.1"
   },
   "scripts": {
-    "test": "node test/suite/simulate.js",
-    "test-old": "node test/suite/all.js test/sample-tests.txt",
+    "test": "mocha test/test.js --timeout 120000",
     "build": "browserify src/jiggClient.js --debug --s JIGG -o dist/jigg.js",
-    "build-docs": "jsdoc -r src -d docs",
+    "docs": "jsdoc -r src -d docs",
     "casm": "node node_modules/casm/casm.js",
     "lint": "eslint ./src"
   },
