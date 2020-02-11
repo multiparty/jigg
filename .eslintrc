@@ -34,12 +34,10 @@
   },
 
   "parserOptions":{
-    "ecmaVersion": 6,
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
-    }
+    "ecmaVersion": 6
   },
   "plugins": [
-    "requirejs"
+    "requirejs",
+    "mocha"
   ]
 }

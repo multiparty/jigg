@@ -23,7 +23,7 @@
     "build": "browserify src/jiggClient.js --debug --s JIGG -o dist/jigg.js",
     "docs": "jsdoc -r src -d docs",
     "casm": "node node_modules/casm/casm.js",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src/ ./demo/"
   },
   "repository": {
     "type": "git",
