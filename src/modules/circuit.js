@@ -12,23 +12,6 @@ function Circuit(wiresCount, garblerInputSize, evaluatorInputSize, outputSize, l
   this.gates = [];
 }
 
-Circuit.prototype.evaluate = function (garblerInput, evaluatorInput) {
-  if (garblerInput.length !== this.garblerInputSize) {
-    throw new Error('Garbler input has wrong size');
-  }
-  if (evaluatorInput.length !== this.evaluatorInput) {
-    throw new Error('Evaluator input has wrong size');
-  }
-
-  let assignment = garblerInput.concat(evaluatorInput);
-
-  for (let i = 0; i < this.gates.length; i++) {
-    this.gates[i].evaluate(assignment);
-  }
-
-  return assignment.slice(this.wiresCount - this.outputSize - 1);
-};
-
 Circuit.prototype.serialize = function () {
   const meta = JSON.stringify([
     this.wiresCount,

@@ -10,16 +10,6 @@ function Gate(id, operation, inputWires, outputWire, truthTable) {
   this.truthTable = truthTable;
 }
 
-Gate.prototype.evaluate = function (assignment) {
-  if (this.operation === 'INV') {
-    assignment[this.outputWire] = assignment[this.inputWires[0]] === 0 ? 1 : 0;
-  } else if (this.operation === 'AND') {
-    assignment[this.outputWire] = assignment[this.inputWires[0]] & assignment[this.inputWires[1]];
-  } else {
-    assignment[this.outputWire] = assignment[this.inputWires[0]] ^ assignment[this.inputWires[1]];
-  }
-};
-
 Gate.prototype.serialize = function () {
   let gateStr = [];
 

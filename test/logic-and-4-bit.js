@@ -20,7 +20,6 @@ describe('Exhaustive regular server: logic-and-4-bit.txt', function () {
         const garbler = new Process('node', ['demo/party.js', 'Garbler', garblerInput, 'bits', 'logic-and-4-bit.txt', 'false']);
         const evaluator = new Process('node', ['demo/party.js', 'Evaluator', evaluatorInput, 'bits', 'logic-and-4-bit.txt', 'false']);
         const data = await Promise.all([garbler.promise(), evaluator.promise()]);
-        const output = '[ 0 ]';
 
         assert.deepEqual(data[0], data[1]);
         assert.equal(data[0].length, 1);

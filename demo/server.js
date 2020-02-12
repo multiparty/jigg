@@ -9,7 +9,6 @@ const httpServer = http.createServer(app);
 
 // Static routes
 app.get('/', (request, response) => response.sendFile(__dirname + '/client.html'));
-app.get('/sha', (request, response) => response.sendFile(__dirname + '/sha256/client.html'));
 app.use('/dist', express.static(__dirname + '/../dist/'));
 app.use('/circuits', express.static(__dirname + '/../circuits/'));
 
