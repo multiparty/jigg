@@ -99,7 +99,10 @@ All of the built-in test vectors can be verified in `npm test`. The tests will r
 
 JIGG is designed for semi-honest parties (in either node or in the browser). We support point-and-permute, free-XOR, free single-input gates, and encryption from a random oracle (fixed-key XChaCha20). The half-AND optimization is compatible but not yet supported. The default label size is 128 bits and relies on JavaScript's Uint8Array class. The [`simple-labels`](https://github.com/wyatt-howe/jigg/tree/simple-labels) branch demonstrates dynamically-sized labels (that are 53 bits in length or less) without using arrays. Some potential improvements are listed in the to-do section.
 
-## To Do
+## Contributing
+JIGG is fully functional as it is now, but there's still more to do (see the list below) before version 1.  Pull requests are welcome for any improvement.  The JIGG source is maintained with the help of [ESLint](https://eslint.org/) for style and the [included test suite](https://github.com/multiparty/jigg#legacy-end-to-end-tests) for stability.
+
+### To Do
 - Half-AND gate optimization
 - Standardize JSON/serialized/compressed formats for inter-party messages compatible with [SIGG](https://github.com/multiparty/sigg)
 
