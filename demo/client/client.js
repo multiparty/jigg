@@ -42,7 +42,7 @@ const displayOutput = function (output) {
   if (base === 'bits') {
     output = output.reverse().join('');
   }
-  document.getElementById('results').innerHTML += '<h3 style="color: green;">Results: ' + output + ' &nbsp;&nbsp;&nbsp; Took: ' + time + 'ms</h3>';
+  document.getElementById('results').innerHTML += '<h3 style="color: green;">Results: ' + output + ' &nbsp;&nbsp;&nbsp; Took: ' + time + 'seconds</h3>';
 };
 
 const start = function () {
