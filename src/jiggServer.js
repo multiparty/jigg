@@ -1,8 +1,3 @@
-/**
- * Main server module: garbled circuit protocol server.
- * @module src/jiggServer
- */
-
 'use strict';
 
 const io = require('socket.io');
@@ -16,6 +11,7 @@ const ServerSocket = require('./comm/serverSocket.js');
  * @param {object} [options] - additional optional options including:
  *                             debug, which defaults to false.
  * @constructor
+ * @alias Server
  */
 function Server(http, options) {
   const self = this;

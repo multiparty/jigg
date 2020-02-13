@@ -5,8 +5,6 @@
   "main": "src/jigg.js",
   "dependencies": {
     "casm": "^0.2.2",
-    "express": "^4.17.1",
-    "jsdoc": "^3.6.3",
     "libsodium-wrappers-sumo": "^0.7.6",
     "socket.io": "^2.2.0"
   },
@@ -16,12 +14,15 @@
     "eslint": "^5.16.0",
     "eslint-plugin-mocha": "^6.2.2",
     "eslint-plugin-requirejs": "^4.0.0",
-    "mocha": "^4.0.1"
+    "express": "^4.17.1",
+    "mocha": "^4.0.1",
+    "jsdoc": "^3.6.3",
+    "docdash": "^1.1.1"
   },
   "scripts": {
     "test": "mocha test/test.js --timeout 120000",
     "build": "browserify src/jiggClient.js --debug --s JIGG -o dist/jigg.js",
-    "docs": "jsdoc -r src -d docs",
+    "docs": "jsdoc -r src -c jsdoc.conf.json",
     "casm": "node node_modules/casm/casm.js",
     "lint": "eslint ./src/ ./demo/"
   },
