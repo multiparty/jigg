@@ -24,9 +24,9 @@ describe('SHA256 Garbling Server', function () {
 
     it('Input ' + i, async function () {
       // run garbling server
-      const garbler = new Process('node', ['demo/server.js', 'Garbler', garblerInput, 'hex', 'sha-256-reverse.txt', 'false']);
+      const garbler = new Process('node', ['demo/server.js', '3001', 'Garbler', garblerInput, 'hex', 'sha-256-reverse.txt', 'false']);
       // run evaluator party
-      const evaluator = new Process('node', ['demo/party.js', 'Evaluator', evaluatorInput, 'hex', 'sha-256-reverse.txt', 'false']);
+      const evaluator = new Process('node', ['demo/party.js', '3001', 'Evaluator', evaluatorInput, 'hex', 'sha-256-reverse.txt', 'false']);
 
       // read output
       const evaluatorOutput = await evaluator.promise();

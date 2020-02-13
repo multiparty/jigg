@@ -16,17 +16,18 @@ app.use('/circuits', express.static(__dirname + '/../circuits/'));
 const JIGG = require('../src/jigg.js');
 const server = new JIGG.Server(httpServer);
 
-httpServer.listen(3000, function () {
-  console.log('listening on *: 3000');
+const port = parseInt(process.argv[2]);
+httpServer.listen(port, function () {
+  console.log('listening on *:', port);
 });
 
 // Optional: in case the server is also a garbler or evaluator
-const role = process.argv[2];
+const role = process.argv[3];
 if (role != null) {
-  let input = process.argv[3];
-  let encoding = process.argv[4];
-  let circuitName = process.argv[5];
-  let debug = process.argv[6] !== 'false';
+  let input = process.argv[4];
+  let encoding = process.argv[5];
+  let circuitName = process.argv[6];
+  let debug = process.argv[7] !== 'false';
 
   // default arguments.
   if (encoding == null) {

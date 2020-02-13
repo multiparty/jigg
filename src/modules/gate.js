@@ -8,6 +8,11 @@ function Gate(id, operation, inputWires, outputWire, truthTable) {
   this.inputWires = inputWires;
   this.outputWire = outputWire;
   this.truthTable = truthTable;
+
+  // INV is an alias for NOT
+  if (this.operation === 'INV') {
+    this.operation = 'NOT';
+  }
 }
 
 Gate.prototype.serialize = function () {
@@ -17,7 +22,7 @@ Gate.prototype.serialize = function () {
     gateStr.push('&');
   } else if (this.operation === 'XOR') {
     gateStr.push('^');
-  } else if (this.operation === 'INV') {
+  } else if (this.operation === 'NOT') {
     gateStr.push('!');
   }
 

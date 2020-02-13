@@ -23,7 +23,7 @@ const circuitParser = function (text) {
     } else if (operation === '^') {
       operation = 'XOR';
     } else if (operation === '!') {
-      operation = 'INV';
+      operation = 'NOT';
     }
 
     // parse gate Id

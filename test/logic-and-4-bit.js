@@ -6,7 +6,7 @@ const Process = require('./process.js');
 describe('Exhaustive regular server: logic-and-4-bit.txt', function () {
   let serverProcess;
   before(function () {
-    serverProcess = new Process('node', ['demo/server.js']);
+    serverProcess = new Process('node', ['demo/server.js', '3001']);
   });
 
   const inputs = ['00', '01', '10', '11'];
@@ -17,8 +17,8 @@ describe('Exhaustive regular server: logic-and-4-bit.txt', function () {
       const evaluatorInput = inputs[j];
 
       it('Inputs ' + garblerInput + ' ' + evaluatorInput, async function () {
-        const garbler = new Process('node', ['demo/party.js', 'Garbler', garblerInput, 'bits', 'logic-and-4-bit.txt', 'false']);
-        const evaluator = new Process('node', ['demo/party.js', 'Evaluator', evaluatorInput, 'bits', 'logic-and-4-bit.txt', 'false']);
+        const garbler = new Process('node', ['demo/party.js', '3001', 'Garbler', garblerInput, 'bits', 'logic-and-4-bit.txt', 'false']);
+        const evaluator = new Process('node', ['demo/party.js', '3001', 'Evaluator', evaluatorInput, 'bits', 'logic-and-4-bit.txt', 'false']);
         const data = await Promise.all([garbler.promise(), evaluator.promise()]);
 
         assert.deepEqual(data[0], data[1]);

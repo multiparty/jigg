@@ -32,9 +32,9 @@ describe('AES128 Evaluating Server', function () {
 
     it('Input ' + i, async function () {
       // run garbling server
-      const garbler = new Process('node', ['demo/server.js', 'Evaluator', evaluatorInput, 'hex', 'aes-128-reverse.txt', 'false']);
+      const garbler = new Process('node', ['demo/server.js', '3001', 'Evaluator', evaluatorInput, 'hex', 'aes-128-reverse.txt', 'false']);
       // run evaluator party
-      const evaluator = new Process('node', ['demo/party.js', 'Garbler', garblerInput, 'hex', 'aes-128-reverse.txt', 'false']);
+      const evaluator = new Process('node', ['demo/party.js', '3001', 'Garbler', garblerInput, 'hex', 'aes-128-reverse.txt', 'false']);
 
       // read output
       const evaluatorOutput = await evaluator.promise();

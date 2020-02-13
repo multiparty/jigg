@@ -46,7 +46,7 @@ const evaluateXor = function (agent, garbledGate, garbledAssignment) {
   garbledAssignment[out] = garbledAssignment[in1].xor(garbledAssignment[in2]);
 };
 
-const evaluateInv = function (agent, garbledGate, garbledAssignment) {
+const evaluateNot = function (agent, garbledGate, garbledAssignment) {
   const in1 = garbledGate.inputWires[0];
   const out = garbledGate.outputWire;
 
@@ -74,7 +74,7 @@ const run = function (agent) {
         } else if (garbledGate.operation === 'XOR') {
           evaluateXor(agent, garbledGate, garbledAssignment);
         } else {
-          evaluateInv(agent, garbledGate, garbledAssignment);
+          evaluateNot(agent, garbledGate, garbledAssignment);
         }
       }
 

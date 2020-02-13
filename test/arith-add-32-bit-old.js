@@ -8,7 +8,7 @@ const inputCount = 20;
 describe('Random inputs (regular server): arith-add-32-bit-old.txt', function () {
   let serverProcess;
   before(function () {
-    serverProcess = new Process('node', ['demo/server.js']);
+    serverProcess = new Process('node', ['demo/server.js', '3001']);
   });
 
   for (let i = 0; i < inputCount; i++) {
@@ -17,8 +17,8 @@ describe('Random inputs (regular server): arith-add-32-bit-old.txt', function ()
     const expectedOutput = garblerInput + evaluatorInput;
 
     it('Inputs ' + garblerInput + ' ' + evaluatorInput, async function () {
-      const garbler = new Process('node', ['demo/party.js', 'Garbler', garblerInput, 'number', 'arith-add-32-bit-old.txt', 'false']);
-      const evaluator = new Process('node', ['demo/party.js', 'Evaluator', evaluatorInput, 'number', 'arith-add-32-bit-old.txt', 'false']);
+      const garbler = new Process('node', ['demo/party.js', '3001', 'Garbler', garblerInput, 'number', 'arith-add-32-bit-old.txt', 'false']);
+      const evaluator = new Process('node', ['demo/party.js', '3001', 'Evaluator', evaluatorInput, 'number', 'arith-add-32-bit-old.txt', 'false']);
       const data = await Promise.all([garbler.promise(), evaluator.promise()]);
 
       assert.deepEqual(data[0], data[1]);

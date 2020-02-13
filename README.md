@@ -28,18 +28,18 @@ npm install
 
 Start the communications server from server.js with the command below:
 ```shell
-node demo/server.js
+node demo/server.js <port number>
 ```
 
 ### As a Browser Party
 
-Parties can go to `http://localhost:3000/` in a web browser supporting JavaScript to begin communications.
+Parties can go to `http://localhost:<port>/` in a web browser supporting JavaScript to begin communications.
 
 ### As a Node.js Party
 
 Connect a new party in Node.js by running:
 ```shell
-node demo/party.js <role> <input> <encoding> <circuitName>
+node demo/party.js <port> <role> <input> <encoding> <circuitName>
 # <role>: Garbler or Evaluator
 # <input>: string with no whitespaces
 # <encoding>: bits, number, or hex
@@ -50,7 +50,7 @@ node demo/party.js <role> <input> <encoding> <circuitName>
 
 For example to join an AES-128 computation as the garbler, run:
 ```shell
-node demo/party.js Evaluator 00000000000000000000000000000000 hex aes-128-reverse.txt
+node demo/party.js 3000 Evaluator 00000000000000000000000000000000 hex aes-128-reverse.txt
 ```
 
 ### Server + Garbler/Evaluator
@@ -58,7 +58,7 @@ node demo/party.js Evaluator 00000000000000000000000000000000 hex aes-128-revers
 The server may also run as a garbler or evaluator. You can acheive this by running the server with
 the same arguments as a party:
 ```shell
-node demo/server.js <role> <input> <encoding> <circuitName>
+node demo/server.js <port> <role> <input> <encoding> <circuitName>
 ```
 
 ## Demo Circuits
@@ -87,7 +87,7 @@ For example, this macro assembles an AND circuit over 8 bits using
 existing 4 bit AND circuits:
 
 ```
-npm run-script casm circuits/macros/and-8.casm circuits/and-8.txt
+npm run casm -- circuits/macros/and-8.casm circuits/and-8.txt
 ```
 
 ## Running Tests

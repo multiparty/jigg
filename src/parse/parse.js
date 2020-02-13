@@ -14,7 +14,7 @@
 const Circuit = require('../modules/circuit.js');
 const Gate = require('../modules/gate.js');
 
-const RECOGNIZED_OPERATIONS = ['AND', 'XOR', 'INV'];
+const RECOGNIZED_OPERATIONS = ['AND', 'XOR', 'INV', 'NOT'];
 
 module.exports = function (text) {
   const rows = text.split('\n').filter(function (line) {
@@ -66,8 +66,8 @@ module.exports = function (text) {
     });
     const gate = new Gate(r - 3, operation, inputs, output);
 
-    if (operation === 'INV' && (inputs.length !== 1)) {
-      throw new Error('INV Gate ' + r + ' does not have exactly 1 input!');
+    if ((operation === 'INV' || operation === 'NOT') && (inputs.length !== 1)) {
+      throw new Error(operation + ' Gate ' + r + ' does not have exactly 1 input!');
     }
     if ((operation === 'AND' || operation === 'XOR') && (inputs.length !== 2)) {
       throw new Error('Gate ' + r + ' does not have exactly 2 inputs!');

@@ -2,11 +2,12 @@ const JIGG = require('../src/jigg.js');
 const fs = require('fs');
 
 // Handle command line arguments.
-const role = process.argv[2];
-let input = process.argv[3];
-let encoding = process.argv[4];
-let circuitName = process.argv[5];
-const debug = process.argv[6] !== 'false';
+const port = process.argv[2];
+const role = process.argv[3];
+let input = process.argv[4];
+let encoding = process.argv[5];
+let circuitName = process.argv[6];
+const debug = process.argv[7] !== 'false';
 
 // default arguments.
 if (encoding == null) {
@@ -31,7 +32,7 @@ const circuit = fs.readFileSync(circuitPath, 'utf8');
 // Application code.
 console.time('time');
 
-const agent = new JIGG.Client(role, 'http://localhost:3000', {debug: debug});
+const agent = new JIGG.Client(role, 'http://localhost:' + port, {debug: debug});
 agent.loadCircuit(circuit);
 agent.setInput(input, encoding);
 agent.start();

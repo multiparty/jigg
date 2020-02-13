@@ -62,7 +62,7 @@ const garbleXor = function (agent, gate, R, garbledAssignment) {
   return gate;
 };
 
-const garbleInv = function (agent, gate, R, garbledAssignment) {
+const garbleNot = function (agent, gate, R, garbledAssignment) {
   const in1 = gate.inputWires[0];
   const out = gate.outputWire;
 
@@ -129,7 +129,7 @@ const run = function (agent) {
     } else if (gate.operation === 'XOR') {
       gate = garbleXor(agent, gate, R, garbledAssignment);
     } else {
-      gate = garbleInv(agent, gate, R, garbledAssignment);
+      gate = garbleNot(agent, gate, R, garbledAssignment);
     }
 
     garbledCircuit.gates.push(gate);
