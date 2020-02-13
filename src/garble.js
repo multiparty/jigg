@@ -108,8 +108,6 @@ const degarbleOutput = function (agent, garbledAssignment, outputLabels) {
 };
 
 const run = function (agent) {
-  agent.progress('garbling', 0, agent.circuit.gates.length);
-
   const circuit = agent.circuit;
   const garbledCircuit = new Circuit(circuit.wiresCount, circuit.garblerInputSize, circuit.evaluatorInputSize, circuit.outputSize, agent.labelSize);
 
@@ -122,6 +120,10 @@ const run = function (agent) {
 
   // garble gates
   for (let i = 0; i < circuit.gates.length; i++) {
+    if (i % 10000 === 0) {
+      agent.progress('garbling', i, agent.circuit.gates.length);
+    }
+
     let gate = circuit.gates[i];
 
     if (gate.operation === 'AND') {
@@ -134,6 +136,7 @@ const run = function (agent) {
 
     garbledCircuit.gates.push(gate);
   }
+  agent.progress('garbling', agent.circuit.gates.length, agent.circuit.gates.length);
 
   // send circuit
   agent.socket.send('circuit', garbledCircuit.serialize());

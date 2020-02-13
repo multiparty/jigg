@@ -70,67 +70,20 @@
       <option value="number">Decimal</option>
       <option value="bits">Binary</option>
       <option value="hex">Hexidecimal</option>
-    </select>&nbsp;<input id="input" onkeyup="countbits()" autocomplete="off" style="margin-top: 1em; margin-bottom: 0.5em; font-family: monospace; width: 40em;" value="">
+    </select>&nbsp;<input id="input" onkeyup="countbits()" autocomplete="off" style="margin-top: 1em; margin-bottom: 0.5em; font-family: monospace; width: 40em;">
     <button id="button" onclick="start()">Compute</button>
     <br>
     <pre id="bitsCount">Entered 0 bits</pre><br>
     <div id="results"></div>
   </body>
 
+  <script type="text/javascript" src="client/client.js"></script>
   <script type="text/javascript">
-    const getCircuit = function () {
-      return $.ajax('/circuits/bristol/' + $('#circuit').val());
-    };
-    const countbits = function () {
-      const input = $('#input').val();
-      const base = $('#base').val();
-
-      let count = input.length;
-      if (base === 'hex') {
-        count *= 4;
-      }
-      if (base === 'number') {
-        count = Number(input).toString(2).length;
-      }
-
-      $('#bitsCount').text('Entered ' + count + ' bits');
-    };
-    const progress = function (status, start, total, error) {
-      if (status === 'error') {
-        document.getElementById('results').innerHTML += '<h3 style="color: red;">' + error.toString() + '</h3>';
-        console.log(error);
-        return;
-      }
-      if (status === 'garbling' || status === 'evaluating') {
-        document.getElementById('results').innerHTML += '<h4>' + status + ': ' + start + '/' + total + '</h4>';
-        return;
-      }
-      document.getElementById('results').innerHTML += '<h4>' + status + '</h4>';
-    };
-    const start = function () {
-      const role = $('#partytype').val();
-      const base = $('#base').val();
-
-      let input = $('#input').val();
-      if (base === 'bits') {
-        input = input.split('').map(Number).reverse();
-      } else if (base === 'number') {
-        input = Number(input);
-      }
-
-      getCircuit().then(function (circuit) {
-        const agent = new JIGG(role);
-        agent.addProgressListener(progress);
-        agent.loadCircuit(circuit);
-        agent.setInput(input, base);
-        agent.getOutput(base).then(function (output) {
-          if (base === 'bits') {
-            output = output.reverse().join('');
-          }
-          document.getElementById('results').innerHTML = '<h3 style="color: green;">Results: ' + output + '</h3>';
-        });
-        agent.start();
-      });
-    };
+    if (window.Worker) {
+      document.getElementById('results').innerHTML += '<h4>Web Workers are supported on your browser! Circuits will evaluate in the background</h4>';
+    } else {
+      document.getElementById('results').innerHTML += '<h4>Web Workers are not supported on your browser! Circuits will evaluate in the foreground.' +
+        'The webpage may become irresponsive for a few seconds with large circuits.</h4>';
+    }
   </script>
 </html>

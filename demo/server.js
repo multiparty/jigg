@@ -9,6 +9,7 @@ const httpServer = http.createServer(app);
 
 // Static routes
 app.get('/', (request, response) => response.sendFile(__dirname + '/client.html'));
+app.use('/client', express.static(__dirname + '/client/'));
 app.use('/dist', express.static(__dirname + '/../dist/'));
 app.use('/circuits', express.static(__dirname + '/../circuits/'));
 

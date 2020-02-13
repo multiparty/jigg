@@ -63,10 +63,12 @@ const run = function (agent) {
 
     // receiver garbled inputs and OT for evaluator inputs
     receiveInputLabels(agent, circuit).then(function (garbledAssignment) {
-      agent.progress('evaluating', 0, circuit.gates.length);
-
       // evaluate one gate at a time
       for (let i = 0; i < circuit.gates.length; i++) {
+        if (i % 2500 === 0) {
+          agent.progress('evaluating', i, circuit.gates.length);
+        }
+
         const garbledGate = circuit.gates[i];
 
         if (garbledGate.operation === 'AND') {
@@ -77,6 +79,7 @@ const run = function (agent) {
           evaluateNot(agent, garbledGate, garbledAssignment);
         }
       }
+      agent.progress('evaluating', circuit.gates.length, circuit.gates.length);
 
       // send garbled output to garbler
       agent.progress('output');

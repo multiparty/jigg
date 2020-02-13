@@ -30,12 +30,15 @@ const circuitPath = __dirname + '/../circuits/bristol/' + circuitName;
 const circuit = fs.readFileSync(circuitPath, 'utf8');
 
 // Application code.
-console.time('time');
-
 const agent = new JIGG.Client(role, 'http://localhost:' + port, {debug: debug});
 agent.loadCircuit(circuit);
 agent.setInput(input, encoding);
-agent.start();
+
+agent.addProgressListener(function (status) {
+  if (status === 'connected') {
+    console.time('time');
+  }
+});
 
 agent.getOutput(encoding).then(function (output) {
   if (debug) {
@@ -45,3 +48,5 @@ agent.getOutput(encoding).then(function (output) {
   console.log(output);
   agent.disconnect();
 });
+
+agent.start();
