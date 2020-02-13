@@ -3,16 +3,15 @@
   <head>
     <title>Garbled Circuit JS 2PC</title>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script src="dist/sodium.js"></script>
-    <script src="dist/jigg.js"></script>
+    <script src="/dist/jigg.js" type="text/javascript"></script>
   </head>
   <body style="font-family: sans-serif; margin: 2em;">
     <h1 style="margin-bottom: 0.25em;">Garbled Circuits in JavaScript</h1>
-    <h3 style="margin-top: 0em;">64-bit Equal to Zero Test (<a href="https://homes.esat.kuleuven.be/~nsmart/MPC/zero_equal.txt">Circuit</a> & <a href="https://homes.esat.kuleuven.be/~nsmart/MPC/">Others</a>)</h3>
+    <h3 style="margin-top: 0em;">Choose your circuit (<a href="https://homes.esat.kuleuven.be/~nsmart/MPC/">Bristol Fashion MPC Circuits</a>)</h3>
 
     <select id="circuit">
       <optgroup label="Arithmetic">
-        <option value="arith-add-32-bit-old.txt">32-bit Addition</option>
+        <option value="arith-add-32-bit-old.txt" selected="selected">32-bit Addition</option>
         <option value="arith-add-64-bit-old.txt">64-bit Addition</option>
         <option value="arith-add-64-bit-truncated.txt">64-bit Truncated Addition</option>
         <option value="arith-div-64-bit.txt">64-bit Division</option>
@@ -23,7 +22,7 @@
       </optgroup>
 
       <optgroup label="Comparison">
-        <option value="compare-eq-zero-64-bit.txt" selected="selected">64-bit Equal to Zero (input 32-bits each)</option>
+        <option value="compare-eq-zero-64-bit.txt">64-bit Equal to Zero (input 32-bits each)</option>
         <option value="compare-eq-zero-128-bit-with-nan.txt">128-bit Equal to Zero</option>
         <option value="compare-lt-32-bit-signed-old.txt">32-bit Signed Less Than</option>
         <option value="compare-lt-32-bit-unsigned-old.txt">32-bit Unsigned Less Than</option>
@@ -43,7 +42,7 @@
         <option value="des-non-expanded-old.txt">DES (non-expanded)</option>
         <option value="aes-128-expanded-old.txt">AES-128 (expanded)</option>
         <option value="aes-128-non-expanded-old.txt">AES-128 (non-expanded)</option>
-        <option value="aes-128.txt">AES-128</option>
+        <option value="aes-128-reverse.txt">AES-128 (reversed with CASM)</option>
         <option value="aes-192.txt">AES-192</option>
         <option value="aes-256.txt">AES-256</option>
       </optgroup>
@@ -53,99 +52,38 @@
         <option value="sha-1-old.txt">SHA-1</option>
         <option value="sha-256-old.txt">SHA-256 (old)</option>
         <option value="sha-256-two-block.txt">SHA-256 double block</option>
-        <option value="sha-256.txt">SHA-256</option>
+        <option value="sha-256-reverse.txt">SHA-256 (reversed with CASM)</option>
         <option value="sha-512.txt">SHA-512</option>
         <option value="keccak-f.txt">SHA-3</option>
-      </optgroup>
-
-      <optgroup label="[OLD NAMES]">
-        <option value="zero_equal_64.txt">64-bit Equal to Zero (input 32-bits each)</option>
-        <option value="adder_32bit.txt">32-bit Adder</option>
-        <option value="mult_32x32.txt">32x32-bit Multiplier</option>
-        <option value="comparator_32bit_signed_lt.txt">32-bit Signed Less Than Comparison</option>
-        <option value="adder_64bit.txt">64-bit Adder</option>
-        <option value="sub64.txt">64-bit Subtract</option>
-        <option value="mult64.txt">64x64-bit Multiplier</option>
-        <option value="divide64.txt">64x64-bit Division</option>
-        <option value="sha256.txt">SHA256 (input 256-bits each)</option>
-        <option value="aes128.txt">AES128 (input 128-bits key/block)</option>
-        <option value="universal_1bit.txt">Universal Circuit (1-bit program & inputs)</option>
       </optgroup>
     </select>
 
     <select id="partytype">
-      <option value="-">Pick Party Type</option>
-      <option value="garbler">Garbler</option>
-      <option value="evaluator">Evaluator</option>
+      <option value="Garbler">Garbler</option>
+      <option value="Evaluator" selected="selected">Evaluator</option>
     </select>
 
     <!-- <p>Enter a 64 digit (256bit) haxadecimal string to compute on:<p> -->
     <br>
     <p style="margin-top: 1em; margin-bottom: 0;">Enter a string to compute on and the maximum encryptions to run in parallel:</p>
     <select id="base" onchange="countbits()">
-      <option value="bin">Binary</option>
+      <option value="number">Decimal</option>
+      <option value="bits">Binary</option>
       <option value="hex">Hexidecimal</option>
-    </select>&nbsp;<input id="input" onkeyup="countbits()" autocomplete="off" style="margin-top: 1em; margin-bottom: 0.5em; font-family: monospace; width: 40em;" value="00000000000000000000000000000000">
-    <!-- <br>
-    <span style="margin-top: 0em; margin-bottom: 0;">Encryptions in parallel:</span> -->
-    <input id="parallel" autocomplete="off" style="margin-top: 1em; margin-bottom: 1em; font-family: monospace; width: 3em;" value="30"><br>
+    </select>&nbsp;<input id="input" onkeyup="countbits()" autocomplete="off" style="margin-top: 1em; margin-bottom: 0.5em; font-family: monospace; width: 40em;">
     <button id="button" onclick="start()">Compute</button>
-    <!-- <ul id="gates" style="nth-child(odd) { background: #eee; }"></ul> -->
     <br>
-    <!-- <pre>No hash yet, check the log for small demo</pre> -->
-    <!-- <p>64-bit equal-to-zero operation</p> -->
-    <pre id="results">Entered 32 bits
-    </pre>
+    <pre id="bitsCount">Entered 0 bits</pre><br>
+    <div id="results"></div>
   </body>
+
+  <script type="text/javascript" src="client/client.js"></script>
   <script type="text/javascript">
-    const countbits = function () {
-      if ($('#results').text().substr(0, 8) === 'Entered ') {
-        $('#results').text('Entered ' + (
-          (($('#base').val() === 'hex')? 4 : 1) * $('#input').val().length
-        ) + ' bits');
-      }
-    };
-    const progress = function (start, total) {
-      $('#results').text('\n\n' + start + '/' + total);
-    };
-    const callback = function (results) {
-      const base = $('#base').val();
-      results = results.toString();
-      if (base === 'hex') {
-        results = jigg.utils.bin2hex(results);
-      }
-
-      $('#results').text('Results: ' + results);
-    };
-    const start = function () {
-      var input = $('#input').val();
-      const circuitURL = 'circuits/' + $('#circuit').val();
-
-      const base = $('#base').val();
-      if (base === 'hex') {
-        input = jigg.utils.hex2bin(input);
-      }
-      input = input.split('');
-      input = input.map(Number);
-
-      const role = $('#partytype').val();
-      if (role === '-') {
-        alert('Please select role!');
-        return;
-      }
-
-      if (role === 'garbler') {
-        var garbler = new jigg.Agent('Garbler', circuitURL, new jigg.utils.Bits(input), callback, progress);
-        garbler.start();
-      } else if (role === 'evaluator') {
-        if (circuitURL === "circuits/universal_1bit.txt") {
-          // pad 1-bit to make symetric with the
-          // garbler's additional bit (the 1-bit program)
-          input.push(null);
-        }
-        var evaluator = new jigg.Agent('Evaluator', circuitURL, new jigg.utils.Bits(input), callback, progress);
-        evaluator.start();
-      }
-    };
+    if (window.Worker) {
+      document.getElementById('results').innerHTML += '<h4>Web Workers are supported on your browser! Circuits will evaluate in the background</h4>';
+    } else {
+      document.getElementById('results').innerHTML += '<h4>Web Workers are not supported on your browser! Circuits will evaluate in the foreground.' +
+        'The webpage may become irresponsive for a few seconds with large circuits.</h4>';
+    }
   </script>
 </html>

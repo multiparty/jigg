@@ -1,96 +1,99 @@
-/**
- * Stateless evaluation functions for garbled circuits protocol.
- * @module src/evaluate
- */
-
 'use strict';
 
-const label = require('./data/label');
-const gate = require('./data/gate');
-const assignment = require('./data/assignment');
-const crypto = require('./util/crypto');
+const circuitParser = require('./parse/circuit.js');
+const labelParser = require('./parse/label.js');
 
-/**
- * Receive garbled gates and wire-to-label map from garbler.
- * @param {Object} channel - Communication channel to use
- * @param {Object} circuit - Circuit being evaluated
- * @param {number[]} input - This party's input (second/right-hand input)
- * @returns {Object[]} Array of messages from garbler
- */
-function receiveMessages(channel, circuit, input) {
-  const inputPair = (new Array(1 + input.length)).concat(input);
-  
-  // Receive the list of garbled gates.
-  var messages = [channel.receiveDirect('gatesGarbled')];
+const crypto = require('./util/crypto.js');
 
-  // Receive each of the garbler's input labels.
-  for (var i = 0; i < circuit.wire_in_count/2; i++) {
-    messages.push(channel.receiveDirect('wire[' + circuit.wire_in_index[i] + ']'));
+const receiveInputLabels = function (agent, circuit) {
+  const garblerInputSize = circuit.garblerInputSize;
+  const evaluatorInputSize = circuit.evaluatorInputSize;
+
+  // send garbler input labels
+  const promises = [];
+  for (let i = 0; i < garblerInputSize; i++) {
+    promises.push(agent.socket.hear('wire'+i).then(labelParser));
   }
 
-  // Receive each of the evaluator's input labels using the input bits
-  // available to the evaluator.
-  for (var i = circuit.wire_in_count/2; i < circuit.wire_in_count; i++) {
-    messages.push(channel.receiveOblivious(inputPair[circuit.wire_in_index[i]]));
+  // Send the evaluator the first half of the input labels directly.
+  for (let i = 0; i < evaluatorInputSize; i++) {
+    const index = i + garblerInputSize;
+    promises.push(agent.OT.receive('wire'+index, agent.input[i]));
   }
 
-  return messages;
-}
-
-/**
- * Process garbled gates and wire label information received from garbler.
- * @param {Object} circuit - Circuit being evaluated
- * @param {Object[]} messages - Array of messages from garbler
- * @returns {Object[]} Pair containing the received gates and wire-to-label map
- */
-function processMessages(circuit, messages) {
-  var gatesGarbled = gate.GatesGarbled.prototype.fromJSONString(messages[0]);
-  var wireToLabels = new assignment.Assignment();
-  for (var i = 0; i < circuit.wire_in_count; i++) {
-    var j = circuit.wire_in_index[i];
-    wireToLabels.set(j, [label.Label(messages[j])]);
-  }
-  return [gatesGarbled, wireToLabels];
-}
-
-/**
- * Decrypt a single garbled gate; the resulting label is stored automatically and also returned.
- * @param {Object} gate - Corresponding gate from the original circuit
- * @param {Object} gateGarbled - Garbled gate to evaluate
- * @param {Object} wireToLabels - Mapping from each wire index to two labels
- */
-function evaluateGate(gate_id, gate, gateGarbled, wireToLabels) {
-  const i = gate.wire_in_index[0];
-  const j = (gate.wire_in_index.length === 2) ? gate.wire_in_index[1] : i;
-  const k = (gate.wire_out_index != null) ? gate.wire_out_index[0] : 0; // If null, just return decrypted.
-  const l = 2 * wireToLabels.get(i)[0].pointer() + wireToLabels.get(j)[0].pointer();
-
-  if (gate.operation === 'xor') {
-    wireToLabels.set(k, [wireToLabels.get(i)[0].xor(wireToLabels.get(j)[0])]);
-  } else if (gate.operation === 'not') {
-    wireToLabels.set(k, [wireToLabels.get(i)[0]]);  // Already inverted.
-  } else if (gate.operation === 'and') {
-    wireToLabels.set(k, [crypto.decrypt(wireToLabels.get(i)[0], wireToLabels.get(j)[0], gate_id, label.Label(gateGarbled.get(l)))]);
-  }
-}
-
-/**
- * Evaluate all the gates (stateless version).
- * @param {Object} circuit - Circuit in which to garble the gates
- * @param {Object} gatesGarbled - Ordered collection of garbled gates
- * @param {Object} wireToLabels - Labeled wire data structure
- * @returns {Object} Mapping from each wire index to two labels
- */
-function evaluateGates(circuit, gatesGarbled, wireToLabels) {
-  for (var i = 0; i < circuit.gate_count; i++) {
-    this.evaluateGate(i, circuit.gate[i], gatesGarbled.get(i), wireToLabels);
-  }
-  return wireToLabels;
-}
-
-module.exports = {
-  receiveMessages: receiveMessages,
-  processMessages: processMessages,
-  evaluateGate: evaluateGate,
-  evaluateGates: evaluateGates
+  return Promise.all(promises);
 };
+
+const evaluateAnd = function (agent, garbledGate, garbledAssignment) {
+  const in1 = garbledGate.inputWires[0];
+  const in2 = garbledGate.inputWires[1];
+  const out = garbledGate.outputWire;
+
+  const label1 = garbledAssignment[in1];
+  const label2 = garbledAssignment[in2];
+
+  const point = 2 * label1.getPoint() + label2.getPoint();
+  const cipher = garbledGate.truthTable[point];
+
+  garbledAssignment[out] = crypto.decrypt(label1, label2, garbledGate.id, cipher);
+};
+
+const evaluateXor = function (agent, garbledGate, garbledAssignment) {
+  const in1 = garbledGate.inputWires[0];
+  const in2 = garbledGate.inputWires[1];
+  const out = garbledGate.outputWire;
+
+  garbledAssignment[out] = garbledAssignment[in1].xor(garbledAssignment[in2]);
+};
+
+const evaluateNot = function (agent, garbledGate, garbledAssignment) {
+  const in1 = garbledGate.inputWires[0];
+  const out = garbledGate.outputWire;
+
+  garbledAssignment[out] = garbledAssignment[in1];
+};
+
+const run = function (agent) {
+  // receive circuit
+  agent.socket.hear('circuit').then(function (circuit) {
+    // parse circuit
+    circuit = circuitParser(circuit);
+
+    agent.progress('OT');
+
+    // receiver garbled inputs and OT for evaluator inputs
+    receiveInputLabels(agent, circuit).then(function (garbledAssignment) {
+      // evaluate one gate at a time
+      for (let i = 0; i < circuit.gates.length; i++) {
+        if (i % 2500 === 0) {
+          agent.progress('evaluating', i, circuit.gates.length);
+        }
+
+        const garbledGate = circuit.gates[i];
+
+        if (garbledGate.operation === 'AND') {
+          evaluateAnd(agent, garbledGate, garbledAssignment);
+        } else if (garbledGate.operation === 'XOR') {
+          evaluateXor(agent, garbledGate, garbledAssignment);
+        } else {
+          evaluateNot(agent, garbledGate, garbledAssignment);
+        }
+      }
+      agent.progress('evaluating', circuit.gates.length, circuit.gates.length);
+
+      // send garbled output to garbler
+      agent.progress('output');
+      const garbledOutput = garbledAssignment.slice(circuit.wiresCount - circuit.outputSize);
+      agent.socket.send('output', garbledOutput.map(function (label) {
+        return label.serialize();
+      }));
+
+      // retrieve de-garbled output
+      agent.socket.hear('output').then(function (bits) {
+        agent._outputResolve(bits);
+      });
+    });
+  });
+};
+
+module.exports = run;
