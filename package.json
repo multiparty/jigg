@@ -1,6 +1,6 @@
 {
   "name": "jigg",
-  "version": "0.0.1",
+  "version": "0.0.8",
   "description": "JavaScript Implementation of Garbled Gates (two-party computation library for boolean circuits)",
   "main": "server.js",
   "dependencies": {
@@ -20,7 +20,8 @@
     "chai-json-schema": "^1.5.1",
     "eslint": "^5.16.0",
     "eslint-plugin-requirejs": "^4.0.0",
-    "mocha": "^4.0.1"
+    "mocha": "^4.0.1",
+    "neptune-notebook": "^1.1.1"
   },
   "scripts": {
     "test": "node test/suite/simulate.js",
@@ -52,7 +53,8 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wyatt-howe/jigg/issues"
+    "url": "https://github.com/multiparty/jigg/issues"
   },
-  "homepage": "https://github.com/wyatt-howe/jigg#readme"
+  "legacy_homepage": "https://github.com/wyatt-howe/jigg#readme",
+  "homepage": "https://github.com/multiparty/jigg#readme"
 }
