@@ -1,0 +1,7 @@
+3 12
+2 4 4
+1 2
+4 1 [0|>4] 8 ../bristol/and-4.txt
+4 1 [4:7] 9 ../bristol/and-4.txt
+2 1 [8|>3] AND
+1 1 10 11 INV

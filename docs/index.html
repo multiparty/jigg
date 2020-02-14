@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Home - JIGG Library Documentation</title>
+    
+    
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/multiparty/jigg" target="_blank" class="menu-item" id="github_link" >Github Repo</a></h2><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a><ul class='methods'><li data-type='method'><a href="Agent.html#addProgressListener">addProgressListener</a></li><li data-type='method'><a href="Agent.html#disconnect">disconnect</a></li><li data-type='method'><a href="Agent.html#getOutput">getOutput</a></li><li data-type='method'><a href="Agent.html#loadCircuit">loadCircuit</a></li><li data-type='method'><a href="Agent.html#setInput">setInput</a></li><li data-type='method'><a href="Agent.html#start">start</a></li></ul></li><li><a href="Server.html">Server</a><ul class='methods'><li data-type='method'><a href="Server.html#makeAgent">makeAgent</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-Browser.html">Browser</a></li><li><a href="module-JIGG.html">JIGG</a></li></ul>
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+
+
+    <section class="package">
+        <h3> </h3>		
+    </section>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+    <section class="readme usertext">
+        <article><h1>JIGG</h1>
+<p>JavaScript implementation of garbled gates and 2PC boolean circuit protocols.</p>
+<h2>Requirements and Installation</h2>
+<p>This library is implemented entirely in JavaScript. Running the server requires <a href="https://nodejs.org/en/">Node.js</a>, <a href="https://www.npmjs.com/">npm</a> (both installed via <code>yum install nodejs npm</code> or <code>brew install npm</code> on macOS), <a href="https://socket.io/">Socket.IO</a>, and <a href="https://www.npmjs.com/package/libsodium">libsodium</a>.</p>
+<p>Run <code>npm</code> to install all JIGG dependencies:</p>
+<pre class="prettyprint source lang-shell"><code>npm install
+</code></pre>
+<h2>Project Layout</h2>
+<pre><code>├─ circuits/        Circuit files
+│  ├─ macros/       Macro files to assemble circuits using [CASM](https://github.com/wyatt-howe/macro-circuit-assembler)
+│  └─ bristol/      Bristol format files
+├─ demo/            Demo for client-server deployment scenario
+├─ src/             Library modules implementing protocol steps for participants
+│  ├─ comm/         Communications modules (such as for OT)
+│  ├─ modules/         Data structure modules (such as circuits)
+│  └─ utils/        Other utility modules (such as cryptographic primitives)
+└─ test/            End-to-end tests
+</code></pre>
+<h2>Running Demo Circuit Applications</h2>
+<p>Start the communications server from server.js with the command below:</p>
+<pre class="prettyprint source lang-shell"><code>node demo/server.js &lt;port number>
+</code></pre>
+<h3>As a Browser Party</h3>
+<p>Parties can go to <code>http://localhost:&lt;port&gt;/</code> in a web browser supporting JavaScript to begin communications.</p>
+<h3>As a Node.js Party</h3>
+<p>Connect a new party in Node.js by running:</p>
+<pre class="prettyprint source lang-shell"><code>node demo/party.js &lt;port> &lt;role> &lt;input> &lt;encoding> &lt;circuitName>
+# &lt;role>: Garbler or Evaluator
+# &lt;input>: string with no whitespaces
+# &lt;encoding>: bits, number, or hex
+# &lt;circuitName>: must include file extension
+#                demo will run bristol circuit found at
+#                'circuits/bristol/&lt;circuitName>'
+</code></pre>
+<p>For example to join an AES-128 computation as the garbler, run:</p>
+<pre class="prettyprint source lang-shell"><code>node demo/party.js 3000 Evaluator 00000000000000000000000000000000 hex aes-128-reverse.txt
+</code></pre>
+<h3>Server + Garbler/Evaluator</h3>
+<p>The server may also run as a garbler or evaluator. You can acheive this by running the server with
+the same arguments as a party:</p>
+<pre class="prettyprint source lang-shell"><code>node demo/server.js &lt;port> &lt;role> &lt;input> &lt;encoding> &lt;circuitName>
+</code></pre>
+<h2>Demo Circuits</h2>
+<p>We have a variety of circuits available under <code>circuits/bristol</code> mostly from this <a href="https://homes.esat.kuleuven.be/~nsmart/MPC/">page</a>.</p>
+<h3>Circuit Format</h3>
+<p>JIGG can parse a circuit in the standardized '<a href="https://homes.esat.kuleuven.be/~nsmart/MPC/">Bristol</a> <a href="https://homes.esat.kuleuven.be/~nsmart/MPC/old-circuits.html">Format</a>' which is supported by several compiled MPC libraries such as <a href="https://homes.esat.kuleuven.be/~nsmart/SCALE/">SCALE-MAMBA</a>.</p>
+<pre class="prettyprint source lang-ada"><code>4 8
+2 2 2
+1 3
+2 1 0 1 4 AND
+2 1 2 3 5 XOR
+1 1 5 6 INV
+2 1 4 6 7 AND
+</code></pre>
+<h3>Circuit Assembler</h3>
+<p>To create a new circuit, write a macro with existing circuits as its gates and run the <a href="https://github.com/wyatt-howe/macro-circuit-assembler/tree/casm">macro-circuit-assembler</a> with:</p>
+<pre class="prettyprint source lang-shell"><code>npm run casm -- &lt;path_to_macro> &lt;output_path>
+</code></pre>
+<p>For example, this macro assembles an AND circuit over 8 bits using
+existing 4 bit AND circuits:</p>
+<pre class="prettyprint source"><code>npm run casm -- circuits/macros/and-8.casm circuits/and-8.txt
+</code></pre>
+<h2>Running Tests</h2>
+<h3>End-to-end Tests</h3>
+<p>All of the built-in test vectors can be verified in <code>npm test</code>. The tests will run a server automatically.</p>
+<h2>Capabilities</h2>
+<p>JIGG is designed for semi-honest parties (in either node or in the browser). We support point-and-permute, free-XOR, free single-input gates, and encryption from a random oracle (fixed-key XChaCha20). The half-AND optimization is compatible but not yet supported. The default label size is 128 bits and relies on JavaScript's Uint8Array class. The <a href="https://github.com/wyatt-howe/jigg/tree/simple-labels"><code>simple-labels</code></a> branch demonstrates dynamically-sized labels (that are 53 bits in length or less) without using arrays. Some potential improvements are listed in the to-do section.</p>
+<h2>Contributing</h2>
+<p>JIGG is fully functional as it is now, but there's still more to do (see the list below) before version 1.  Pull requests are welcome for any improvement.  The JIGG source is maintained with the help of <a href="https://eslint.org/">ESLint</a> for style and the <a href="https://github.com/multiparty/jigg#legacy-end-to-end-tests">included test suite</a> for stability.</p>
+<h3>To Do</h3>
+<ul>
+<li>Half-AND gate optimization</li>
+<li>Standardize JSON/serialized/compressed formats for inter-party messages compatible with <a href="https://github.com/multiparty/sigg">SIGG</a></li>
+</ul>
+<h2>Information and Collaborators</h2>
+<p>More information about this project, including collaborators and publications, can be found at <a href="https://multiparty.org/">multiparty.org</a>.</p></article>
+    </section>
+
+
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Feb 13 2020 12:30:51 GMT-0500 (Eastern Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>
