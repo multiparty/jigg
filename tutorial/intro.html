@@ -1,10 +1,10 @@
 ﻿<html>
 <head>
     <meta charset="UTF-8">
-    <title>I2GC - Neptune-notebook.js</title>
+    <title>intro - Neptune-notebook.js</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+    
     <!-- code mirror dependencies -->
     <script type="text/javascript">
       // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -10133,11 +10133,11 @@ span.CodeMirror-selectedtext { background: none; }
  */
 
 .cm-s-darcula  { font-family: Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;}
-.cm-s-darcula.CodeMirror { background: #2B2B2B; color: #A9B7C6; }
+.cm-s-darcula.CodeMirror { background: #2B2B2B; color: #A9B7C6; } 
 
 .cm-s-darcula span.cm-meta { color: #BBB529; }
 .cm-s-darcula span.cm-number { color: #6897BB; }
-.cm-s-darcula span.cm-keyword { color: #CC7832; line-height: 1em; font-weight: bold; }
+.cm-s-darcula span.cm-keyword { color: #CC7832; line-height: 1em; font-weight: bold; }  
 .cm-s-darcula span.cm-def { color: #A9B7C6; font-style: italic; }
 .cm-s-darcula span.cm-variable { color: #A9B7C6; }
 .cm-s-darcula span.cm-variable-2 { color: #A9B7C6; }
@@ -10147,7 +10147,7 @@ span.CodeMirror-selectedtext { background: none; }
 .cm-s-darcula span.cm-operator { color: #A9B7C6; }
 .cm-s-darcula span.cm-string { color: #6A8759; }
 .cm-s-darcula span.cm-string-2 { color: #6A8759; }
-.cm-s-darcula span.cm-comment { color: #61A151; font-style: italic; }
+.cm-s-darcula span.cm-comment { color: #61A151; font-style: italic; } 
 .cm-s-darcula span.cm-link { color: #CC7832; }
 .cm-s-darcula span.cm-atom { color: #CC7832; }
 .cm-s-darcula span.cm-error { color: #BC3F3C; }
@@ -10158,15 +10158,15 @@ span.CodeMirror-selectedtext { background: none; }
 .cm-s-darcula span.cm-builtin { color: #FF9E59; }
 .cm-s-darcula span.cm-special { color: #FF9E59; }
 
-.cm-s-darcula .CodeMirror-cursor { border-left: 1px solid #A9B7C6; }
-.cm-s-darcula .CodeMirror-activeline-background { background: #323232; }
-.cm-s-darcula .CodeMirror-gutters { background: #313335; border-right: 1px solid #313335; }
-.cm-s-darcula .CodeMirror-guttermarker { color: #FFEE80; }
-.cm-s-darcula .CodeMirror-guttermarker-subtle { color: #D0D0D0; }
-.cm-s-darcula .CodeMirrir-linenumber { color: #606366; }
-.cm-s-darcula .CodeMirror-matchingbracket { background-color: #3B514D; color: #FFEF28 !important; font-weight: bold; }
+.cm-s-darcula .CodeMirror-cursor { border-left: 1px solid #A9B7C6; }  
+.cm-s-darcula .CodeMirror-activeline-background { background: #323232; } 
+.cm-s-darcula .CodeMirror-gutters { background: #313335; border-right: 1px solid #313335; } 
+.cm-s-darcula .CodeMirror-guttermarker { color: #FFEE80; }  
+.cm-s-darcula .CodeMirror-guttermarker-subtle { color: #D0D0D0; }  
+.cm-s-darcula .CodeMirrir-linenumber { color: #606366; } 
+.cm-s-darcula .CodeMirror-matchingbracket { background-color: #3B514D; color: #FFEF28 !important; font-weight: bold; } 
 
-.cm-s-darcula div.CodeMirror-selected { background: #214283; }
+.cm-s-darcula div.CodeMirror-selected { background: #214283; }  
 
 .CodeMirror-hints.darcula {
   font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
@@ -12541,7 +12541,7 @@ body {
   padding: 50px;
 }
 
-/* Bar on top for downloading and stuff */
+/* Bar on top of the page for downloading */
 #neptune-bar {
   /* style */
   background: #ffffff;
@@ -12552,7 +12552,6 @@ body {
   position: relative;
   text-align: center;
 }
-
 #neptune-bar span {
   /* layout */
   position: absolute;
@@ -12562,7 +12561,6 @@ body {
   /* font */
   font-size: 8px;
 }
-
 #neptune-download {
   /* layout */
   display: block;
@@ -12576,19 +12574,100 @@ body {
   /* style */
   cursor: pointer;
 }
-
 #neptune-download:hover {
   background: #2B2B2B;
   color: #FFFFFF;
 }
 
 /*
+ * Code editor
+ * Use a "transparent" <textarea> super-imposed right on top of <code> in parent <pre>
+ */
+.CodeMirror {
+  /* layout */
+  overflow: hidden;
+  height: auto;
+  min-height: 40px;
+
+  /* font */
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1em;
+  line-height: 1.5;
+}
+.CodeMirror-scroll {
+  height: auto;
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+.CodeMirror-linenumbers {
+  margin-right: 15px;
+}
+
+/*
+ * Toolbar with icons
+ * Inspired by https://www.w3schools.com/howto/howto_css_icon_bar.asp
+ */
+.code-toolbar-container {
+  position: relative;
+} 
+.code-toolbar {
+  position: absolute;
+  top: 13px;
+  right: 0;
+}
+.code-toolbar a {
+  text-align: center;
+  padding: 14px;
+  transition: all 0.3s ease;
+  color:  #FFFFFF;
+  background-color: #2B2B2B;
+  font-size: 30px;
+  z-index: 2;
+}
+.code-toolbar a:first-child,
+.code-toolbar a:first-child[style*="display: none"] + a:not([style*="display: none"]),
+.code-toolbar a:first-child[style*="display: none"] + a[style*="display: none"] + a:not([style*="display: none"]) {
+  border-radius: 10px 0 0 0;
+}
+.code-toolbar a:last-child {
+  border-radius: 0 10px 0 0;
+}
+.code-toolbar a:hover {
+  background-color: #e5e5e5;
+  color: #333333;
+}
+.code-toolbar .navicon {
+  display: none;
+}
+
+/*
+ * output terminal like panel
+ */
+.output-panel {
+  /* layout */
+  display: none;
+  margin: .5em 0;
+  padding: 1em;
+  /* colors */
+  background-color: #2B2B2B;
+  color: #ccc;
+  /* font */
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1.2em;
+  line-height: 1.5;
+}
+.output-line-span {
+  color: #999;
+}
+
+/*
  * Tabs layout
+ * Includes styling for the tabs and their headers/labels
  * https://kyusuf.com/post/completely-css-tabs/
  */
 .code-tabs {
   /* box-shadow: 0 48px 80px -32px rgba(0,0,0,0.3); */
-  padding: 30px 10px 10px 10px;
+  padding: 10px 10px 10px 10px;
   background: #e5e5e5;
   overflow: hidden;
   border: dashed 1px #333333;
@@ -12599,9 +12678,9 @@ body {
   opacity: 0;
 }
 .tab-label {
+  display: inline-block;
   border-radius: 10px 10px 0 0;
-  width: 100%;
-  padding: 20px 30px;
+  padding: 20px 20px;
   background: #e5e5e5;
   cursor: pointer;
   font-weight: bold;
@@ -12626,80 +12705,38 @@ body {
 }
 
 /*
- * Code editor
- * Use a "transparent" <textarea> super-imposed right on top of <code> in parent <pre>
+ * Tabs layout when labels/headers do not fit!
+ * https://www.w3schools.com/howto/howto_js_responsive_navbar_dropdown.asp
  */
-.CodeMirror {
-  /* layout */
-  overflow: hidden;
-  height: auto;
-  min-height: 40px;
-
-  /* font */
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 1em;
-  line-height: 1.5;
+@media screen and (max-width: 1200px) {
+  .code-toolbar-container:not(.toosmall) label[class="tab-label"] {
+    display: none;
+  }
+  .code-toolbar-container:not(.toosmall) .navicon {
+    display: inline;
+  }
 }
-.CodeMirror-scroll {
-  height: auto;
-  overflow-y: hidden;
-  overflow-x: auto;
-}
-
-.CodeMirror-linenumbers {
-  margin-right: 15px;
-}
-
-/*
- * bar with execute button
- * Inspired by https://www.w3schools.com/howto/howto_css_icon_bar.asp
- */
-.code-top-toolbar {
-  float: right;
-  position: relative;
-  top: -10px;
-  padding: 0;
-}
-
-.code-top-toolbar a {
-  text-align: center;
-  padding: 10px;
-  transition: all 0.3s ease;
-  color: #333333;
-  font-size: 30px;
-  z-index: 2;
-}
-
-.code-top-toolbar a:hover {
-  background-color: #2B2B2B;
-  color: #FFFFFF;
-}
-
-/*
- * output terminal like panel
- */
-.output-panel {
-  /* layout */
+.code-toolbar-container.toobig label:not(.tab-label-selected) {
   display: none;
-  margin: .5em 0;
-  padding: 1em;
-  /* colors */
-  background-color: #2B2B2B;
-  color: #ccc;
-  /* font */
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 1.2em;
-  line-height: 1.5;
+}
+.code-toolbar-container.toobig .navicon {
+  display: inline;
 }
 
-.output-line-span {
-  color: #999;
+.code-toolbar-container.responsive .tab-label {
+  display: inline-block !important;
+  border-radius: 0;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
+  width: 100%;
+}
+.code-toolbar-container.responsive .tab-label:nth-child(2) {
+  border-top: 1px solid #000000;
+  border-radius: 10px 10px 0 0;
 }
 
-/*
- * Custom output divs
- */
-.custom-output-div {
+.code-toolbar-container.responsive .tab-label:last-child {
+  border-bottom: 1px solid #000000;
 }
 
     </style>
@@ -12707,9 +12744,9 @@ body {
     <!-- injection -->
     <style>
       /* injected CSS */
-
+      
     </style>
-
+    
   </head>
   <body>
     <div id="neptune-bar">
@@ -12722,6 +12759,7 @@ body {
 <p>Garbled circuits are a specific construction of private function evaluation for boolean circuits.  A great introduction to the more in-depth math surrounding garbled circuits can be found at <a href="http://web.mit.edu/sonka89/www/papers/2017ygc.pdf">here</a>, however the absolute basics are as follows.</p>
 <p>JIGG focuses on the two-party case.  Each computation involves a <em>garbler</em>, and an <em>evaluator</em>.  These two parties communicate through the help of a communications server.  This server does not contribute data nor computational power to the computation, but exists for the sole purpose of passing messages between the two participating parties.</p>
 <p>The garbler and evaluator each know their own private inputs, as well as a public function (represented as a boolean circuit) that they both want to run on their private inputs and return a public output.  In JIGG, this boolean circuit is stored in a text file as a list of boolean logic gates.</p>
+<p>In particular, JIGG accepts circuits specified using the <a href="https://homes.esat.kuleuven.be/~nsmart/MPC/">Bristol Fashion</a>.</p>
 <p>The circuit for a 4-input bit NAND circuit looks like the following:</p>
 <pre><code class="ada language-ada">4 8            # 4 gates, 8 wires
 2 2 2          # 2 parties, 2-bit inputs for both
@@ -12731,635 +12769,238 @@ body {
 2 1 4 5 6 AND  # 2 in, 1 out, W6 := W4 &amp;&amp; W5
 1 1 6 7 INV    # 1 in, 1 out, W7 := ~W6
 </code></pre>
-<!-- ![](/src/nand4.png | width=500) -->
-<p><img src="src/nand4.svg" width="300"></p>
+<pre><code class="neptune[inject=true,language=HTML] language-neptune[inject=true,language=HTML]">&lt;img src="src/nand4.svg" width="300" /&gt;
+</code></pre>
 <p><strong>Note:</strong>
-If gate-by-gate description seems too low-level, you may also write circuits on a macro level if preferred and compile down using <a href="https://github.com/wyatt-howe/macro-circuit-assembler#readme">CASM</a>.  Even ASCI C compilers exist that assemble JIGG compatible circuits, but we make no special note due to their generally lesser utility performance-wise.</p>
+If gate-by-gate description seems too low-level, you may also write circuits on a macro level if preferred and compile down using <a href="https://github.com/wyatt-howe/macro-circuit-assembler#readme">CASM</a>.  Even ASCI C compilers exist that assemble JIGG compatible (Bristol fashion) circuits, but we make no special note due to their generally lesser utility performance-wise.</p>
 <!-- ## Advantages over Arithmetic Circuits -->
-<p>All of the widely accepted solutions for secure function evaluation use either boolean circuits (and operate through garbled gates) or arithmetic circuits (and operate over secret shares).  One well-designed framework taking the arithmetic approach is <a href="https://github.com/MPC-SoK/frameworks/wiki/JIFF">JIFF</a>, however this section highlights the garbled variant.</p>
+<p>All of the widely accepted solutions for secure function evaluation use either boolean circuits (and operate through garbled gates) or arithmetic circuits (and operate over secret shares).  Our other framework <a href="https://github.com/MPC-SoK/frameworks/wiki/JIFF">JIFF</a> provides a complete system around the arithmetic approach, however this section highlights the garbled variant.</p>
 <p><strong>Advantages over Arithmetic Circuits</strong>:</p>
 <ol>
-<li><p>Latency: while protocols based upon secret sharing require a number of back-and-forth messages proportional to the size of their arithmetic circuit, the boolean circuit in JIGG only has to be sent once (after the garbling step done locally) and communication of initial inputs and the final outputs remain constant<!-- in time to the size of their circuits. -->—this means computation speed is more determined by the participating parties themselves, rather than slow networking.</p></li>
+<li><p>Latency: while protocols based upon secret sharing require a number of back-and-forth messages between the parties proportional to the size of their arithmetic circuit,
+the boolean circuit in JIGG only has to be sent once (after the garbling is done locally by the garbler) and communication of initial inputs and the final outputs remain constant.
+This means computation speed is more determined by the participating parties themselves, rather than slow networking.</p></li>
 <li><p>Linearity: circuits don't have to be a composition of arithmetic operators only—anything programmable with boolean logic is computable.<!-- Mention C-to-boolean circuit compilers? --></p></li>
 </ol>
-<h1 id="asimplecomputation64bitequaltozero">A Simple Computation: 64-bit Equal-to-Zero</h1>
-<p>This circuit is as simple as it sounds.  Our two parties provide a total of 64 bits, and if they're all equal to zero we announce this is true, else, false.  In boolean logic and in JIGG, 1 is synonymous with true and 0 false.</p>
-<p>The circuit itself is structured similar to one giant 64-bit NAND gate, similar to the one we looked at above.  It is a binary tree of 63 AND gates joining 64 negated 1-bit inputs into one final output bit.</p>
-<pre><code class="neptune[frame=jigg,scope=jigg,title=Server,env=server] language-neptune[frame=jigg,scope=jigg,title=Server,env=server]">const express = require('express');
+<p><strong>Costs of Garbled Cricuits in JIGG</strong>:</p>
+<ol>
+<li>Both Garbling and evaluating require many cryptographic operations (proportional to the number of AND gates in the circuit).</li>
+<li>Garbling is about 4 times as expensive as evaluating.</li>
+</ol>
+<h1 id="setup">Setup</h1>
+<p>JIGG requires setting up a regular http server. The http server will later be used
+by the JIGG server when created.</p>
+<pre><code class="neptune[frame=setup1,title=Server&nbsp;Setup,run=false] language-neptune[frame=setup1,title=Server&nbsp;Setup,run=false]">// Create a standard http webserver
+const express = require('express');
 const http = require('http');
 const app = express();
 const httpServer = http.createServer(app);
 
-// Create new JIGG Server and run it (by running http)
-const JIGG = require('../src/jigg.js');
-const server = new JIGG.Server(httpServer);
-
-const port = 3001;
-httpServer.listen(port, function () {
-  console.log('listening on *:', port);
-  Console.log('Started jigg server on port ' + port);
+// Run server on some port
+httpServer.listen(9122, function () {
+  Console.log('http listening on *:', 9122);
 });
 </code></pre>
-<pre><code class="neptune[frame=jigg,scope=jigg,title=Garbler,env=agent] language-neptune[frame=jigg,scope=jigg,title=Garbler,env=agent]">const JIGG = require('../src/jigg.js');
-
-let input = '00000000000000000000000000000000';
-const role = 'Garbler';
-const base = 'bits';
-
-const timeStart = new Date().getTime();
-const displayOutput = function (output) {
-  const timeEnd = new Date().getTime();
-  const time = (timeEnd - timeStart) / 1000;
-  if (base === 'bits') {
-    output = output.reverse().join('');
-  }
-  console.log('Results: ' + output + '\nTook: ' + time + 'seconds';
-};
-
-const getCircuit = $.ajax('/circuits/bristol/compare-eq-zero-64-bit.txt');
-const start = function () {
-  getCircuit().then(function (circuit) {
-    if (base === 'bits') {
-      input = input.split('').map(Number).reverse();
-    } else if (base === 'number') {
-      input = Number(input);
-    }
-
-    const agent = new JIGG(role);
-    agent.addProgressListener(progress);
-    agent.loadCircuit(circuit);
-    agent.setInput(input, base);
-    agent.getOutput(base).then(displayOutput);
-    agent.start();
-  });
-};
+<p>JIGG exposes Client and Server modules. The Client module is used to instantiate an evaluator or a garbler party in either
+a node.js environment or in the browser. The server module can only be used in a node.js environment, to instantiate a JIGG server.</p>
+<pre><code class="neptune[frame=setup2,title=Node.js,run=false] language-neptune[frame=setup2,title=Node.js,run=false]">const JIGG = require('jigg');
+// JIGG.Server provides the server module
+// JIGG.Client provides the client module
 </code></pre>
-<pre><code class="neptune[frame=jigg,scope=jigg,title=Evaluator,env=agent] language-neptune[frame=jigg,scope=jigg,title=Evaluator,env=agent]">const JIGG = require('../src/jigg.js');
-
-let input = '00000000000000000000000000000000';
-const role = 'Evaluator';
-const base = 'bits';
-
-const timeStart = new Date().getTime();
-const displayOutput = function (output) {
-  const timeEnd = new Date().getTime();
-  const time = (timeEnd - timeStart) / 1000;
-  if (base === 'bits') {
-    output = output.reverse().join('');
-  }
-  console.log('Results: ' + output + '\nTook: ' + time + 'seconds';
-};
-
-const getCircuit = $.ajax('/circuits/bristol/compare-eq-zero-64-bit.txt');
-const start = function () {
-  getCircuit().then(function (circuit) {
-    if (base === 'bits') {
-      input = input.split('').map(Number).reverse();
-    } else if (base === 'number') {
-      input = Number(input);
-    }
-
-    const agent = new JIGG(role);
-    agent.addProgressListener(progress);
-    agent.loadCircuit(circuit);
-    agent.setInput(input, base);
-    agent.getOutput(base).then(displayOutput);
-    agent.start();
-  });
-};
+<pre><code class="neptune[frame=setup2,title=Browser,run=false,lang=html] language-neptune[frame=setup2,title=Browser,run=false,lang=html]">&lt;script src='/dist/jigg.js'&gt;&lt;/script&gt;
+&lt;!-- exposes global JIGG that is the Client module directly: no need to use JIGG.Client! --&gt;
 </code></pre>
-<pre><code class="neptune[frame=jigg,scope=jigg,title=Circuit] language-neptune[frame=jigg,scope=jigg,title=Circuit]"># file://circuits/bristol/compare-eq-zero-64-bit.txt
-
-127 191
-2 32 32
+<h1 id="examples">Examples</h1>
+<h2 id="asimpleexample4bitlogicaland">A Simple Example: 4-bit Logical And</h2>
+<p>This circuit is as simple as it sounds. Our two parties provide each provide 2 bits of inputs. The circuit computes the logical and over these inputs. If all bits were 1, the circuit outputs 1, otherwise it outputs 0.</p>
+<pre><code class="neptune[frame=1,title=Circuit,run=false] language-neptune[frame=1,title=Circuit,run=false]"># 3 gates with 7 wires
+3 7
+# 2 inputs in total, the garbler has 2 bits inputs, the evaluator has 2 bits inputs
+2 2 2
+# 1 output consisting of 1 bit
 1 1
-1 1 21 65 INV
-1 1 23 64 INV
-2 1 65 64 69 AND
-1 1 22 67 INV
-1 1 20 66 INV
-2 1 67 66 68 AND
-2 1 69 68 77 AND
-1 1 29 71 INV
-1 1 31 70 INV
-2 1 71 70 75 AND
-1 1 30 73 INV
-1 1 28 72 INV
-2 1 73 72 74 AND
-2 1 75 74 76 AND
-2 1 77 76 93 AND
-1 1 25 79 INV
-1 1 27 78 INV
-2 1 79 78 83 AND
-1 1 26 81 INV
-1 1 24 80 INV
-2 1 81 80 82 AND
-2 1 83 82 91 AND
-1 1 17 85 INV
-1 1 19 84 INV
-2 1 85 84 89 AND
-1 1 18 87 INV
-1 1 16 86 INV
-2 1 87 86 88 AND
-2 1 89 88 90 AND
-2 1 91 90 92 AND
-2 1 93 92 125 AND
-1 1 53 95 INV
-1 1 55 94 INV
-2 1 95 94 99 AND
-1 1 54 97 INV
-1 1 52 96 INV
-2 1 97 96 98 AND
-2 1 99 98 107 AND
-1 1 61 101 INV
-1 1 63 100 INV
-2 1 101 100 105 AND
-1 1 62 103 INV
-1 1 60 102 INV
-2 1 103 102 104 AND
-2 1 105 104 106 AND
-2 1 107 106 123 AND
-1 1 57 109 INV
-1 1 59 108 INV
-2 1 109 108 113 AND
-1 1 58 111 INV
-1 1 56 110 INV
-2 1 111 110 112 AND
-2 1 113 112 121 AND
-1 1 49 115 INV
-1 1 51 114 INV
-2 1 115 114 119 AND
-1 1 50 117 INV
-1 1 48 116 INV
-2 1 117 116 118 AND
-2 1 119 118 120 AND
-2 1 121 120 122 AND
-2 1 123 122 124 AND
-2 1 125 124 189 AND
-1 1 37 127 INV
-1 1 39 126 INV
-2 1 127 126 131 AND
-1 1 38 129 INV
-1 1 36 128 INV
-2 1 129 128 130 AND
-2 1 131 130 139 AND
-1 1 45 133 INV
-1 1 47 132 INV
-2 1 133 132 137 AND
-1 1 46 135 INV
-1 1 44 134 INV
-2 1 135 134 136 AND
-2 1 137 136 138 AND
-2 1 139 138 155 AND
-1 1 41 141 INV
-1 1 43 140 INV
-2 1 141 140 145 AND
-1 1 42 143 INV
-1 1 40 142 INV
-2 1 143 142 144 AND
-2 1 145 144 153 AND
-1 1 33 147 INV
-1 1 35 146 INV
-2 1 147 146 151 AND
-1 1 34 149 INV
-1 1 32 148 INV
-2 1 149 148 150 AND
-2 1 151 150 152 AND
-2 1 153 152 154 AND
-2 1 155 154 187 AND
-1 1 5 157 INV
-1 1 7 156 INV
-2 1 157 156 161 AND
-1 1 6 159 INV
-1 1 4 158 INV
-2 1 159 158 160 AND
-2 1 161 160 169 AND
-1 1 13 163 INV
-1 1 15 162 INV
-2 1 163 162 167 AND
-1 1 14 165 INV
-1 1 12 164 INV
-2 1 165 164 166 AND
-2 1 167 166 168 AND
-2 1 169 168 185 AND
-1 1 9 171 INV
-1 1 11 170 INV
-2 1 171 170 175 AND
-1 1 10 173 INV
-1 1 8 172 INV
-2 1 173 172 174 AND
-2 1 175 174 183 AND
-1 1 1 177 INV
-1 1 3 176 INV
-2 1 177 176 181 AND
-1 1 2 179 INV
-1 1 0 178 INV
-2 1 179 178 180 AND
-2 1 181 180 182 AND
-2 1 183 182 184 AND
-2 1 185 184 186 AND
-2 1 187 186 188 AND
-2 1 189 188 190 AND
+
+# input wires are always the first wires, output ones are the last ones
+# so in this case:
+# 0, and 1 are the garbler's input wires
+# 2 and 3 are the evaluator's
+# 6 is the output wire
+
+# gates 
+2 1 0 1 4 AND # 4 = 0 AND 1
+2 1 2 3 5 AND # 5 = 2 AND 3
+2 1 4 5 6 AND # 6 = 4 AND 5
 </code></pre>
-<!-- **Note:** Sometimes the final result can itself reveal information about the inputs even if MPC is used. For example, if two parties jointly compute the sum of their inputs securely, each of them can learn the input
-of the other, by simply subtracting their input out of the final output. In such case, it is recommended that output privacy mechanisms (such as [differential privacy](https://privacytools.seas.harvard.edu/differential-privacy)) are used in conjunction with MPC.
-
-Common underlying assumptions can be split into two main categories:
-1. Behavior: MPC protocols frequently make assumptions about what participating parties will and will not do. Parties that do not abide by these restrictions can cause the protocol to lose Confidentiality, Integrity, or both. Two common behavior models are:
-     - **semi-honest security** where parties abide by the protocol but may try to learn private information by analyzing their messages or colluding with other parties.
-     - **malicious security** where parties may deviate arbitrarily from the protocols.
-
-   Choosing the appropriate security model for an application depends on the incentives between the participating parties and can involve performance tradeoffs.
-
-2. Coalitions: MPC protocols may make assumptions about how many parties in the computation are **honest** (e.g. abide by the protocol or do not collude with others) or the size of the largest coalitions of parties. Two common assumptions are:
-    - **honest majority**: the largest coalitions must be less than half of the parties
-    - **dishonest majority**: coalitions may include all parties except one.
-
-There are a variety of interesting theoretical results in the literature about what can be and cannot be done in any of these settings.
-
-We focus on **semi-honest security** in these tutorials, since JIFF operates in the **semi-honest security** model.
-
-## When should MPC be used?
-MPC allows computation of functions over sensitive data. MPC is particularly useful in the following scenarios:
-
-1. Sensitive Inputs: input parties are hesitant to provide their sensitive data to any single party.
-
-2. Avoiding Liability: parties may be wiling to provide their data, but the compute party is unwiling to hold that data for liability reasons (e.g. in case the compute party was hacked).
-
-3. Compliance: certain types of data may be subject to strict rules governing data sharing and privacy (e.g. HIPAA). MPC can perform interesting computation on several such data sets without
-   having to move or share the data.
-
-# How does it work?
-Secret sharing is the backbone of MPC. A secret sharing scheme consists of two functions: a **share** function that creates seemingly-random shares from an input and a reconstruct or **open**
-function that reconstructs the input from the shares.
-
-There are a variety of secret sharing schemes, we will start with the simplest.
-
-## Additive secret sharing
-
-Given an input x, choose n random values x<sub>1</sub>, ..., x<sub>n</sub> such that their sum is equal to x.
-<pre><code class="neptune[frame=1,title=Insecure&nbsp;Scheme] language-neptune[frame=1,title=Insecure&nbsp;Scheme]">function share(x, n) {
-  var shares = [];
-  var sum = 0;
-  for (var i = 0; i &lt; n-1; i++) {
-    var sign = Math.random() &lt; 0.5 ? 1 : -1;
-    var r = sign * Math.floor(Math.random() * 100);
-    sum += r;
-    shares.push(r);
-  }
-
-  shares.push(x - sum);
-  return shares;
-}
-
-function open(shares) {
-  return shares.reduce(function (sum, share) { return sum + share }, 0);
-}
-
-var shares = share(5, 3);
-Console.log(shares, open(shares));
-shares = share(5, 2);
-Console.log(shares, open(shares));
-shares = share(10, 5);
-Console.log(shares, open(shares));
-</code></pre>
-<pre><code class="neptune[frame=1,title=Additive&nbsp;Secret&nbsp;Sharing&nbsp;mod&nbsp;Prime] language-neptune[frame=1,title=Additive&nbsp;Secret&nbsp;Sharing&nbsp;mod&nbsp;Prime]">var prime = 127;
-
-function mod(v) {
-  return (v &lt; 0 ? v + prime : v) % prime;
-}
-
-function share(x, n) {
-  var shares = [];
-  var sum = 0;
-  for (var i = 0; i &lt; n-1; i++) {
-    var r = Math.floor(Math.random() * prime);
-    sum = mod(sum + r);
-    shares.push(r);
-  }
-
-  shares.push(mod(x - sum));
-  return shares;
-}
-
-function open(shares, prime) {
-  return shares.reduce(function (sum, share) { return mod(sum + share) }, 0);
-}
-
-var shares = share(5, 3);
-Console.log(shares, open(shares));
-shares = share(5, 2);
-Console.log(shares, open(shares));
-shares = share(10, 5);
-Console.log(shares, open(shares));
-</code></pre>
-<pre><code class="neptune[frame=1,title=Addition&nbsp;under&nbsp;MPC] language-neptune[frame=1,title=Addition&nbsp;under&nbsp;MPC]">// A simple demo of addition under MPC using additive secret sharing!
-
-// Each party's inputs
-var input_party_0 = 10;
-var input_party_1 = 13;
-var input_party_2 = 22;
-
-// Each party creates Secret Shares of their inputs
-var shares_party_0 = share(input_party_0, 3);
-var shares_party_1 = share(input_party_1, 3);
-var shares_party_2 = share(input_party_2, 3);
-Console.log(shares_party_0, shares_party_1, shares_party_2);
-
-// Each party sends their ith share to the ith party
-var received_shares_party_0 = [shares_party_0[0], shares_party_1[0], shares_party_2[0]]
-var received_shares_party_1 = [shares_party_0[1], shares_party_1[1], shares_party_2[1]]
-var received_shares_party_2 = [shares_party_0[2], shares_party_1[2], shares_party_2[2]]
-
-// Each party computes the sum of their received shares and broadcasts this value to the other parties.
-// These sums of received shares, neither individually nor in pairs, reveal nothing about any party's inputs.
-var sum_received_shares_party_0 = received_shares_party_0.reduce((sum, share) =&gt; mod(sum + share), 0);
-var sum_received_shares_party_1 = received_shares_party_1.reduce((sum, share) =&gt; mod(sum + share), 0);
-var sum_received_shares_party_2 = received_shares_party_2.reduce((sum, share) =&gt; mod(sum + share), 0);
-
-// When each party adds these sums with each other, they get the sum over all their original inputs!
-Console.log(mod(sum_received_shares_party_0+sum_received_shares_party_1+sum_received_shares_party_2));
-</code></pre>
-
-It is important that the domain of the shares exihibt some sort of _cyclicity_, so that knowing a single share cannot be used to determine some bound on the input, and that given a
-set of shares, it is equally likely (with respect to the coins of the share function) that the original input is any value in the domain.
-
-We achieve this cyclicity in the first scheme above by allowing shares to be either positive or negative. However, this causes another issue. The last share may fall
-outside the domain. We fix these issues by setting our domain to be a field, as is shown in the second scheme above.
-
-Additive secret sharing is interesting because it allows us to efficiently compute at least one function over shares, namely addition! Given two secret shared inputs between n parties,
-with each party possessing a share of each inputs. When every party adds its two shares together (mod prime), this results in a new sharing of the sum of original inputs.
-
-## Shamir secret sharing
-
-[Shamir secret sharing](https://dl.acm.org/citation.cfm?id=359176) operates over polynomials in a field (mod prime). A random polynomial of desired degree is selected during sharing, such that the value of the polynomial at x=0 is equal to the input.
-Each share is a unique point along the polynomial. Traditionally, the share of party i is set to be the value of the polynomial at x=i. This convention allows shares to be a single number instead of a pair,
-as the x coordinate of every share is fixed.
-
-Note that to reconstruct the value, the number of shares (i.e. points) that are known must be greater than the degree of the polynomial. Otherwise, we do not have enough points to interpolate the polynomial,
-as the resulting system of linear equations has additional degrees of freedom, making every solution equally likely. This is the intuition behind the main security guarantee of Shamir secret sharing.
-<pre><code class="neptune[inject=true] language-neptune[inject=true]">var prime = 11;
-
-function mod(x) {
-  return x;
-}
-
-function polynomialPrint(polynomial) {
-  var str = '';
-  for (var i = 0; i &lt; polynomial.length; i++) {
-    str += polynomial[i];
-    if (i &gt; 0) {
-      str += ' x^' + i;
-    }
-    if (i &lt; polynomial.length - 1) {
-      str += ' + ';
-    }
-  }
-  return str;
-}
-
-function polynomialEval(x, coefficients) {
-  var pow = 1;
-  var y = 0;
-  for (var p = 0; p &lt; coefficients.length; p++) {
-    y += coefficients[p] * pow;
-    pow *= x;
-  }
-  return y;
-}
-
-function polynomialMult(polynomial1, polynomial2) {
-  var polynomial = [];
-  for (var l = 0; l &lt; polynomial1.length + polynomial2.length - 1; l ++) {
-    polynomial.push(0);
-  }
-
-  for (var i = 0; i &lt; polynomial1.length; i++) {
-    for (var j = 0; j &lt; polynomial2.length; j++) {
-      var v = polynomial1[i] * polynomial2[j];
-      var pow = i+j;
-      polynomial[pow] += v;
-    }
-  }
-
-  return polynomial;
-}
-
-function __plot(points, coefficients, index) {
-  var pointsTrace = {
-    x: [0],
-    y: [coefficients[0]],
-    mode: 'markers',
-    type: 'scatter',
-    name: 'Shares ' + (index+1),
-    text: ['Value']
-  }
-
-  var polyTrace = {
-    x: [],
-    y: [],
-    mode: 'lines',
-    type: 'scatter',
-    name: 'Polynomial ' + (index+1)
-  }
-
-  for (var i = 0; i &lt; points.length; i++) {
-    pointsTrace.x.push(i+1);
-    pointsTrace.y.push(points[i]);
-    pointsTrace.text.push('Share ' + (i + 1));
-  }
-
-  for (var i = -6; i &lt; 6; i += 0.1) {
-    polyTrace.x.push(i);
-    polyTrace.y.push(mod(polynomialEval(i, coefficients)));
-  }
-  return [polyTrace, pointsTrace];
-}
-
-function plot(pointsArr, coefficientsArr, id) {
-  var traces = pointsArr.map(function (_, i) { return __plot(pointsArr[i], coefficientsArr[i], i) });
-  traces = traces.reduce(function (arr, tra) { return arr.concat(tra) }, []);
-  document.getElementById(id).innerHTML = '';
-  document.getElementById(id).style.height = '500px';
-  Plotly.newPlot(id, traces);
-}
-</code></pre>
-<pre><code class="neptune[frame=2,title=Shamir&nbsp;secret&nbsp;share,outputID=plot1,scope=2] language-neptune[frame=2,title=Shamir&nbsp;secret&nbsp;share,outputID=plot1,scope=2]">mod = function (x) { return x; }
-
-function share(x, n) {
-  var polynomial = [ x ]; // polynomial coefficients
-  for (var i = 0; i &lt; n-1; i++) {
-    var r = Math.floor(Math.random() * prime);
-    polynomial.push(r);
-  }
-
-  var shares = [];
-  for (var k = 1; k &lt;= n; k++) {
-    shares.push(mod(polynomialEval(k, polynomial)));
-  }
-
-  return { shares: shares, polynomial: polynomial };
-}
-
-var result = share(5, 3);
-
-Console.log(polynomialPrint(result.polynomial));
-plot([result.shares], [result.polynomial], 'plot1');
-</code></pre>
-<pre><code class="neptune[frame=2,title=Shamir&nbsp;secret&nbsp;share&nbsp;mod&nbsp;prime,outputID=plot2,scope=2] language-neptune[frame=2,title=Shamir&nbsp;secret&nbsp;share&nbsp;mod&nbsp;prime,outputID=plot2,scope=2]">mod = function (x) {
-  while (x &lt; 0) x += prime;
-  return x % prime;
-}
-
-var result = share(5, 3);
-
-Console.log(polynomialPrint(result.polynomial));
-plot([result.shares], [result.polynomial], 'plot2');
-</code></pre>
-
-## Operations on Shamir secret sharing
-
-Shamir secret sharing directly supports both addition and multiplication and allows the number of required shares to reconstruct the value to be configurable.
-
-Addition is direct, due to properties of polynomials. Adding two polynomials point-wise gives a new set of points that define a polynomial of the same degree
-that is equivalent to the sum of the original polynomials.
-<pre><code class="neptune[frame=3,title=Addition,outputID=plot3,scope=2] language-neptune[frame=3,title=Addition,outputID=plot3,scope=2]">mod = function (x) { return x; }
-
-var shares1 = share(5, 3);
-var shares2 = share(2, 3);
-
-var result = {
-  shares: shares1.shares.map(function (_, i) { return mod(shares1.shares[i] + shares2.shares[i]) }),
-  polynomial: shares1.polynomial.map(function (_, i) { return mod(shares1.polynomial[i] + shares2.polynomial[i]) })
-};
-
-Console.log(polynomialPrint(shares1.polynomial));
-Console.log(polynomialPrint(shares2.polynomial));
-Console.log(polynomialPrint(result.polynomial));
-plot([shares1.shares, shares2.shares, result.shares], [shares1.polynomial, shares2.polynomial, result.polynomial], 'plot3');
-</code></pre>
-<pre><code class="neptune[frame=3,title=Addition&nbsp;mod&nbsp;prime,outputID=plot4,scope=2] language-neptune[frame=3,title=Addition&nbsp;mod&nbsp;prime,outputID=plot4,scope=2]">mod = function (x) {
-  while (x &lt; 0) x += prime;
-  return x % prime;
-}
-
-var shares1 = share(5, 3);
-var shares2 = share(2, 3);
-
-var result = {
-  shares: shares1.shares.map(function (_, i) { return mod(shares1.shares[i] + shares2.shares[i]) }),
-  polynomial: shares1.polynomial.map(function (_, i) { return mod(shares1.polynomial[i] + shares2.polynomial[i]) })
-};
-
-Console.log(polynomialPrint(shares1.polynomial));
-Console.log(polynomialPrint(shares2.polynomial));
-Console.log(polynomialPrint(result.polynomial));
-plot([shares1.shares, shares2.shares, result.shares], [shares1.polynomial, shares2.polynomial, result.polynomial], 'plot4');
-</code></pre>
-
-Multiplication is trickier: multiplying two polynomials point wise does yield a polynomial with the correct values, however, the resulting
-polynomial is of a higher degree. This means that we need more shares to reconstruct that value than we original possessed.
-
-One way to avoid this problem is to secret share the original inputs using a polynomial of lower degree, so that the after multiplication, the
-degree remains smaller than the number of parties, and thus less than the number of availabe shares. The BGW protocol provides a way to then
-reduce the degree of a polynomial represented by secret shares under MPC, at the cost of a single round of communication, so that an unlimited number of multiplications can be performed consecutively.
-
-The BGW protocol is an example of an **honest-majority** scheme, as all secrets can be reconstructed
-by a majority coalition due to the low degree of the underlying polynomials. JIFF uses BGW protocol for certain
-pre-processing tasks by default, making the preprocessing phase of JIFF secure only against honest-majority. This behavior
-can be customized. More on this later.
-<pre><code class="neptune[frame=4,title=Multiplication,outputID=plot5,scope=2] language-neptune[frame=4,title=Multiplication,outputID=plot5,scope=2]">mod = function (x) { return x; }
-
-var shares1 = share(5, 2);
-var shares2 = share(2, 2);
-
-var result = {
-  shares: shares1.shares.map(function (_, i) { return mod(shares1.shares[i] * shares2.shares[i]) }),
-  polynomial: polynomialMult(shares1.polynomial, shares2.polynomial)
-};
-
-Console.log(polynomialPrint(shares1.polynomial));
-Console.log(polynomialPrint(shares2.polynomial));
-Console.log(polynomialPrint(result.polynomial));
-
-plot([shares1.shares, shares2.shares, result.shares], [shares1.polynomial, shares2.polynomial, result.polynomial], 'plot5');
-</code></pre>
-<pre><code class="neptune[frame=4,title=Threshold&nbsp;sharing,outputID=plot6,scope=2] language-neptune[frame=4,title=Threshold&nbsp;sharing,outputID=plot6,scope=2]">mod = function (x) { return x; }
-
-function share(x, n, t) {
-  var polynomial = [ x ]; // polynomial coefficients
-  for (var i = 0; i &lt; t-1; i++) {
-    var r = Math.floor(Math.random() * prime);
-    polynomial.push(r);
-  }
-
-  var shares = [];
-  for (var k = 1; k &lt;= n; k++) {
-    shares.push(mod(polynomialEval(k, polynomial)));
-  }
-
-  return { shares: shares, polynomial: polynomial };
-}
-
-var shares1 = share(5, 3, 2);
-var shares2 = share(2, 3, 2);
-
-var result = {
-  shares: shares1.shares.map(function (_, i) { return mod(shares1.shares[i] * shares2.shares[i]) }),
-  polynomial: polynomialMult(shares1.polynomial, shares2.polynomial)
-};
-
-Console.log(polynomialPrint(shares1.polynomial));
-Console.log(polynomialPrint(shares2.polynomial));
-Console.log(polynomialPrint(result.polynomial));
-plot([shares1.shares, shares2.shares, result.shares], [shares1.polynomial, shares2.polynomial, result.polynomial], 'plot6');
-</code></pre>
-
-# What does MPC code look like traditionally?
-
-Traditionally, parties in MPC perform identical instructions dictated by the MPC protocol on the shares they possess. In such scenarios,
-MPC is very similar to the Single Instruction Multiple Data (SIMD) paradigm from parallel programming (e.g. Message Passing Interface (MPI)).
-The main difference being that the data is shared in MPC (as opposed to split), for the purpose of security (as opposed to parallelization).
-
-Below is an example of such code written in JIFF, where three parties and a server carry out an MPC computation that computes the sum of their inputs.
-The JIFF API and the role of the server in JIFF is explained in more details in later tutorials.
-<pre><code class="neptune[frame=jiff,scope=jiff,title=Server,env=server] language-neptune[frame=jiff,scope=jiff,title=Server,env=server]">var JIFFServer = require('../../../../../lib/jiff-server.js');
-var jiffServer = new JIFFServer(global.server, { logs:true });
-Console.log('Started jiff server on port 9111');
-</code></pre>
-<pre><code class="neptune[frame=jiff,scope=jiff,title=Party&nbsp;1] language-neptune[frame=jiff,scope=jiff,title=Party&nbsp;1]">var jiff_instance = new JIFFClient('http://localhost:9111', 'first-mpc-computation', {party_count: 3, crypto_provider: true});
-
-jiff_instance.wait_for([1, 2, 3], function () {
-  var shares = jiff_instance.share(10);
-  var resultShare = shares[1].sadd(shares[2]).sadd(shares[3]);
-
-  jiff_instance.open(resultShare).then(Console.log);
+<pre><code class="neptune[inject=true,lang=javascript] language-neptune[inject=true,lang=javascript]">let add32Circuit, sha256Circuit;
+
+function getCode(id) { return document.getElementById(id).children[0].codeMirrorInstance.getValue() }
+function getAnd4Circuit() { return getCode('1-tab-1-tab'); }
+function getAdd32Circuit() { return add32Circuit; }
+function getSha256Circuit() { return sha256Circuit; }
+
+window.fetch('/circuits/bristol/arith-add-32-bit-old.txt').then(async function (circuit) {
+    add32Circuit = await circuit.text();
+});
+window.fetch('/circuits/bristol/sha-256-reverse.txt').then(async function (circuit) {
+    sha256Circuit = await circuit.text();
 });
 </code></pre>
-<pre><code class="neptune[frame=jiff,scope=jiff,title=Party&nbsp;2] language-neptune[frame=jiff,scope=jiff,title=Party&nbsp;2]">var jiff_instance = new JIFFClient('http://localhost:9111', 'first-mpc-computation', {party_count: 3, crypto_provider: true});
-
-jiff_instance.wait_for([1, 2, 3], function () {
-  var shares = jiff_instance.share(30);
-  var resultShare = shares[1].sadd(shares[2]).sadd(shares[3]);
-
-  jiff_instance.open(resultShare).then(Console.log);
-});
+<p>Now that we have the circuit, it is time to write the code for the parties and the server. JIGG requires minimal configurations.
+All we have to do is provide the JIGG parties with the address of the server, the circuit, and the inputs.</p>
+<p>The computation is asynchronous because it involves communication. The output is made available through a promise.
+Additionally, a listener may be set to keep track of the progress of the computation. </p>
+<pre><code class="neptune[frame=2,scope=server,title=Server,env=server] language-neptune[frame=2,scope=server,title=Server,env=server]">// Create new JIGG Server, this server runs whenever httpServer is running
+const jiggServer = new JIGG.Server(httpServer);
+Console.log('JIGG Server created');
 </code></pre>
-<pre><code class="neptune[frame=jiff,scope=jiff,title=Party&nbsp;3] language-neptune[frame=jiff,scope=jiff,title=Party&nbsp;3]">var jiff_instance = new JIFFClient('http://localhost:9111', 'first-mpc-computation', {party_count: 3, crypto_provider: true});
+<pre><code class="neptune[frame=2,scope=garbler1,title=Garbler,env=browser] language-neptune[frame=2,scope=garbler1,title=Garbler,env=browser]">const inputs = [0, 1];
+const circuit = getAnd4Circuit();
 
-jiff_instance.wait_for([1, 2, 3], function () {
-  var shares = jiff_instance.share(50);
-  var resultShare = shares[1].sadd(shares[2]).sadd(shares[3]);
+// in node.js, use new JIGG.Client(...)
+const agent = new JIGG('Garbler', 'http://localhost:9122');
+agent.loadCircuit(circuit);
+agent.setInput(inputs);
 
-  jiff_instance.open(resultShare).then(Console.log);
+// display progress and output
+agent.addProgressListener(function (status, currentGate, totalGates, error) {
+    Console.log(status, currentGate, totalGates, error);
 });
+agent.getOutput().then(function (outputs) {
+    Console.log('Output', outputs[0]);
+    agent.disconnect(); // close the connection
+});
+
+// start
+agent.start();
 </code></pre>
+<pre><code class="neptune[frame=2,scope=evaluator1,title=Evaluator,env=browser] language-neptune[frame=2,scope=evaluator1,title=Evaluator,env=browser]">const inputs = [0, 1];
+const circuit = getAnd4Circuit();
 
+// in node.js, use new JIGG.Client(...)
+const agent = new JIGG('Evaluator', 'http://localhost:9122');
+agent.loadCircuit(circuit);
+agent.setInput(inputs);
 
-We will see later how JIFF supports more flexible and asymmetric computations, so that different parties can perform different instructions
-for purposes of performance, reliability, or security.
-<pre><code class="neptune[inject=true,language=html] language-neptune[inject=true,language=html]">&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
-</code></pre> -->
+// display progress and output
+agent.addProgressListener(function (status, currentGate, totalGates, error) {
+    Console.log(status, currentGate, totalGates, error);
+});
+agent.getOutput().then(function (outputs) {
+    Console.log('Output', outputs[0]);
+    agent.disconnect(); // close the connection
+});
+
+// start
+agent.start();
+</code></pre>
+<h2 id="inputoutputencoding32bitaddition">Input/output encoding: 32-bit Addition</h2>
+<p>JIGG supports various types of inputs/outputs: in addition to providing bits (the default), JIGG can handle
+numbers and hexadecimal encoded strings. JIGG will automatically transform these encodings to bits
+and back.</p>
+<p>Note: some circuits you find in this repository or online have their input / output wires reversed, i.e. they expect
+the least significant bit first as opposed to last. For circuits like these, it is recommended you transform the input
+to bit yourself, and make sure the bits are fed in the right order.</p>
+<p>We will not show the circuit here. You can find it <a href="https://github.com/multiparty/jigg/blob/eacdc116db07fbfed6f38f9b19cd80280816254a/circuits/bristol/arith-add-32-bit-old.txt">in the JIGG repository</a>.
+The circuit behaves as you would expect. For every two bits at the same position in the input, the circuit XORs these bits and the carry bit (initially 0)
+to find the output bit in the corresponding position, the circuit then determines the next carry by checking if
+any two of the input bits and previous carry wires are 1.</p>
+<pre><code class="neptune[frame=3,scope=garbler3,title=Garbler,env=browser] language-neptune[frame=3,scope=garbler3,title=Garbler,env=browser]">const input = 154;
+const circuit = getAdd32Circuit();
+
+// in node.js, use new JIGG.Client(...)
+const agent = new JIGG('Garbler', 'http://localhost:9122');
+agent.loadCircuit(circuit);
+agent.setInput(input, 'number');
+
+// display progress and output
+agent.addProgressListener(function (status, currentGate, totalGates, error) {
+    Console.log(status, currentGate, totalGates, error);
+});
+agent.getOutput('number').then(function (output) {
+    Console.log('Output', output);
+    agent.disconnect();
+});
+
+// start
+agent.start();
+</code></pre>
+<pre><code class="neptune[frame=3,scope=evaluator3,title=Evaluator,env=browser] language-neptune[frame=3,scope=evaluator3,title=Evaluator,env=browser]">const input = 310;
+const circuit = getAdd32Circuit();
+
+// in node.js, use new JIGG.Client(...)
+const agent = new JIGG('Evaluator', 'http://localhost:9122');
+agent.loadCircuit(circuit);
+agent.setInput(input, 'number');
+
+// display progress and output
+agent.addProgressListener(function (status, currentGate, totalGates, error) {
+    Console.log(status, currentGate, totalGates, error);
+});
+agent.getOutput('number').then(function (output) {
+    Console.log('Output', output);
+    agent.disconnect();
+});
+
+// start
+agent.start();
+</code></pre>
+<h1 id="advancedusage">Advanced Usage</h1>
+<p>We provide a few examples of advanced usage below that can help improve performance for large circuits.</p>
+<h2 id="serverasagarblerevaluator">Server as a Garbler/Evaluator</h2>
+<p>If desired, the server can also act as either a garbler or evaluator. After the JIGG server is initialized regularly.
+The <strong>makeAgent</strong> function provides a garbler or evaluator agent with identical API to the client.</p>
+<p>This improves performance when applicable, because it removes the need to have a middle link in communication.</p>
+<pre><code class="neptune[frame=4,scope=server,title=Server&nbsp;+&nbsp;Garbler,env=server] language-neptune[frame=4,scope=server,title=Server&nbsp;+&nbsp;Garbler,env=server]">const input = '000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f'; // hex input
+const circuit = getSha256Circuit();
+
+const agent = jiggServer.makeAgent('Garbler'); // no need to pass the host name
+agent.loadCircuit(circuit);
+agent.setInput(input, 'hex');
+
+// Server agent has identical API
+agent.addProgressListener(function (status, currentGate, totalGates, error) {
+    // do something
+});
+agent.getOutput('hex').then(function (output) {
+    // do something
+    agent.disconnect();
+});
+
+// start
+agent.start();
+</code></pre>
+<pre><code class="neptune[frame=4,scope=evaluator3,title=Evaluator,env=browser] language-neptune[frame=4,scope=evaluator3,title=Evaluator,env=browser]">const input = '202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f'; // hex input
+const circuit = getSha256Circuit();
+
+// in node.js, use new JIGG.Client(...)
+const agent = new JIGG('Evaluator', 'http://localhost:9122');
+agent.loadCircuit(circuit);
+agent.setInput(input, 'hex');
+
+// display progress and output
+agent.addProgressListener(function (status, currentGate, totalGates, error) {
+    Console.log(status, currentGate, totalGates, error);
+});
+agent.getOutput('hex').then(function (output) {
+    Console.log('Output', output);
+    Console.log('Output Correct', output === 'fc99a2df88f42a7a7bb9d18033cdc6a20256755f9d5b9a5044a9cc315abe84a7'.toUpperCase());
+    agent.disconnect();
+});
+
+// start
+agent.start();
+
+Console.log('This may take a while...');
+</code></pre>
+<h2 id="runningjigginawebworker">Running JIGG in a web worker</h2>
+<p>Running JIGG in the browser on large circuits can cause the webpage to hang for a few seconds. Both Garbling and evaluating
+require many cryptographic operations (proportional to the number of AND gates in the circuit).</p>
+<p>This can be avoided by running JIGG inside a web worker in the background. Regular updates about the progress of the JIGG
+background task can sent to the UI via the web worker API through JIGG's progress listeners.</p>
+<p>A detailed example can be found in the <a href="https://github.com/multiparty/jigg/tree/master/demo/client">JIGG repo</a>.</p>
+<h1 id="additionalresources">Additional Resources</h1>
+<p>You can find additional circuits and examples in the <a href="https://github.com/multiparty/jigg">JIGG repo</a>.</p>
+<p>Detailed documentation for user-facing API can be found in the <a href="https://multiparty.org/jigg/docs/">online docs</a>.</p>
 
     <script type="text/javascript">
       // injected JS
@@ -15301,9 +14942,9 @@ function encodeChunk (uint8, start, end) {
 function fromByteArray (uint8) {
   var tmp
   var len = uint8.length
-  var extraBytes = len % 3
+  var extraBytes = len % 3 
   var parts = []
-  var maxChunkLength = 16383
+  var maxChunkLength = 16383 
 
   for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
     parts.push(encodeChunk(
@@ -15333,11 +14974,13 @@ function fromByteArray (uint8) {
 
 },{}],20:[function(require,module,exports){
 
+
 var BlobBuilder = typeof BlobBuilder !== 'undefined' ? BlobBuilder :
   typeof WebKitBlobBuilder !== 'undefined' ? WebKitBlobBuilder :
   typeof MSBlobBuilder !== 'undefined' ? MSBlobBuilder :
-  typeof MozBlobBuilder !== 'undefined' ? MozBlobBuilder :
+  typeof MozBlobBuilder !== 'undefined' ? MozBlobBuilder : 
   false;
+
 
 
 var blobSupported = (function() {
@@ -15350,6 +14993,7 @@ var blobSupported = (function() {
 })();
 
 
+
 var blobSupportsArrayBufferView = blobSupported && (function() {
   try {
     var b = new Blob([new Uint8Array([1,2])]);
@@ -15360,9 +15004,11 @@ var blobSupportsArrayBufferView = blobSupported && (function() {
 })();
 
 
+
 var blobBuilderSupported = BlobBuilder
   && BlobBuilder.prototype.append
   && BlobBuilder.prototype.getBlob;
+
 
 
 function mapArrayBufferViews(ary) {
@@ -15536,7 +15182,7 @@ module.exports = (function() {
       ];
       this.length = 2;
     } else {
-      assert(number < 0x20000000000000);
+      assert(number < 0x20000000000000); 
       this.words = [
         number & 0x3ffffff,
         (number / 0x4000000) & 0x3ffffff,
@@ -20600,7 +20246,7 @@ if (typeof Symbol !== 'undefined' && Symbol.species != null &&
   })
 }
 
-Buffer.poolSize = 8192
+Buffer.poolSize = 8192 
 
 function from (value, encodingOrOffset, length) {
   if (typeof value === 'string') {
@@ -20781,7 +20427,7 @@ function checked (length) {
 }
 
 function SlowBuffer (length) {
-  if (+length != length) {
+  if (+length != length) { 
     length = 0
   }
   return Buffer.alloc(+length)
@@ -20789,7 +20435,7 @@ function SlowBuffer (length) {
 
 Buffer.isBuffer = function isBuffer (b) {
   return b != null && b._isBuffer === true &&
-    b !== Buffer.prototype
+    b !== Buffer.prototype 
 }
 
 Buffer.compare = function compare (a, b) {
@@ -20910,7 +20556,7 @@ function byteLength (string, encoding) {
         return base64ToBytes(string).length
       default:
         if (loweredCase) {
-          return mustMatch ? -1 : utf8ToBytes(string).length
+          return mustMatch ? -1 : utf8ToBytes(string).length 
         }
         encoding = ('' + encoding).toLowerCase()
         loweredCase = true
@@ -21127,7 +20773,7 @@ function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
   } else if (byteOffset < -0x80000000) {
     byteOffset = -0x80000000
   }
-  byteOffset = +byteOffset
+  byteOffset = +byteOffset 
   if (numberIsNaN(byteOffset)) {
     byteOffset = dir ? 0 : (buffer.length - 1)
   }
@@ -21151,7 +20797,7 @@ function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
     }
     return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
   } else if (typeof val === 'number') {
-    val = val & 0xFF
+    val = val & 0xFF 
     if (typeof Uint8Array.prototype.indexOf === 'function') {
       if (dir) {
         return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
@@ -21435,7 +21081,7 @@ var MAX_ARGUMENTS_LENGTH = 0x1000
 function decodeCodePointsArray (codePoints) {
   var len = codePoints.length
   if (len <= MAX_ARGUMENTS_LENGTH) {
-    return String.fromCharCode.apply(String, codePoints)
+    return String.fromCharCode.apply(String, codePoints) 
   }
 
   var res = ''
@@ -22152,7 +21798,7 @@ function isInstance (obj, type) {
       obj.constructor.name === type.name)
 }
 function numberIsNaN (obj) {
-  return obj !== obj
+  return obj !== obj 
 }
 
 var hexSliceLookupTable = (function () {
@@ -22287,14 +21933,17 @@ module.exports = function(obj, fn){
 },{}],55:[function(require,module,exports){
 
 
+
 if (typeof module !== 'undefined') {
   module.exports = Emitter;
 }
 
 
+
 function Emitter(obj) {
   if (obj) return mixin(obj);
 };
+
 
 
 function mixin(obj) {
@@ -22305,6 +21954,7 @@ function mixin(obj) {
 }
 
 
+
 Emitter.prototype.on =
 Emitter.prototype.addEventListener = function(event, fn){
   this._callbacks = this._callbacks || {};
@@ -22312,6 +21962,7 @@ Emitter.prototype.addEventListener = function(event, fn){
     .push(fn);
   return this;
 };
+
 
 
 Emitter.prototype.once = function(event, fn){
@@ -22324,6 +21975,7 @@ Emitter.prototype.once = function(event, fn){
   this.on(event, on);
   return this;
 };
+
 
 
 Emitter.prototype.off =
@@ -22357,6 +22009,7 @@ Emitter.prototype.removeEventListener = function(event, fn){
 };
 
 
+
 Emitter.prototype.emit = function(event){
   this._callbacks = this._callbacks || {};
   var args = [].slice.call(arguments, 1)
@@ -22373,10 +22026,12 @@ Emitter.prototype.emit = function(event){
 };
 
 
+
 Emitter.prototype.listeners = function(event){
   this._callbacks = this._callbacks || {};
   return this._callbacks['$' + event] || [];
 };
+
 
 
 Emitter.prototype.hasListeners = function(event){
@@ -22468,7 +22123,7 @@ function isPrimitive(arg) {
          typeof arg === 'boolean' ||
          typeof arg === 'number' ||
          typeof arg === 'string' ||
-         typeof arg === 'symbol' ||
+         typeof arg === 'symbol' ||  
          typeof arg === 'undefined';
 }
 exports.isPrimitive = isPrimitive;
@@ -22534,7 +22189,7 @@ function ECDH (curve) {
       name: curve
     }
   }
-  this.curve = new elliptic.ec(this.curveType.name)
+  this.curve = new elliptic.ec(this.curveType.name) 
   this.keys = void 0
 }
 
@@ -24007,10 +23662,10 @@ BaseCurve.prototype._wnafMulAdd = function _wnafMulAdd(defW,
     }
 
     var comb = [
-      points[a],
-      null,
-      null,
-      points[b]
+      points[a], 
+      null, 
+      null, 
+      points[b] 
     ];
 
     if (points[a].y.cmp(points[b].y) === 0) {
@@ -24025,15 +23680,15 @@ BaseCurve.prototype._wnafMulAdd = function _wnafMulAdd(defW,
     }
 
     var index = [
-      -3,
-      -1,
-      -5,
-      -7,
-      0,
-      7,
-      5,
-      1,
-      3
+      -3, 
+      -1, 
+      -5, 
+      -7, 
+      0, 
+      7, 
+      5, 
+      1, 
+      3  
     ];
 
     var jsf = getJSF(coeffs[a], coeffs[b]);
@@ -24701,9 +24356,9 @@ Point.prototype.diffAdd = function diffAdd(p, diff) {
 
 Point.prototype.mul = function mul(k) {
   var t = k.clone();
-  var a = this;
-  var b = this.curve.point(null, null);
-  var c = this;
+  var a = this; 
+  var b = this.curve.point(null, null); 
+  var c = this; 
 
   for (var bits = []; t.cmpn(0) !== 0; t.iushrn(1))
     bits.push(t.andln(1));
@@ -27400,36 +27055,31 @@ utils.intFromLE = intFromLE;
 
 },{"bn.js":21,"minimalistic-assert":131,"minimalistic-crypto-utils":132}],89:[function(require,module,exports){
 module.exports={
-  "_args": [
-    [
-      "elliptic@6.5.2",
-      "/home/bab/Documents/research/garbled/jigg"
-    ]
-  ],
-  "_development": true,
-  "_from": "elliptic@6.5.2",
+  "_from": "elliptic@^6.5.2",
   "_id": "elliptic@6.5.2",
   "_inBundle": false,
   "_integrity": "sha512-f4x70okzZbIQl/NSRLkI/+tteV/9WqL98zx+SQ69KbXxmVrmjwsNUPn/gYJJ0sHvEak24cZgHIPegRePAtA/xw==",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
-    "type": "version",
+    "type": "range",
     "registry": true,
-    "raw": "elliptic@6.5.2",
+    "raw": "elliptic@^6.5.2",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "6.5.2",
+    "rawSpec": "^6.5.2",
     "saveSpec": null,
-    "fetchSpec": "6.5.2"
+    "fetchSpec": "^6.5.2"
   },
   "_requiredBy": [
+    "/",
     "/browserify-sign",
     "/create-ecdh"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.2.tgz",
-  "_spec": "6.5.2",
-  "_where": "/home/bab/Documents/research/garbled/jigg",
+  "_shasum": "05c5678d7173c049d8ca433552224a495d0e3762",
+  "_spec": "elliptic@^6.5.2",
+  "_where": "/home/bab/Documents/research/jigg",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -27437,6 +27087,7 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
+  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -27446,6 +27097,7 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
+  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",
@@ -27608,7 +27260,7 @@ Socket.priorWebsocketSuccess = false;
 Emitter(Socket.prototype);
 
 
-Socket.protocol = parser.protocol;
+Socket.protocol = parser.protocol; 
 
 
 Socket.Socket = Socket;
@@ -29294,7 +28946,7 @@ function selectColor(namespace) {
 
   for (i in namespace) {
     hash  = ((hash << 5) - hash) + namespace.charCodeAt(i);
-    hash |= 0;
+    hash |= 0; 
   }
 
   return exports.colors[Math.abs(hash) % exports.colors.length];
@@ -29386,7 +29038,7 @@ function enable(namespaces) {
   var len = split.length;
 
   for (i = 0; i < len; i++) {
-    if (!split[i]) continue;
+    if (!split[i]) continue; 
     namespaces = split[i].replace(/\*/g, '.*?');
     if (namespaces[0] === '-') {
       exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
@@ -29456,8 +29108,8 @@ exports.protocol = 3;
 
 
 var packets = exports.packets = {
-    open:     0
-  , close:    1
+    open:     0    
+  , close:    1    
   , ping:     2
   , pong:     3
   , message:  4
@@ -29780,7 +29432,7 @@ exports.encodePayloadAsArrayBuffer = function(packets, callback) {
       } else {
         len = p.byteLength;
       }
-      return acc + len.toString().length + len + 2;
+      return acc + len.toString().length + len + 2; 
     }, 0);
 
     var resultArray = new Uint8Array(totalLength);
@@ -29797,9 +29449,9 @@ exports.encodePayloadAsArrayBuffer = function(packets, callback) {
         ab = view.buffer;
       }
 
-      if (isString) {
+      if (isString) { 
         resultArray[bufferIndex++] = 0;
-      } else {
+      } else { 
         resultArray[bufferIndex++] = 1;
       }
 
@@ -29937,7 +29589,7 @@ function ucs2decode(string) {
 		value = string.charCodeAt(counter++);
 		if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
 			extra = string.charCodeAt(counter++);
-			if ((extra & 0xFC00) == 0xDC00) {
+			if ((extra & 0xFC00) == 0xDC00) { 
 				output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
 			} else {
 				output.push(value);
@@ -29985,21 +29637,21 @@ function createByte(codePoint, shift) {
 }
 
 function encodeCodePoint(codePoint, strict) {
-	if ((codePoint & 0xFFFFFF80) == 0) {
+	if ((codePoint & 0xFFFFFF80) == 0) { 
 		return stringFromCharCode(codePoint);
 	}
 	var symbol = '';
-	if ((codePoint & 0xFFFFF800) == 0) {
+	if ((codePoint & 0xFFFFF800) == 0) { 
 		symbol = stringFromCharCode(((codePoint >> 6) & 0x1F) | 0xC0);
 	}
-	else if ((codePoint & 0xFFFF0000) == 0) {
+	else if ((codePoint & 0xFFFF0000) == 0) { 
 		if (!checkScalarValue(codePoint, strict)) {
 			codePoint = 0xFFFD;
 		}
 		symbol = stringFromCharCode(((codePoint >> 12) & 0x0F) | 0xE0);
 		symbol += createByte(codePoint, 6);
 	}
-	else if ((codePoint & 0xFFE00000) == 0) {
+	else if ((codePoint & 0xFFE00000) == 0) { 
 		symbol = stringFromCharCode(((codePoint >> 18) & 0x07) | 0xF0);
 		symbol += createByte(codePoint, 12);
 		symbol += createByte(codePoint, 6);
@@ -30249,7 +29901,7 @@ EventEmitter.prototype.emit = function emit(type) {
     if (arguments.length > 1)
       er = arguments[1];
     if (er instanceof Error) {
-      throw er;
+      throw er; 
     } else {
       var err = new Error('Unhandled "error" event. (' + er + ')');
       err.context = er;
@@ -31455,13 +31107,13 @@ SHA512.prototype._prepareBlock = function _prepareBlock(msg, start) {
   for (var i = 0; i < 32; i++)
     W[i] = msg[start + i];
   for (; i < W.length; i += 2) {
-    var c0_hi = g1_512_hi(W[i - 4], W[i - 3]);
+    var c0_hi = g1_512_hi(W[i - 4], W[i - 3]);  
     var c0_lo = g1_512_lo(W[i - 4], W[i - 3]);
-    var c1_hi = W[i - 14];
+    var c1_hi = W[i - 14];  
     var c1_lo = W[i - 13];
-    var c2_hi = g0_512_hi(W[i - 30], W[i - 29]);
+    var c2_hi = g0_512_hi(W[i - 30], W[i - 29]);  
     var c2_lo = g0_512_lo(W[i - 30], W[i - 29]);
-    var c3_hi = W[i - 32];
+    var c3_hi = W[i - 32];  
     var c3_lo = W[i - 31];
 
     W[i] = sum64_4_hi(
@@ -31605,8 +31257,8 @@ function maj64_lo(xh, xl, yh, yl, zh, zl) {
 
 function s0_512_hi(xh, xl) {
   var c0_hi = rotr64_hi(xh, xl, 28);
-  var c1_hi = rotr64_hi(xl, xh, 2);
-  var c2_hi = rotr64_hi(xl, xh, 7);
+  var c1_hi = rotr64_hi(xl, xh, 2);  
+  var c2_hi = rotr64_hi(xl, xh, 7);  
 
   var r = c0_hi ^ c1_hi ^ c2_hi;
   if (r < 0)
@@ -31616,8 +31268,8 @@ function s0_512_hi(xh, xl) {
 
 function s0_512_lo(xh, xl) {
   var c0_lo = rotr64_lo(xh, xl, 28);
-  var c1_lo = rotr64_lo(xl, xh, 2);
-  var c2_lo = rotr64_lo(xl, xh, 7);
+  var c1_lo = rotr64_lo(xl, xh, 2);  
+  var c2_lo = rotr64_lo(xl, xh, 7);  
 
   var r = c0_lo ^ c1_lo ^ c2_lo;
   if (r < 0)
@@ -31628,7 +31280,7 @@ function s0_512_lo(xh, xl) {
 function s1_512_hi(xh, xl) {
   var c0_hi = rotr64_hi(xh, xl, 14);
   var c1_hi = rotr64_hi(xh, xl, 18);
-  var c2_hi = rotr64_hi(xl, xh, 9);
+  var c2_hi = rotr64_hi(xl, xh, 9);  
 
   var r = c0_hi ^ c1_hi ^ c2_hi;
   if (r < 0)
@@ -31639,7 +31291,7 @@ function s1_512_hi(xh, xl) {
 function s1_512_lo(xh, xl) {
   var c0_lo = rotr64_lo(xh, xl, 14);
   var c1_lo = rotr64_lo(xh, xl, 18);
-  var c2_lo = rotr64_lo(xl, xh, 9);
+  var c2_lo = rotr64_lo(xl, xh, 9);  
 
   var r = c0_lo ^ c1_lo ^ c2_lo;
   if (r < 0)
@@ -31671,7 +31323,7 @@ function g0_512_lo(xh, xl) {
 
 function g1_512_hi(xh, xl) {
   var c0_hi = rotr64_hi(xh, xl, 19);
-  var c1_hi = rotr64_hi(xl, xh, 29);
+  var c1_hi = rotr64_hi(xl, xh, 29);  
   var c2_hi = shr64_hi(xh, xl, 6);
 
   var r = c0_hi ^ c1_hi ^ c2_hi;
@@ -31682,7 +31334,7 @@ function g1_512_hi(xh, xl) {
 
 function g1_512_lo(xh, xl) {
   var c0_lo = rotr64_lo(xh, xl, 19);
-  var c1_lo = rotr64_lo(xl, xh, 29);
+  var c1_lo = rotr64_lo(xl, xh, 29);  
   var c2_lo = shr64_lo(xh, xl, 6);
 
   var r = c0_lo ^ c1_lo ^ c2_lo;
@@ -32060,7 +31712,7 @@ HmacDRBG.prototype._init = function init(entropy, nonce, pers) {
 
   this._update(seed);
   this._reseed = 1;
-  this.reseedInterval = 0x1000000000000;
+  this.reseedInterval = 0x1000000000000;  
 };
 
 HmacDRBG.prototype._hmac = function hmac() {
@@ -33090,6 +32742,7 @@ function decrypt (data, password) {
 
 },{"./aesid.json":134,"./asn1":135,"./fixProc":137,"browserify-aes":26,"pbkdf2":142,"safe-buffer":173}],139:[function(require,module,exports){
 
+
 exports.encode = function (obj) {
   var str = '';
 
@@ -33104,6 +32757,7 @@ exports.encode = function (obj) {
 };
 
 
+
 exports.decode = function(qs){
   var qry = {};
   var pairs = qs.split('&');
@@ -33115,6 +32769,7 @@ exports.decode = function(qs){
 };
 
 },{}],140:[function(require,module,exports){
+
 
 var re = /^(?:(?![^:@]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
 
@@ -33519,7 +33174,7 @@ module.exports = defaultEncoding
 
 },{"_process":148}],145:[function(require,module,exports){
 (function (Buffer){
-var MAX_ALLOC = Math.pow(2, 30) - 1
+var MAX_ALLOC = Math.pow(2, 30) - 1 
 
 function checkBuffer (buf, name) {
   if (typeof buf !== 'string' && !Buffer.isBuffer(buf)) {
@@ -33543,7 +33198,7 @@ module.exports = function (password, salt, iterations, keylen) {
     throw new TypeError('Key length not a number')
   }
 
-  if (keylen < 0 || keylen > MAX_ALLOC || keylen !== keylen) {
+  if (keylen < 0 || keylen > MAX_ALLOC || keylen !== keylen) { 
     throw new TypeError('Bad key length')
   }
 }
@@ -33848,7 +33503,7 @@ process.title = 'browser';
 process.browser = true;
 process.env = {};
 process.argv = [];
-process.version = '';
+process.version = ''; 
 process.versions = {};
 
 function noop() {}
@@ -34155,8 +33810,8 @@ function randomBytes (size, cb) {
 
   var bytes = Buffer.allocUnsafe(size)
 
-  if (size > 0) {
-    if (size > MAX_BYTES) {
+  if (size > 0) {  
+    if (size > MAX_BYTES) { 
       for (var generated = 0; generated < size; generated += MAX_BYTES) {
         crypto.getRandomValues(bytes.slice(generated, generated + MAX_BYTES))
       }
@@ -34190,7 +33845,7 @@ var kBufferMaxLength = safeBuffer.kMaxLength
 var crypto = global.crypto || global.msCrypto
 var kMaxUint32 = Math.pow(2, 32) - 1
 function assertOffset (offset, length) {
-  if (typeof offset !== 'number' || offset !== offset) {
+  if (typeof offset !== 'number' || offset !== offset) { 
     throw new TypeError('offset must be a number')
   }
 
@@ -34204,7 +33859,7 @@ function assertOffset (offset, length) {
 }
 
 function assertSize (size, offset, length) {
-  if (typeof size !== 'number' || size !== size) {
+  if (typeof size !== 'number' || size !== size) { 
     throw new TypeError('size must be a number')
   }
 
@@ -35236,7 +34891,7 @@ function afterTransform(er, data) {
   ts.writechunk = null;
   ts.writecb = null;
 
-  if (data != null)
+  if (data != null) 
     this.push(data);
 
   cb(er);
@@ -35330,7 +34985,7 @@ Transform.prototype._destroy = function (err, cb) {
 function done(stream, er, data) {
   if (er) return stream.emit('error', er);
 
-  if (data != null)
+  if (data != null) 
     stream.push(data);
 
   if (stream._writableState.length) throw new Error('Calling transform done when ws.length != 0');
@@ -36084,7 +35739,7 @@ function _normalizeEncoding(enc) {
       case 'hex':
         return enc;
       default:
-        if (retried) return;
+        if (retried) return; 
         enc = ('' + enc).toLowerCase();
         retried = true;
     }
@@ -36392,7 +36047,7 @@ RIPEMD160.prototype._update = function () {
     } else if (i < 64) {
       tl = fn4(al, bl, cl, dl, el, words[zl[i]], hl[3], sl[i])
       tr = fn2(ar, br, cr, dr, er, words[zr[i]], hr[3], sr[i])
-    } else {
+    } else { 
       tl = fn5(al, bl, cl, dl, el, words[zl[i]], hl[4], sl[i])
       tr = fn1(ar, br, cr, dr, er, words[zr[i]], hr[4], sr[i])
     }
@@ -36815,7 +36470,7 @@ var W = new Array(64)
 function Sha224 () {
   this.init()
 
-  this._w = W
+  this._w = W 
 
   Hash.call(this, 64, 56)
 }
@@ -36881,7 +36536,7 @@ var W = new Array(64)
 function Sha256 () {
   this.init()
 
-  this._w = W
+  this._w = W 
 
   Hash.call(this, 64, 56)
 }
@@ -37644,7 +37299,7 @@ Manager.prototype.packet = function (packet) {
       self.encoding = false;
       self.processPacketQueue();
     });
-  } else {
+  } else { 
     self.packetBuffer.push(packet);
   }
 };
@@ -37811,7 +37466,7 @@ var emit = Emitter.prototype.emit;
 function Socket (io, nsp, opts) {
   this.io = io;
   this.nsp = nsp;
-  this.json = this;
+  this.json = this; 
   this.ids = 0;
   this.acks = {};
   this.receiveBuffer = [];
@@ -37846,7 +37501,7 @@ Socket.prototype.connect = function () {
   if (this.connected) return this;
 
   this.subEvents();
-  this.io.open();
+  this.io.open(); 
   if ('open' === this.io.readyState) this.onopen();
   this.emit('connecting');
   return this;
@@ -38279,7 +37934,7 @@ exports.deconstructPacket = function(packet) {
   var packetData = packet.data;
   var pack = packet;
   pack.data = _deconstructPacket(packetData, buffers);
-  pack.attachments = buffers.length;
+  pack.attachments = buffers.length; 
   return {packet: pack, buffers: buffers};
 };
 
@@ -38309,7 +37964,7 @@ function _deconstructPacket(data, buffers) {
 
 exports.reconstructPacket = function(packet, buffers) {
   packet.data = _reconstructPacket(packet.data, buffers);
-  packet.attachments = undefined;
+  packet.attachments = undefined; 
   return packet;
 };
 
@@ -38317,7 +37972,7 @@ function _reconstructPacket(data, buffers) {
   if (!data) return data;
 
   if (data && data._placeholder) {
-    return buffers[data.num];
+    return buffers[data.num]; 
   } else if (isArray(data)) {
     for (var i = 0; i < data.length; i++) {
       data[i] = _reconstructPacket(data[i], buffers);
@@ -38341,7 +37996,7 @@ exports.removeBlobs = function(data, callback) {
       pendingBlobs++;
 
       var fileReader = new FileReader();
-      fileReader.onload = function() {
+      fileReader.onload = function() { 
         if (containingObject) {
           containingObject[curKey] = this.result;
         }
@@ -38354,12 +38009,12 @@ exports.removeBlobs = function(data, callback) {
         }
       };
 
-      fileReader.readAsArrayBuffer(obj);
-    } else if (isArray(obj)) {
+      fileReader.readAsArrayBuffer(obj); 
+    } else if (isArray(obj)) { 
       for (var i = 0; i < obj.length; i++) {
         _removeBlobs(obj[i], i, obj);
       }
-    } else if (typeof obj === 'object' && !isBuf(obj)) {
+    } else if (typeof obj === 'object' && !isBuf(obj)) { 
       for (var key in obj) {
         _removeBlobs(obj[key], key, obj);
       }
@@ -38487,8 +38142,8 @@ function encodeAsBinary(obj, callback) {
     var pack = encodeAsString(deconstruction.packet);
     var buffers = deconstruction.buffers;
 
-    buffers.unshift(pack);
-    callback(buffers);
+    buffers.unshift(pack); 
+    callback(buffers); 
   }
 
   binary.removeBlobs(obj, writeEncoding);
@@ -38507,21 +38162,21 @@ Decoder.prototype.add = function(obj) {
   var packet;
   if (typeof obj === 'string') {
     packet = decodeString(obj);
-    if (exports.BINARY_EVENT === packet.type || exports.BINARY_ACK === packet.type) {
+    if (exports.BINARY_EVENT === packet.type || exports.BINARY_ACK === packet.type) { 
       this.reconstructor = new BinaryReconstructor(packet);
 
       if (this.reconstructor.reconPack.attachments === 0) {
         this.emit('decoded', packet);
       }
-    } else {
+    } else { 
       this.emit('decoded', packet);
     }
-  } else if (isBuf(obj) || obj.base64) {
+  } else if (isBuf(obj) || obj.base64) { 
     if (!this.reconstructor) {
       throw new Error('got binary data when not reconstructing a packet');
     } else {
       packet = this.reconstructor.takeBinaryData(obj);
-      if (packet) {
+      if (packet) { 
         this.reconstructor = null;
         this.emit('decoded', packet);
       }
@@ -38619,7 +38274,7 @@ function BinaryReconstructor(packet) {
 
 BinaryReconstructor.prototype.takeBinaryData = function(binData) {
   this.buffers.push(binData);
-  if (this.buffers.length === this.reconPack.attachments) {
+  if (this.buffers.length === this.reconPack.attachments) { 
     var packet = binary.reconstructPacket(this.reconPack, this.buffers);
     this.finishedReconstruction();
     return packet;
@@ -38858,7 +38513,7 @@ Stream.prototype.pipe = function(dest, options) {
   function onerror(er) {
     cleanup();
     if (EE.listenerCount(this, 'error') === 0) {
-      throw er;
+      throw er; 
     }
   }
 
@@ -39194,7 +38849,7 @@ Script.prototype.runInContext = function (context) {
 };
 
 Script.prototype.runInThisContext = function () {
-    return eval(this.code);
+    return eval(this.code); 
 };
 
 Script.prototype.runInNewContext = function (context) {
@@ -39663,7 +39318,7 @@ module.exports = run;
 
 'use strict';
 
-const LABEL_SIZE = 16;
+const LABEL_SIZE = 16; 
 
 const garble = require('./garble.js');
 const evaluate = require('./evaluate.js');
@@ -40049,10 +39704,15 @@ module.exports = function (text) {
     const tmp = line.trim();
     return !(tmp.startsWith('#') || tmp.length === 0);
   }).map(function (line) {
+    if (line.indexOf('#') > -1) {
+      line = line.substring(0, line.indexOf('#')).trim();
+    }
+
     return line.split(' ').map(function (token) {
       return token.trim();
     });
   });
+  console.log(rows);
 
   const wireCount = parseInt(rows[0][1]);
   const inputs = rows[1].slice(1);
@@ -40129,9 +39789,9 @@ function longToByteArray(long) {
 function randomOracle(m, t) {
   return sodium.crypto_secretbox_easy(
     m,
-    longToByteArray(t),
-    sodium.from_hex('da5698be17b9b46962335799779fbeca8ce5d491c0d26243bafef9ea1837a9d8')
-  ).subarray(0, bytes+1);
+    longToByteArray(t),  
+    sodium.from_hex('da5698be17b9b46962335799779fbeca8ce5d491c0d26243bafef9ea1837a9d8')  
+  ).subarray(0, bytes+1);  
 }
 
 function encrypt_generic(plaintext, key, nonce) {
@@ -40139,9 +39799,9 @@ function encrypt_generic(plaintext, key, nonce) {
 }
 
 module.exports = {
-  encrypt: encrypt,
+  encrypt: encrypt, 
   decrypt: encrypt,
-  encrypt_generic: encrypt_generic,
+  encrypt_generic: encrypt_generic, 
   decrypt_generic: encrypt_generic
 };
 
@@ -40189,7 +39849,7 @@ module.exports = {
 
     </script>
     <script type="text/javascript">
-
+      
       // neptune.js
       (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (process){
@@ -40713,14 +40373,14 @@ const fillOutputs = function (outputs) {
   const customOutputs = outputs.customPanels;
 
   for (let key in defaultOutputs) {
-    if (Object.prototype.hasOwnProperty.apply(defaultOutputs, key)) {
+    if (Object.prototype.hasOwnProperty.call(defaultOutputs, key)) {
       const panel = document.getElementById(key);
       panel.reset();
       panel.innerHTML = defaultOutputs[key];
     }
   }
   for (let key in customOutputs) {
-    if (Object.prototype.hasOwnProperty.apply(customOutputs, key)) {
+    if (Object.prototype.hasOwnProperty.call(customOutputs, key)) {
       const panel = document.getElementById(key);
       panel.innerHTML = customOutputs[key];
     }
@@ -40790,7 +40450,8 @@ const $__logMiddlewareServer__$ = function () {
 const $__requireMiddlewareServer__$ = function () {
   const path = require('path');
   const Require = function (d) {
-    return require(path.join(require.main.path, d));
+    const mainPath = path.dirname(require.main.filename);
+    return require(path.join(mainPath, d));
   };
   return Require;
 }
@@ -40842,8 +40503,8 @@ module.exports = function () {
       // Object, use JSON
       msg += JSON.stringify(arguments[i]) + ' ';
     } else {
-      // Primitive type, use toString
-      msg += arguments[i].toString() + ' ';
+      // Primitive type, concat to string
+      msg += arguments[i] + ' ';
     }
   }
 
@@ -41082,23 +40743,27 @@ module.exports = function (code, scopeName, tabID) {
 const Toolbar = require('./toolbar.js');
 const OutputPanel = require('./outputPanel.js');
 
+const specialRegex = new RegExp('&[^;]*;', 'g');
+
 let autoCounter = 0;
 
 const createTab = function (title, tabsContainer, code, options) {
-  const isFirstTab = (tabsContainer.dataset.tabCount++ === 0);
+  const tabsToolbarContainer = tabsContainer.children[0];
+  const count = parseInt(tabsContainer.dataset.tabCount);
+  tabsContainer.dataset.tabCount = count+1;
 
   // hide the run icon if the first tab is unrunnable
-  if (isFirstTab) {
+  if (count === 0) {
     if (options.run === 'false') {
-      const playIcon = tabsContainer.getElementsByClassName('code-top-toolbar')[0].getElementsByClassName('fa-play')[0];
+      const playIcon = tabsContainer.getElementsByClassName('code-toolbar')[0].getElementsByClassName('fa-play')[0];
       playIcon.parentNode.style.display = 'none';
     }
   }
 
   // if one or more tabs are unrunnable, hide the run all icon
   if (options.run === 'false') {
-    const playIcon = tabsContainer.getElementsByClassName('code-top-toolbar')[0].getElementsByClassName('fa-cogs')[0];
-    playIcon.parentNode.style.display = 'none';
+    const cogsIcon = tabsContainer.getElementsByClassName('code-toolbar')[0].getElementsByClassName('fa-cogs')[0];
+    cogsIcon.parentNode.style.display = 'none';
   }
 
   // create a radio button and associated label for the tab header, and the tab body
@@ -41107,7 +40772,6 @@ const createTab = function (title, tabsContainer, code, options) {
   const codeTab = document.createElement('div');
 
   // create ID for radio
-  const count = tabsContainer.getElementsByTagName('input').length;
   const tabID = tabsContainer.id + '-tab-' + (count + 1);
 
   // Code mirror HTML elements
@@ -41153,11 +40817,12 @@ const createTab = function (title, tabsContainer, code, options) {
     const lastVal = tabsContainer.dataset.selected;
     const prevLabel = document.getElementById(lastVal + '-label');
     prevLabel.classList.remove('tab-label-selected');
+    prevLabel.classList.remove('tab-label-visible');
     // select this label
     tabsContainer.dataset.selected = tabID;
     tabLabel.classList.add('tab-label-selected');
     // unminize icon if needed
-    const topToolbar = tabsContainer.getElementsByClassName('code-top-toolbar')[0];
+    const topToolbar = tabsContainer.getElementsByClassName('code-toolbar')[0];
     const minimizeIcon = topToolbar.children[topToolbar.children.length - 1].children[0];
     minimizeIcon.classList.remove('fa-arrow-down');
     minimizeIcon.classList.add('fa-arrow-up');
@@ -41165,6 +40830,8 @@ const createTab = function (title, tabsContainer, code, options) {
     // show/hide play icon if needed
     const playIcon = topToolbar.getElementsByClassName('fa-play')[0];
     playIcon.parentNode.style.display = options.run === 'false' ? 'none' : 'inline';
+    // hide drop-down nav bar for the labels if visible
+    tabsToolbarContainer.classList.remove('responsive');
     // refresh code mirror
     editorDiv.codeMirrorInstance.refresh();
   };
@@ -41188,9 +40855,24 @@ const createTab = function (title, tabsContainer, code, options) {
   }
 
   // add the code container to the tabs
-  tabsContainer.insertBefore(tabLabel, tabsContainer.children[count]);
+  tabsToolbarContainer.appendChild(tabLabel);
   tabsContainer.appendChild(tabRadio);
   tabsContainer.appendChild(codeTab);
+
+  // if the size and number of tab headers/labels is too much
+  // change style to make them navigatable via a drop down menu
+  // 13 * 4
+  const sizeEstimate = Array.from(tabsToolbarContainer.getElementsByTagName('label')).reduce(function (acc, labelTag) {
+    let text = labelTag.textContent;
+    text = text.replace(specialRegex, '_');
+    return acc + 4 + text.length;
+  }, 0);
+
+  if (options['dropdown'] === 'false') {
+    tabsToolbarContainer.classList.add('toosmall');
+  } else if (sizeEstimate > 70 || options['dropdown'] === 'true') {
+    tabsToolbarContainer.classList.add('toobig');
+  }
 };
 
 const createTabsContainer = function (frameID) {
@@ -41198,6 +40880,11 @@ const createTabsContainer = function (frameID) {
   container.id = frameID;
   container.classList.add('code-tabs');
   container.dataset.tabCount = 0;
+
+  const tabsToolbarContainer = document.createElement('div');
+  tabsToolbarContainer.classList.add('code-toolbar-container');
+  container.appendChild(tabsToolbarContainer);
+
   return container;
 };
 
@@ -41208,7 +40895,7 @@ const getOrCreateTabsContainer = function (frameID, preTag) {
   if (container == null) {
     container = createTabsContainer(frameID);
     preTag.parentNode.replaceChild(container, preTag);
-    container.appendChild(Toolbar());
+    container.children[0].appendChild(Toolbar());
   } else {
     preTag.parentNode.removeChild(preTag);
   }
@@ -41271,10 +40958,11 @@ const playTab = function (tabID) {
 const toolbarClick = function () {
   const type = this.children[0].classList[1].split('-').slice(1).join('-');
 
-  const tabID = this.parentNode.parentNode.dataset.selected;
-  const tabCount = this.parentNode.parentNode.dataset.tabCount;
-  const baseID = this.parentNode.parentNode.id;
+  const tabID = this.parentNode.parentNode.parentNode.dataset.selected;
+  const tabCount = this.parentNode.parentNode.parentNode.dataset.tabCount;
+  const baseID = this.parentNode.parentNode.parentNode.id;
 
+  const toolbarContainer = this.parentNode.parentNode;
   const tabRadio = document.getElementById(tabID);
   const tabLabel = document.getElementById(tabID + '-label');
   const codeTab = document.getElementById(tabID + '-tab');
@@ -41309,6 +40997,7 @@ const toolbarClick = function () {
     case 'arrow-up':
       tabRadio.checked = false;
       tabLabel.classList.remove('tab-label-selected');
+      tabLabel.classList.add('tab-label-visible');
       this.children[0].classList.remove('fa-arrow-up');
       this.children[0].classList.add('fa-arrow-down');
       this.children[0].title = 'Show tab';
@@ -41317,6 +41006,7 @@ const toolbarClick = function () {
     case 'arrow-down':
       tabRadio.checked = true;
       tabLabel.classList.add('tab-label-selected');
+      tabLabel.classList.remove('tab-label-visible');
       this.children[0].classList.remove('fa-arrow-down');
       this.children[0].classList.add('fa-arrow-up');
       this.children[0].title = 'Hide tab';
@@ -41326,7 +41016,7 @@ const toolbarClick = function () {
       this.children[0].classList.remove('fa-eye-slash');
       this.children[0].classList.add('fa-eye');
       this.children[0].title = 'Show output';
-      Array.from(this.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
+      Array.from(this.parentNode.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
         panel.hide();
       });
       break;
@@ -41335,9 +41025,17 @@ const toolbarClick = function () {
       this.children[0].classList.remove('fa-eye');
       this.children[0].classList.add('fa-eye-slash');
       this.children[0].title = 'Hide output';
-      Array.from(this.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
+      Array.from(this.parentNode.parentNode.parentNode.getElementsByClassName('output-panel')).map(function (panel) {
         panel.unhide();
       });
+      break;
+
+    case 'bars':
+      if (toolbarContainer.classList.contains('responsive')) {
+        toolbarContainer.classList.remove('responsive');
+      } else {
+        toolbarContainer.classList.add('responsive');
+      }
       break;
   }
 };
@@ -41345,12 +41043,13 @@ const toolbarClick = function () {
 // creates HTML elements for the toolbar on top of <code> tags
 module.exports = function () {
   const element = document.createElement('span');
-  element.classList.add('code-top-toolbar');
+  element.classList.add('code-toolbar');
   element.innerHTML = '<a href="javascript:void(0)"><i class="fa fa-play" title="Run this tab"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-cogs" title="Run all tabs"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-copy" title="Copy code"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-trash" title="Clear code"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-eye-slash" title="Hide output"></i></a>' +
+    '<a href="javascript:void(0)" class="navicon"><i class="fa fa-bars" title="Select tab"></i></a>' +
     '<a href="javascript:void(0)"><i class="fa fa-arrow-up" title="Hide tab"></i></a>';
 
   Array.from(element.children).map(function (aTag) {
@@ -41367,16 +41066,16 @@ module.exports = function () {
   const customOutputs = outputs.customPanels;
 
   for (let key in defaultOutputs) {
-    if (Object.prototype.hasOwnProperty.apply(defaultOutputs, key)) {
+    if (Object.prototype.hasOwnProperty.call(defaultOutputs, key)) {
       const panel = document.getElementById(key);
       panel.reset();
       panel.innerHTML = defaultOutputs[key];
     }
   }
   for (let key in customOutputs) {
-    if (Object.prototype.hasOwnProperty.apply(customOutputs, key)) {
+    if (Object.prototype.hasOwnProperty.call(customOutputs, key)) {
       const panel = document.getElementById(key);
       panel.innerHTML = customOutputs[key];
     }
   }
-})({"defaultPanels":{"jigg-tab-1-output":"<code class=\"language-bash\"></code>","jigg-tab-2-output":"<code class=\"language-bash\"></code>","jigg-tab-3-output":"<code class=\"language-bash\"></code>","jigg-tab-4-output":"<code class=\"language-bash\"></code>"},"customPanels":{}});</script></html>
+})({"defaultPanels":{"setup1-tab-1-output":"<code class=\"language-bash\"></code>","setup2-tab-1-output":"<code class=\"language-bash\"></code>","setup2-tab-2-output":"<code class=\"language-bash\"></code>","1-tab-1-output":"<code class=\"language-bash\"></code>","2-tab-1-output":"<code class=\"language-bash\"><span class=\"output-line-span\">[server@server] $</span> | JIGG Server created  </code>","2-tab-2-output":"<code class=\"language-bash\"><span class=\"output-line-span\">[garbler@browser] $</span> | connected undefined undefined undefined \n<span class=\"output-line-span\">[garbler@browser] $</span> | garbling 0 3 undefined \n<span class=\"output-line-span\">[garbler@browser] $</span> | garbling 3 3 undefined \n<span class=\"output-line-span\">[garbler@browser] $</span> | OT undefined undefined undefined \n<span class=\"output-line-span\">[garbler@browser] $</span> | output undefined undefined undefined \n<span class=\"output-line-span\">[garbler@browser] $</span> | Output 0 </code>","2-tab-3-output":"<code class=\"language-bash\"><span class=\"output-line-span\">[evaluator@browser] $</span> | connected undefined undefined undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | OT undefined undefined undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 0 3 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 3 3 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | output undefined undefined undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | Output 0 </code>","3-tab-1-output":"<code class=\"language-bash\"><span class=\"output-line-span\">[garbler@browser] $</span> | connected undefined undefined undefined \n<span class=\"output-line-span\">[garbler@browser] $</span> | garbling 0 375 undefined \n<span class=\"output-line-span\">[garbler@browser] $</span> | garbling 375 375 undefined \n<span class=\"output-line-span\">[garbler@browser] $</span> | OT undefined undefined undefined \n<span class=\"output-line-span\">[garbler@browser] $</span> | output undefined undefined undefined \n<span class=\"output-line-span\">[garbler@browser] $</span> | Output 464 </code>","3-tab-2-output":"<code class=\"language-bash\"><span class=\"output-line-span\">[evaluator@browser] $</span> | connected undefined undefined undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | OT undefined undefined undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 0 375 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 375 375 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | output undefined undefined undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | Output 464 </code>","4-tab-1-output":"<code class=\"language-bash\">Running...</code>","4-tab-2-output":"<code class=\"language-bash\"><span class=\"output-line-span\">[evaluator@browser] $</span> | This may take a while... \n<span class=\"output-line-span\">[evaluator@browser] $</span> | connected undefined undefined undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | OT undefined undefined undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 0 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 2500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 5000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 7500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 10000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 12500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 15000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 17500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 20000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 22500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 25000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 27500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 30000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 32500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 35000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 37500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 40000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 42500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 45000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 47500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 50000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 52500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 55000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 57500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 60000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 62500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 65000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 67500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 70000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 72500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 75000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 77500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 80000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 82500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 85000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 87500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 90000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 92500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 95000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 97500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 100000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 102500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 105000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 107500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 110000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 112500 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 115000 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | evaluating 116246 116246 undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | output undefined undefined undefined \n<span class=\"output-line-span\">[evaluator@browser] $</span> | Output FC99A2DF88F42A7A7BB9D18033CDC6A20256755F9D5B9A5044A9CC315ABE84A7 \n<span class=\"output-line-span\">[evaluator@browser] $</span> | Output Correct true </code>"},"customPanels":{}});</script></html>

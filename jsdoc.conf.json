@@ -31,6 +31,10 @@
         "target":"_blank",
         "class":"menu-item",
         "id":"github_link"
+      },
+      "Tutorial":{
+        "href":"../tutorial/intro.html",
+        "class":"menu-item"
       }
     },
     "meta": {
