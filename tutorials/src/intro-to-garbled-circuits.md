@@ -39,18 +39,10 @@ This circuit is as simple as it sounds.  Our two parties provide a total of 64 b
 The circuit itself is structured similar to one giant 64-bit NAND gate, similar to the one we looked at above.  It is a binary tree of 63 AND gates joining 64 negated 1-bit inputs into one final output bit.
 
 ```neptune[frame=jigg,scope=jigg,title=Server,env=server]
-const fs = require('fs');
 const express = require('express');
 const http = require('http');
-
 const app = express();
 const httpServer = http.createServer(app);
-
-// Static routes
-app.get('/', (request, response) => response.sendFile(__dirname + '/client.html'));
-app.use('/client', express.static(__dirname + '/client/'));
-app.use('/dist', express.static(__dirname + '/../dist/'));
-app.use('/circuits', express.static(__dirname + '/../circuits/'));
 
 // Create new JIGG Server and run it (by running http)
 const JIGG = require('../src/jigg.js');
@@ -61,56 +53,19 @@ httpServer.listen(port, function () {
   console.log('listening on *:', port);
   Console.log('Started jigg server on port ' + port);
 });
-
-// Optional: in case the server is also a garbler or evaluator
-const role = process.argv[3];
-if (role != null) {
-  let input = process.argv[4];
-  let encoding = process.argv[5];
-  let circuitName = process.argv[6];
-  let debug = process.argv[7] !== 'false';
-
-  // default arguments.
-  if (encoding == null) {
-    encoding = 'number';
-  }
-  if (circuitName == null) {
-    circuitName = 'arith-add-32-bit-old.txt';
-  }
-
-  // encoding
-  if (encoding === 'number') {
-    input = parseInt(input);
-  }
-  if (encoding === 'bits') {
-    input = input.split('').map(Number);
-  }
-
-  // Read circuit
-  const circuitPath = __dirname + '/../circuits/bristol/' + circuitName;
-  const circuit = fs.readFileSync(circuitPath, 'utf8');
-
-  const agent = server.makeAgent(role, {debug: debug});
-  agent.loadCircuit(circuit);
-  agent.setInput(input, encoding);
-  agent.start();
-
-  agent.getOutput(encoding).then(function (output) {
-    console.log(output);
-    agent.socket.disconnect();
-  });
-}
 ```
 
 ```neptune[frame=jigg,scope=jigg,title=Garbler,env=agent]
 const JIGG = require('../src/jigg.js');
 
+let input = '00000000000000000000000000000000';
+const role = 'Garbler';
+const base = 'bits';
+
 const timeStart = new Date().getTime();
 const displayOutput = function (output) {
   const timeEnd = new Date().getTime();
   const time = (timeEnd - timeStart) / 1000;
-
-  const base = $('#base').val();
   if (base === 'bits') {
     output = output.reverse().join('');
   }
@@ -120,34 +75,18 @@ const displayOutput = function (output) {
 const getCircuit = $.ajax('/circuits/bristol/compare-eq-zero-64-bit.txt');
 const start = function () {
   getCircuit().then(function (circuit) {
-    const role = 'Garbler';
-    const base = $('#base').val();
-
-    let input = $('#input').val();
     if (base === 'bits') {
       input = input.split('').map(Number).reverse();
     } else if (base === 'number') {
       input = Number(input);
     }
 
-    if (window.Worker) {
-      const worker = new Worker('client/worker.js');
-      worker.postMessage({role: role, circuit: circuit, input: input, base: base});
-      worker.onmessage = function (e) {
-        if (e.data.type === 'progress') {
-          progress.apply(window, e.data.args);
-        } else {
-          displayOutput(e.data.args);
-        }
-      };
-    } else {
-      const agent = new JIGG(role);
-      agent.addProgressListener(progress);
-      agent.loadCircuit(circuit);
-      agent.setInput(input, base);
-      agent.getOutput(base).then(displayOutput);
-      agent.start();
-    }
+    const agent = new JIGG(role);
+    agent.addProgressListener(progress);
+    agent.loadCircuit(circuit);
+    agent.setInput(input, base);
+    agent.getOutput(base).then(displayOutput);
+    agent.start();
   });
 };
 ```
@@ -155,12 +94,14 @@ const start = function () {
 ```neptune[frame=jigg,scope=jigg,title=Evaluator,env=agent]
 const JIGG = require('../src/jigg.js');
 
+let input = '00000000000000000000000000000000';
+const role = 'Evaluator';
+const base = 'bits';
+
 const timeStart = new Date().getTime();
 const displayOutput = function (output) {
   const timeEnd = new Date().getTime();
   const time = (timeEnd - timeStart) / 1000;
-
-  const base = $('#base').val();
   if (base === 'bits') {
     output = output.reverse().join('');
   }
@@ -170,34 +111,18 @@ const displayOutput = function (output) {
 const getCircuit = $.ajax('/circuits/bristol/compare-eq-zero-64-bit.txt');
 const start = function () {
   getCircuit().then(function (circuit) {
-    const role = 'Evaluator';
-    const base = $('#base').val();
-
-    let input = $('#input').val();
     if (base === 'bits') {
       input = input.split('').map(Number).reverse();
     } else if (base === 'number') {
       input = Number(input);
     }
 
-    if (window.Worker) {
-      const worker = new Worker('client/worker.js');
-      worker.postMessage({role: role, circuit: circuit, input: input, base: base});
-      worker.onmessage = function (e) {
-        if (e.data.type === 'progress') {
-          progress.apply(window, e.data.args);
-        } else {
-          displayOutput(e.data.args);
-        }
-      };
-    } else {
-      const agent = new JIGG(role);
-      agent.addProgressListener(progress);
-      agent.loadCircuit(circuit);
-      agent.setInput(input, base);
-      agent.getOutput(base).then(displayOutput);
-      agent.start();
-    }
+    const agent = new JIGG(role);
+    agent.addProgressListener(progress);
+    agent.loadCircuit(circuit);
+    agent.setInput(input, base);
+    agent.getOutput(base).then(displayOutput);
+    agent.start();
   });
 };
 ```
