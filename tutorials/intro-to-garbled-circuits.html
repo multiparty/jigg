@@ -4,7 +4,7 @@
     <title>I2GC - Neptune-notebook.js</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
+
     <!-- code mirror dependencies -->
     <script type="text/javascript">
       // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -10133,11 +10133,11 @@ span.CodeMirror-selectedtext { background: none; }
  */
 
 .cm-s-darcula  { font-family: Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;}
-.cm-s-darcula.CodeMirror { background: #2B2B2B; color: #A9B7C6; } 
+.cm-s-darcula.CodeMirror { background: #2B2B2B; color: #A9B7C6; }
 
 .cm-s-darcula span.cm-meta { color: #BBB529; }
 .cm-s-darcula span.cm-number { color: #6897BB; }
-.cm-s-darcula span.cm-keyword { color: #CC7832; line-height: 1em; font-weight: bold; }  
+.cm-s-darcula span.cm-keyword { color: #CC7832; line-height: 1em; font-weight: bold; }
 .cm-s-darcula span.cm-def { color: #A9B7C6; font-style: italic; }
 .cm-s-darcula span.cm-variable { color: #A9B7C6; }
 .cm-s-darcula span.cm-variable-2 { color: #A9B7C6; }
@@ -10147,7 +10147,7 @@ span.CodeMirror-selectedtext { background: none; }
 .cm-s-darcula span.cm-operator { color: #A9B7C6; }
 .cm-s-darcula span.cm-string { color: #6A8759; }
 .cm-s-darcula span.cm-string-2 { color: #6A8759; }
-.cm-s-darcula span.cm-comment { color: #61A151; font-style: italic; } 
+.cm-s-darcula span.cm-comment { color: #61A151; font-style: italic; }
 .cm-s-darcula span.cm-link { color: #CC7832; }
 .cm-s-darcula span.cm-atom { color: #CC7832; }
 .cm-s-darcula span.cm-error { color: #BC3F3C; }
@@ -10158,15 +10158,15 @@ span.CodeMirror-selectedtext { background: none; }
 .cm-s-darcula span.cm-builtin { color: #FF9E59; }
 .cm-s-darcula span.cm-special { color: #FF9E59; }
 
-.cm-s-darcula .CodeMirror-cursor { border-left: 1px solid #A9B7C6; }  
-.cm-s-darcula .CodeMirror-activeline-background { background: #323232; } 
-.cm-s-darcula .CodeMirror-gutters { background: #313335; border-right: 1px solid #313335; } 
-.cm-s-darcula .CodeMirror-guttermarker { color: #FFEE80; }  
-.cm-s-darcula .CodeMirror-guttermarker-subtle { color: #D0D0D0; }  
-.cm-s-darcula .CodeMirrir-linenumber { color: #606366; } 
-.cm-s-darcula .CodeMirror-matchingbracket { background-color: #3B514D; color: #FFEF28 !important; font-weight: bold; } 
+.cm-s-darcula .CodeMirror-cursor { border-left: 1px solid #A9B7C6; }
+.cm-s-darcula .CodeMirror-activeline-background { background: #323232; }
+.cm-s-darcula .CodeMirror-gutters { background: #313335; border-right: 1px solid #313335; }
+.cm-s-darcula .CodeMirror-guttermarker { color: #FFEE80; }
+.cm-s-darcula .CodeMirror-guttermarker-subtle { color: #D0D0D0; }
+.cm-s-darcula .CodeMirrir-linenumber { color: #606366; }
+.cm-s-darcula .CodeMirror-matchingbracket { background-color: #3B514D; color: #FFEF28 !important; font-weight: bold; }
 
-.cm-s-darcula div.CodeMirror-selected { background: #214283; }  
+.cm-s-darcula div.CodeMirror-selected { background: #214283; }
 
 .CodeMirror-hints.darcula {
   font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
@@ -12651,7 +12651,7 @@ body {
 }
 
 /*
- * bar with execute button 
+ * bar with execute button
  * Inspired by https://www.w3schools.com/howto/howto_css_icon_bar.asp
  */
 .code-top-toolbar {
@@ -12707,9 +12707,9 @@ body {
     <!-- injection -->
     <style>
       /* injected CSS */
-      
+
     </style>
-    
+
   </head>
   <body>
     <div id="neptune-bar">
@@ -12732,9 +12732,9 @@ body {
 1 1 6 7 INV    # 1 in, 1 out, W7 := ~W6
 </code></pre>
 <!-- ![](/src/nand4.png | width=500) -->
-<p><img src="/src/nand4.svg" width="300"></p>
+<p><img src="src/nand4.svg" width="300"></p>
 <p><strong>Note:</strong>
-If description seems too low-level, you may also write circuits on a macro level if preferred and compile down using <a href="https://github.com/wyatt-howe/macro-circuit-assembler#readme">CASM</a>.  Even ASCI C compilers exist that assemble JIGG compatible circuits, but we make no special note due to their generally lesser utility performance-wise.</p>
+If gate-by-gate description seems too low-level, you may also write circuits on a macro level if preferred and compile down using <a href="https://github.com/wyatt-howe/macro-circuit-assembler#readme">CASM</a>.  Even ASCI C compilers exist that assemble JIGG compatible circuits, but we make no special note due to their generally lesser utility performance-wise.</p>
 <!-- ## Advantages over Arithmetic Circuits -->
 <p>All of the widely accepted solutions for secure function evaluation use either boolean circuits (and operate through garbled gates) or arithmetic circuits (and operate over secret shares).  One well-designed framework taking the arithmetic approach is <a href="https://github.com/MPC-SoK/frameworks/wiki/JIFF">JIFF</a>, however this section highlights the garbled variant.</p>
 <p><strong>Advantages over Arithmetic Circuits</strong>:</p>
@@ -12743,8 +12743,299 @@ If description seems too low-level, you may also write circuits on a macro level
 <li><p>Linearity: circuits don't have to be a composition of arithmetic operators only—anything programmable with boolean logic is computable.<!-- Mention C-to-boolean circuit compilers? --></p></li>
 </ol>
 <h1 id="asimplecomputation64bitequaltozero">A Simple Computation: 64-bit Equal-to-Zero</h1>
-<p>This circuit is as simple as it sounds.  Our two parties provide a total of 64 bits, and if they're all equal to zero we announce this is true, else, false.  In boolean logic for JIGG, 1 is synonymous with true and 0 is clearly then false.</p>
+<p>This circuit is as simple as it sounds.  Our two parties provide a total of 64 bits, and if they're all equal to zero we announce this is true, else, false.  In boolean logic and in JIGG, 1 is synonymous with true and 0 false.</p>
 <p>The circuit itself is structured similar to one giant 64-bit NAND gate, similar to the one we looked at above.  It is a binary tree of 63 AND gates joining 64 negated 1-bit inputs into one final output bit.</p>
+<pre><code class="neptune[frame=jigg,scope=jigg,title=Server,env=server] language-neptune[frame=jigg,scope=jigg,title=Server,env=server]">const fs = require('fs');
+const express = require('express');
+const http = require('http');
+
+const app = express();
+const httpServer = http.createServer(app);
+
+// Static routes
+app.get('/', (request, response) =&gt; response.sendFile(__dirname + '/client.html'));
+app.use('/client', express.static(__dirname + '/client/'));
+app.use('/dist', express.static(__dirname + '/../dist/'));
+app.use('/circuits', express.static(__dirname + '/../circuits/'));
+
+// Create new JIGG Server and run it (by running http)
+const JIGG = require('../src/jigg.js');
+const server = new JIGG.Server(httpServer);
+
+const port = 3001;
+httpServer.listen(port, function () {
+  console.log('listening on *:', port);
+  Console.log('Started jigg server on port ' + port);
+});
+
+// Optional: in case the server is also a garbler or evaluator
+const role = process.argv[3];
+if (role != null) {
+  let input = process.argv[4];
+  let encoding = process.argv[5];
+  let circuitName = process.argv[6];
+  let debug = process.argv[7] !== 'false';
+
+  // default arguments.
+  if (encoding == null) {
+    encoding = 'number';
+  }
+  if (circuitName == null) {
+    circuitName = 'arith-add-32-bit-old.txt';
+  }
+
+  // encoding
+  if (encoding === 'number') {
+    input = parseInt(input);
+  }
+  if (encoding === 'bits') {
+    input = input.split('').map(Number);
+  }
+
+  // Read circuit
+  const circuitPath = __dirname + '/../circuits/bristol/' + circuitName;
+  const circuit = fs.readFileSync(circuitPath, 'utf8');
+
+  const agent = server.makeAgent(role, {debug: debug});
+  agent.loadCircuit(circuit);
+  agent.setInput(input, encoding);
+  agent.start();
+
+  agent.getOutput(encoding).then(function (output) {
+    console.log(output);
+    agent.socket.disconnect();
+  });
+}
+</code></pre>
+<pre><code class="neptune[frame=jigg,scope=jigg,title=Garbler,env=agent] language-neptune[frame=jigg,scope=jigg,title=Garbler,env=agent]">const JIGG = require('../src/jigg.js');
+
+const timeStart = new Date().getTime();
+const displayOutput = function (output) {
+  const timeEnd = new Date().getTime();
+  const time = (timeEnd - timeStart) / 1000;
+
+  const base = $('#base').val();
+  if (base === 'bits') {
+    output = output.reverse().join('');
+  }
+  console.log('Results: ' + output + '\nTook: ' + time + 'seconds';
+};
+
+const getCircuit = $.ajax('/circuits/bristol/compare-eq-zero-64-bit.txt');
+const start = function () {
+  getCircuit().then(function (circuit) {
+    const role = 'Garbler';
+    const base = $('#base').val();
+
+    let input = $('#input').val();
+    if (base === 'bits') {
+      input = input.split('').map(Number).reverse();
+    } else if (base === 'number') {
+      input = Number(input);
+    }
+
+    if (window.Worker) {
+      const worker = new Worker('client/worker.js');
+      worker.postMessage({role: role, circuit: circuit, input: input, base: base});
+      worker.onmessage = function (e) {
+        if (e.data.type === 'progress') {
+          progress.apply(window, e.data.args);
+        } else {
+          displayOutput(e.data.args);
+        }
+      };
+    } else {
+      const agent = new JIGG(role);
+      agent.addProgressListener(progress);
+      agent.loadCircuit(circuit);
+      agent.setInput(input, base);
+      agent.getOutput(base).then(displayOutput);
+      agent.start();
+    }
+  });
+};
+</code></pre>
+<pre><code class="neptune[frame=jigg,scope=jigg,title=Evaluator,env=agent] language-neptune[frame=jigg,scope=jigg,title=Evaluator,env=agent]">const JIGG = require('../src/jigg.js');
+
+const timeStart = new Date().getTime();
+const displayOutput = function (output) {
+  const timeEnd = new Date().getTime();
+  const time = (timeEnd - timeStart) / 1000;
+
+  const base = $('#base').val();
+  if (base === 'bits') {
+    output = output.reverse().join('');
+  }
+  console.log('Results: ' + output + '\nTook: ' + time + 'seconds';
+};
+
+const getCircuit = $.ajax('/circuits/bristol/compare-eq-zero-64-bit.txt');
+const start = function () {
+  getCircuit().then(function (circuit) {
+    const role = 'Evaluator';
+    const base = $('#base').val();
+
+    let input = $('#input').val();
+    if (base === 'bits') {
+      input = input.split('').map(Number).reverse();
+    } else if (base === 'number') {
+      input = Number(input);
+    }
+
+    if (window.Worker) {
+      const worker = new Worker('client/worker.js');
+      worker.postMessage({role: role, circuit: circuit, input: input, base: base});
+      worker.onmessage = function (e) {
+        if (e.data.type === 'progress') {
+          progress.apply(window, e.data.args);
+        } else {
+          displayOutput(e.data.args);
+        }
+      };
+    } else {
+      const agent = new JIGG(role);
+      agent.addProgressListener(progress);
+      agent.loadCircuit(circuit);
+      agent.setInput(input, base);
+      agent.getOutput(base).then(displayOutput);
+      agent.start();
+    }
+  });
+};
+</code></pre>
+<pre><code class="neptune[frame=jigg,scope=jigg,title=Circuit] language-neptune[frame=jigg,scope=jigg,title=Circuit]"># file://circuits/bristol/compare-eq-zero-64-bit.txt
+
+127 191
+2 32 32
+1 1
+1 1 21 65 INV
+1 1 23 64 INV
+2 1 65 64 69 AND
+1 1 22 67 INV
+1 1 20 66 INV
+2 1 67 66 68 AND
+2 1 69 68 77 AND
+1 1 29 71 INV
+1 1 31 70 INV
+2 1 71 70 75 AND
+1 1 30 73 INV
+1 1 28 72 INV
+2 1 73 72 74 AND
+2 1 75 74 76 AND
+2 1 77 76 93 AND
+1 1 25 79 INV
+1 1 27 78 INV
+2 1 79 78 83 AND
+1 1 26 81 INV
+1 1 24 80 INV
+2 1 81 80 82 AND
+2 1 83 82 91 AND
+1 1 17 85 INV
+1 1 19 84 INV
+2 1 85 84 89 AND
+1 1 18 87 INV
+1 1 16 86 INV
+2 1 87 86 88 AND
+2 1 89 88 90 AND
+2 1 91 90 92 AND
+2 1 93 92 125 AND
+1 1 53 95 INV
+1 1 55 94 INV
+2 1 95 94 99 AND
+1 1 54 97 INV
+1 1 52 96 INV
+2 1 97 96 98 AND
+2 1 99 98 107 AND
+1 1 61 101 INV
+1 1 63 100 INV
+2 1 101 100 105 AND
+1 1 62 103 INV
+1 1 60 102 INV
+2 1 103 102 104 AND
+2 1 105 104 106 AND
+2 1 107 106 123 AND
+1 1 57 109 INV
+1 1 59 108 INV
+2 1 109 108 113 AND
+1 1 58 111 INV
+1 1 56 110 INV
+2 1 111 110 112 AND
+2 1 113 112 121 AND
+1 1 49 115 INV
+1 1 51 114 INV
+2 1 115 114 119 AND
+1 1 50 117 INV
+1 1 48 116 INV
+2 1 117 116 118 AND
+2 1 119 118 120 AND
+2 1 121 120 122 AND
+2 1 123 122 124 AND
+2 1 125 124 189 AND
+1 1 37 127 INV
+1 1 39 126 INV
+2 1 127 126 131 AND
+1 1 38 129 INV
+1 1 36 128 INV
+2 1 129 128 130 AND
+2 1 131 130 139 AND
+1 1 45 133 INV
+1 1 47 132 INV
+2 1 133 132 137 AND
+1 1 46 135 INV
+1 1 44 134 INV
+2 1 135 134 136 AND
+2 1 137 136 138 AND
+2 1 139 138 155 AND
+1 1 41 141 INV
+1 1 43 140 INV
+2 1 141 140 145 AND
+1 1 42 143 INV
+1 1 40 142 INV
+2 1 143 142 144 AND
+2 1 145 144 153 AND
+1 1 33 147 INV
+1 1 35 146 INV
+2 1 147 146 151 AND
+1 1 34 149 INV
+1 1 32 148 INV
+2 1 149 148 150 AND
+2 1 151 150 152 AND
+2 1 153 152 154 AND
+2 1 155 154 187 AND
+1 1 5 157 INV
+1 1 7 156 INV
+2 1 157 156 161 AND
+1 1 6 159 INV
+1 1 4 158 INV
+2 1 159 158 160 AND
+2 1 161 160 169 AND
+1 1 13 163 INV
+1 1 15 162 INV
+2 1 163 162 167 AND
+1 1 14 165 INV
+1 1 12 164 INV
+2 1 165 164 166 AND
+2 1 167 166 168 AND
+2 1 169 168 185 AND
+1 1 9 171 INV
+1 1 11 170 INV
+2 1 171 170 175 AND
+1 1 10 173 INV
+1 1 8 172 INV
+2 1 173 172 174 AND
+2 1 175 174 183 AND
+1 1 1 177 INV
+1 1 3 176 INV
+2 1 177 176 181 AND
+1 1 2 179 INV
+1 1 0 178 INV
+2 1 179 178 180 AND
+2 1 181 180 182 AND
+2 1 183 182 184 AND
+2 1 185 184 186 AND
+2 1 187 186 188 AND
+2 1 189 188 190 AND
+</code></pre>
 <!-- **Note:** Sometimes the final result can itself reveal information about the inputs even if MPC is used. For example, if two parties jointly compute the sum of their inputs securely, each of them can learn the input
 of the other, by simply subtracting their input out of the final output. In such case, it is recommended that output privacy mechanisms (such as [differential privacy](https://privacytools.seas.harvard.edu/differential-privacy)) are used in conjunction with MPC.
 
@@ -15085,9 +15376,9 @@ function encodeChunk (uint8, start, end) {
 function fromByteArray (uint8) {
   var tmp
   var len = uint8.length
-  var extraBytes = len % 3 
+  var extraBytes = len % 3
   var parts = []
-  var maxChunkLength = 16383 
+  var maxChunkLength = 16383
 
   for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
     parts.push(encodeChunk(
@@ -15120,7 +15411,7 @@ function fromByteArray (uint8) {
 var BlobBuilder = typeof BlobBuilder !== 'undefined' ? BlobBuilder :
   typeof WebKitBlobBuilder !== 'undefined' ? WebKitBlobBuilder :
   typeof MSBlobBuilder !== 'undefined' ? MSBlobBuilder :
-  typeof MozBlobBuilder !== 'undefined' ? MozBlobBuilder : 
+  typeof MozBlobBuilder !== 'undefined' ? MozBlobBuilder :
   false;
 
 
@@ -15320,7 +15611,7 @@ module.exports = (function() {
       ];
       this.length = 2;
     } else {
-      assert(number < 0x20000000000000); 
+      assert(number < 0x20000000000000);
       this.words = [
         number & 0x3ffffff,
         (number / 0x4000000) & 0x3ffffff,
@@ -20384,7 +20675,7 @@ if (typeof Symbol !== 'undefined' && Symbol.species != null &&
   })
 }
 
-Buffer.poolSize = 8192 
+Buffer.poolSize = 8192
 
 function from (value, encodingOrOffset, length) {
   if (typeof value === 'string') {
@@ -20565,7 +20856,7 @@ function checked (length) {
 }
 
 function SlowBuffer (length) {
-  if (+length != length) { 
+  if (+length != length) {
     length = 0
   }
   return Buffer.alloc(+length)
@@ -20573,7 +20864,7 @@ function SlowBuffer (length) {
 
 Buffer.isBuffer = function isBuffer (b) {
   return b != null && b._isBuffer === true &&
-    b !== Buffer.prototype 
+    b !== Buffer.prototype
 }
 
 Buffer.compare = function compare (a, b) {
@@ -20694,7 +20985,7 @@ function byteLength (string, encoding) {
         return base64ToBytes(string).length
       default:
         if (loweredCase) {
-          return mustMatch ? -1 : utf8ToBytes(string).length 
+          return mustMatch ? -1 : utf8ToBytes(string).length
         }
         encoding = ('' + encoding).toLowerCase()
         loweredCase = true
@@ -20911,7 +21202,7 @@ function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
   } else if (byteOffset < -0x80000000) {
     byteOffset = -0x80000000
   }
-  byteOffset = +byteOffset 
+  byteOffset = +byteOffset
   if (numberIsNaN(byteOffset)) {
     byteOffset = dir ? 0 : (buffer.length - 1)
   }
@@ -20935,7 +21226,7 @@ function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
     }
     return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
   } else if (typeof val === 'number') {
-    val = val & 0xFF 
+    val = val & 0xFF
     if (typeof Uint8Array.prototype.indexOf === 'function') {
       if (dir) {
         return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
@@ -21219,7 +21510,7 @@ var MAX_ARGUMENTS_LENGTH = 0x1000
 function decodeCodePointsArray (codePoints) {
   var len = codePoints.length
   if (len <= MAX_ARGUMENTS_LENGTH) {
-    return String.fromCharCode.apply(String, codePoints) 
+    return String.fromCharCode.apply(String, codePoints)
   }
 
   var res = ''
@@ -21936,7 +22227,7 @@ function isInstance (obj, type) {
       obj.constructor.name === type.name)
 }
 function numberIsNaN (obj) {
-  return obj !== obj 
+  return obj !== obj
 }
 
 var hexSliceLookupTable = (function () {
@@ -22252,7 +22543,7 @@ function isPrimitive(arg) {
          typeof arg === 'boolean' ||
          typeof arg === 'number' ||
          typeof arg === 'string' ||
-         typeof arg === 'symbol' ||  
+         typeof arg === 'symbol' ||
          typeof arg === 'undefined';
 }
 exports.isPrimitive = isPrimitive;
@@ -22318,7 +22609,7 @@ function ECDH (curve) {
       name: curve
     }
   }
-  this.curve = new elliptic.ec(this.curveType.name) 
+  this.curve = new elliptic.ec(this.curveType.name)
   this.keys = void 0
 }
 
@@ -23791,10 +24082,10 @@ BaseCurve.prototype._wnafMulAdd = function _wnafMulAdd(defW,
     }
 
     var comb = [
-      points[a], 
-      null, 
-      null, 
-      points[b] 
+      points[a],
+      null,
+      null,
+      points[b]
     ];
 
     if (points[a].y.cmp(points[b].y) === 0) {
@@ -23809,15 +24100,15 @@ BaseCurve.prototype._wnafMulAdd = function _wnafMulAdd(defW,
     }
 
     var index = [
-      -3, 
-      -1, 
-      -5, 
-      -7, 
-      0, 
-      7, 
-      5, 
-      1, 
-      3  
+      -3,
+      -1,
+      -5,
+      -7,
+      0,
+      7,
+      5,
+      1,
+      3
     ];
 
     var jsf = getJSF(coeffs[a], coeffs[b]);
@@ -24485,9 +24776,9 @@ Point.prototype.diffAdd = function diffAdd(p, diff) {
 
 Point.prototype.mul = function mul(k) {
   var t = k.clone();
-  var a = this; 
-  var b = this.curve.point(null, null); 
-  var c = this; 
+  var a = this;
+  var b = this.curve.point(null, null);
+  var c = this;
 
   for (var bits = []; t.cmpn(0) !== 0; t.iushrn(1))
     bits.push(t.andln(1));
@@ -27392,7 +27683,7 @@ Socket.priorWebsocketSuccess = false;
 Emitter(Socket.prototype);
 
 
-Socket.protocol = parser.protocol; 
+Socket.protocol = parser.protocol;
 
 
 Socket.Socket = Socket;
@@ -29078,7 +29369,7 @@ function selectColor(namespace) {
 
   for (i in namespace) {
     hash  = ((hash << 5) - hash) + namespace.charCodeAt(i);
-    hash |= 0; 
+    hash |= 0;
   }
 
   return exports.colors[Math.abs(hash) % exports.colors.length];
@@ -29170,7 +29461,7 @@ function enable(namespaces) {
   var len = split.length;
 
   for (i = 0; i < len; i++) {
-    if (!split[i]) continue; 
+    if (!split[i]) continue;
     namespaces = split[i].replace(/\*/g, '.*?');
     if (namespaces[0] === '-') {
       exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
@@ -29240,8 +29531,8 @@ exports.protocol = 3;
 
 
 var packets = exports.packets = {
-    open:     0    
-  , close:    1    
+    open:     0
+  , close:    1
   , ping:     2
   , pong:     3
   , message:  4
@@ -29564,7 +29855,7 @@ exports.encodePayloadAsArrayBuffer = function(packets, callback) {
       } else {
         len = p.byteLength;
       }
-      return acc + len.toString().length + len + 2; 
+      return acc + len.toString().length + len + 2;
     }, 0);
 
     var resultArray = new Uint8Array(totalLength);
@@ -29581,9 +29872,9 @@ exports.encodePayloadAsArrayBuffer = function(packets, callback) {
         ab = view.buffer;
       }
 
-      if (isString) { 
+      if (isString) {
         resultArray[bufferIndex++] = 0;
-      } else { 
+      } else {
         resultArray[bufferIndex++] = 1;
       }
 
@@ -29721,7 +30012,7 @@ function ucs2decode(string) {
 		value = string.charCodeAt(counter++);
 		if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
 			extra = string.charCodeAt(counter++);
-			if ((extra & 0xFC00) == 0xDC00) { 
+			if ((extra & 0xFC00) == 0xDC00) {
 				output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
 			} else {
 				output.push(value);
@@ -29769,21 +30060,21 @@ function createByte(codePoint, shift) {
 }
 
 function encodeCodePoint(codePoint, strict) {
-	if ((codePoint & 0xFFFFFF80) == 0) { 
+	if ((codePoint & 0xFFFFFF80) == 0) {
 		return stringFromCharCode(codePoint);
 	}
 	var symbol = '';
-	if ((codePoint & 0xFFFFF800) == 0) { 
+	if ((codePoint & 0xFFFFF800) == 0) {
 		symbol = stringFromCharCode(((codePoint >> 6) & 0x1F) | 0xC0);
 	}
-	else if ((codePoint & 0xFFFF0000) == 0) { 
+	else if ((codePoint & 0xFFFF0000) == 0) {
 		if (!checkScalarValue(codePoint, strict)) {
 			codePoint = 0xFFFD;
 		}
 		symbol = stringFromCharCode(((codePoint >> 12) & 0x0F) | 0xE0);
 		symbol += createByte(codePoint, 6);
 	}
-	else if ((codePoint & 0xFFE00000) == 0) { 
+	else if ((codePoint & 0xFFE00000) == 0) {
 		symbol = stringFromCharCode(((codePoint >> 18) & 0x07) | 0xF0);
 		symbol += createByte(codePoint, 12);
 		symbol += createByte(codePoint, 6);
@@ -30033,7 +30324,7 @@ EventEmitter.prototype.emit = function emit(type) {
     if (arguments.length > 1)
       er = arguments[1];
     if (er instanceof Error) {
-      throw er; 
+      throw er;
     } else {
       var err = new Error('Unhandled "error" event. (' + er + ')');
       err.context = er;
@@ -31239,13 +31530,13 @@ SHA512.prototype._prepareBlock = function _prepareBlock(msg, start) {
   for (var i = 0; i < 32; i++)
     W[i] = msg[start + i];
   for (; i < W.length; i += 2) {
-    var c0_hi = g1_512_hi(W[i - 4], W[i - 3]);  
+    var c0_hi = g1_512_hi(W[i - 4], W[i - 3]);
     var c0_lo = g1_512_lo(W[i - 4], W[i - 3]);
-    var c1_hi = W[i - 14];  
+    var c1_hi = W[i - 14];
     var c1_lo = W[i - 13];
-    var c2_hi = g0_512_hi(W[i - 30], W[i - 29]);  
+    var c2_hi = g0_512_hi(W[i - 30], W[i - 29]);
     var c2_lo = g0_512_lo(W[i - 30], W[i - 29]);
-    var c3_hi = W[i - 32];  
+    var c3_hi = W[i - 32];
     var c3_lo = W[i - 31];
 
     W[i] = sum64_4_hi(
@@ -31389,8 +31680,8 @@ function maj64_lo(xh, xl, yh, yl, zh, zl) {
 
 function s0_512_hi(xh, xl) {
   var c0_hi = rotr64_hi(xh, xl, 28);
-  var c1_hi = rotr64_hi(xl, xh, 2);  
-  var c2_hi = rotr64_hi(xl, xh, 7);  
+  var c1_hi = rotr64_hi(xl, xh, 2);
+  var c2_hi = rotr64_hi(xl, xh, 7);
 
   var r = c0_hi ^ c1_hi ^ c2_hi;
   if (r < 0)
@@ -31400,8 +31691,8 @@ function s0_512_hi(xh, xl) {
 
 function s0_512_lo(xh, xl) {
   var c0_lo = rotr64_lo(xh, xl, 28);
-  var c1_lo = rotr64_lo(xl, xh, 2);  
-  var c2_lo = rotr64_lo(xl, xh, 7);  
+  var c1_lo = rotr64_lo(xl, xh, 2);
+  var c2_lo = rotr64_lo(xl, xh, 7);
 
   var r = c0_lo ^ c1_lo ^ c2_lo;
   if (r < 0)
@@ -31412,7 +31703,7 @@ function s0_512_lo(xh, xl) {
 function s1_512_hi(xh, xl) {
   var c0_hi = rotr64_hi(xh, xl, 14);
   var c1_hi = rotr64_hi(xh, xl, 18);
-  var c2_hi = rotr64_hi(xl, xh, 9);  
+  var c2_hi = rotr64_hi(xl, xh, 9);
 
   var r = c0_hi ^ c1_hi ^ c2_hi;
   if (r < 0)
@@ -31423,7 +31714,7 @@ function s1_512_hi(xh, xl) {
 function s1_512_lo(xh, xl) {
   var c0_lo = rotr64_lo(xh, xl, 14);
   var c1_lo = rotr64_lo(xh, xl, 18);
-  var c2_lo = rotr64_lo(xl, xh, 9);  
+  var c2_lo = rotr64_lo(xl, xh, 9);
 
   var r = c0_lo ^ c1_lo ^ c2_lo;
   if (r < 0)
@@ -31455,7 +31746,7 @@ function g0_512_lo(xh, xl) {
 
 function g1_512_hi(xh, xl) {
   var c0_hi = rotr64_hi(xh, xl, 19);
-  var c1_hi = rotr64_hi(xl, xh, 29);  
+  var c1_hi = rotr64_hi(xl, xh, 29);
   var c2_hi = shr64_hi(xh, xl, 6);
 
   var r = c0_hi ^ c1_hi ^ c2_hi;
@@ -31466,7 +31757,7 @@ function g1_512_hi(xh, xl) {
 
 function g1_512_lo(xh, xl) {
   var c0_lo = rotr64_lo(xh, xl, 19);
-  var c1_lo = rotr64_lo(xl, xh, 29);  
+  var c1_lo = rotr64_lo(xl, xh, 29);
   var c2_lo = shr64_lo(xh, xl, 6);
 
   var r = c0_lo ^ c1_lo ^ c2_lo;
@@ -31844,7 +32135,7 @@ HmacDRBG.prototype._init = function init(entropy, nonce, pers) {
 
   this._update(seed);
   this._reseed = 1;
-  this.reseedInterval = 0x1000000000000;  
+  this.reseedInterval = 0x1000000000000;
 };
 
 HmacDRBG.prototype._hmac = function hmac() {
@@ -33303,7 +33594,7 @@ module.exports = defaultEncoding
 
 },{"_process":148}],145:[function(require,module,exports){
 (function (Buffer){
-var MAX_ALLOC = Math.pow(2, 30) - 1 
+var MAX_ALLOC = Math.pow(2, 30) - 1
 
 function checkBuffer (buf, name) {
   if (typeof buf !== 'string' && !Buffer.isBuffer(buf)) {
@@ -33327,7 +33618,7 @@ module.exports = function (password, salt, iterations, keylen) {
     throw new TypeError('Key length not a number')
   }
 
-  if (keylen < 0 || keylen > MAX_ALLOC || keylen !== keylen) { 
+  if (keylen < 0 || keylen > MAX_ALLOC || keylen !== keylen) {
     throw new TypeError('Bad key length')
   }
 }
@@ -33632,7 +33923,7 @@ process.title = 'browser';
 process.browser = true;
 process.env = {};
 process.argv = [];
-process.version = ''; 
+process.version = '';
 process.versions = {};
 
 function noop() {}
@@ -33939,8 +34230,8 @@ function randomBytes (size, cb) {
 
   var bytes = Buffer.allocUnsafe(size)
 
-  if (size > 0) {  
-    if (size > MAX_BYTES) { 
+  if (size > 0) {
+    if (size > MAX_BYTES) {
       for (var generated = 0; generated < size; generated += MAX_BYTES) {
         crypto.getRandomValues(bytes.slice(generated, generated + MAX_BYTES))
       }
@@ -33974,7 +34265,7 @@ var kBufferMaxLength = safeBuffer.kMaxLength
 var crypto = global.crypto || global.msCrypto
 var kMaxUint32 = Math.pow(2, 32) - 1
 function assertOffset (offset, length) {
-  if (typeof offset !== 'number' || offset !== offset) { 
+  if (typeof offset !== 'number' || offset !== offset) {
     throw new TypeError('offset must be a number')
   }
 
@@ -33988,7 +34279,7 @@ function assertOffset (offset, length) {
 }
 
 function assertSize (size, offset, length) {
-  if (typeof size !== 'number' || size !== size) { 
+  if (typeof size !== 'number' || size !== size) {
     throw new TypeError('size must be a number')
   }
 
@@ -35020,7 +35311,7 @@ function afterTransform(er, data) {
   ts.writechunk = null;
   ts.writecb = null;
 
-  if (data != null) 
+  if (data != null)
     this.push(data);
 
   cb(er);
@@ -35114,7 +35405,7 @@ Transform.prototype._destroy = function (err, cb) {
 function done(stream, er, data) {
   if (er) return stream.emit('error', er);
 
-  if (data != null) 
+  if (data != null)
     stream.push(data);
 
   if (stream._writableState.length) throw new Error('Calling transform done when ws.length != 0');
@@ -35868,7 +36159,7 @@ function _normalizeEncoding(enc) {
       case 'hex':
         return enc;
       default:
-        if (retried) return; 
+        if (retried) return;
         enc = ('' + enc).toLowerCase();
         retried = true;
     }
@@ -36176,7 +36467,7 @@ RIPEMD160.prototype._update = function () {
     } else if (i < 64) {
       tl = fn4(al, bl, cl, dl, el, words[zl[i]], hl[3], sl[i])
       tr = fn2(ar, br, cr, dr, er, words[zr[i]], hr[3], sr[i])
-    } else { 
+    } else {
       tl = fn5(al, bl, cl, dl, el, words[zl[i]], hl[4], sl[i])
       tr = fn1(ar, br, cr, dr, er, words[zr[i]], hr[4], sr[i])
     }
@@ -36599,7 +36890,7 @@ var W = new Array(64)
 function Sha224 () {
   this.init()
 
-  this._w = W 
+  this._w = W
 
   Hash.call(this, 64, 56)
 }
@@ -36665,7 +36956,7 @@ var W = new Array(64)
 function Sha256 () {
   this.init()
 
-  this._w = W 
+  this._w = W
 
   Hash.call(this, 64, 56)
 }
@@ -37428,7 +37719,7 @@ Manager.prototype.packet = function (packet) {
       self.encoding = false;
       self.processPacketQueue();
     });
-  } else { 
+  } else {
     self.packetBuffer.push(packet);
   }
 };
@@ -37595,7 +37886,7 @@ var emit = Emitter.prototype.emit;
 function Socket (io, nsp, opts) {
   this.io = io;
   this.nsp = nsp;
-  this.json = this; 
+  this.json = this;
   this.ids = 0;
   this.acks = {};
   this.receiveBuffer = [];
@@ -37630,7 +37921,7 @@ Socket.prototype.connect = function () {
   if (this.connected) return this;
 
   this.subEvents();
-  this.io.open(); 
+  this.io.open();
   if ('open' === this.io.readyState) this.onopen();
   this.emit('connecting');
   return this;
@@ -38063,7 +38354,7 @@ exports.deconstructPacket = function(packet) {
   var packetData = packet.data;
   var pack = packet;
   pack.data = _deconstructPacket(packetData, buffers);
-  pack.attachments = buffers.length; 
+  pack.attachments = buffers.length;
   return {packet: pack, buffers: buffers};
 };
 
@@ -38093,7 +38384,7 @@ function _deconstructPacket(data, buffers) {
 
 exports.reconstructPacket = function(packet, buffers) {
   packet.data = _reconstructPacket(packet.data, buffers);
-  packet.attachments = undefined; 
+  packet.attachments = undefined;
   return packet;
 };
 
@@ -38101,7 +38392,7 @@ function _reconstructPacket(data, buffers) {
   if (!data) return data;
 
   if (data && data._placeholder) {
-    return buffers[data.num]; 
+    return buffers[data.num];
   } else if (isArray(data)) {
     for (var i = 0; i < data.length; i++) {
       data[i] = _reconstructPacket(data[i], buffers);
@@ -38125,7 +38416,7 @@ exports.removeBlobs = function(data, callback) {
       pendingBlobs++;
 
       var fileReader = new FileReader();
-      fileReader.onload = function() { 
+      fileReader.onload = function() {
         if (containingObject) {
           containingObject[curKey] = this.result;
         }
@@ -38138,12 +38429,12 @@ exports.removeBlobs = function(data, callback) {
         }
       };
 
-      fileReader.readAsArrayBuffer(obj); 
-    } else if (isArray(obj)) { 
+      fileReader.readAsArrayBuffer(obj);
+    } else if (isArray(obj)) {
       for (var i = 0; i < obj.length; i++) {
         _removeBlobs(obj[i], i, obj);
       }
-    } else if (typeof obj === 'object' && !isBuf(obj)) { 
+    } else if (typeof obj === 'object' && !isBuf(obj)) {
       for (var key in obj) {
         _removeBlobs(obj[key], key, obj);
       }
@@ -38271,8 +38562,8 @@ function encodeAsBinary(obj, callback) {
     var pack = encodeAsString(deconstruction.packet);
     var buffers = deconstruction.buffers;
 
-    buffers.unshift(pack); 
-    callback(buffers); 
+    buffers.unshift(pack);
+    callback(buffers);
   }
 
   binary.removeBlobs(obj, writeEncoding);
@@ -38291,21 +38582,21 @@ Decoder.prototype.add = function(obj) {
   var packet;
   if (typeof obj === 'string') {
     packet = decodeString(obj);
-    if (exports.BINARY_EVENT === packet.type || exports.BINARY_ACK === packet.type) { 
+    if (exports.BINARY_EVENT === packet.type || exports.BINARY_ACK === packet.type) {
       this.reconstructor = new BinaryReconstructor(packet);
 
       if (this.reconstructor.reconPack.attachments === 0) {
         this.emit('decoded', packet);
       }
-    } else { 
+    } else {
       this.emit('decoded', packet);
     }
-  } else if (isBuf(obj) || obj.base64) { 
+  } else if (isBuf(obj) || obj.base64) {
     if (!this.reconstructor) {
       throw new Error('got binary data when not reconstructing a packet');
     } else {
       packet = this.reconstructor.takeBinaryData(obj);
-      if (packet) { 
+      if (packet) {
         this.reconstructor = null;
         this.emit('decoded', packet);
       }
@@ -38403,7 +38694,7 @@ function BinaryReconstructor(packet) {
 
 BinaryReconstructor.prototype.takeBinaryData = function(binData) {
   this.buffers.push(binData);
-  if (this.buffers.length === this.reconPack.attachments) { 
+  if (this.buffers.length === this.reconPack.attachments) {
     var packet = binary.reconstructPacket(this.reconPack, this.buffers);
     this.finishedReconstruction();
     return packet;
@@ -38642,7 +38933,7 @@ Stream.prototype.pipe = function(dest, options) {
   function onerror(er) {
     cleanup();
     if (EE.listenerCount(this, 'error') === 0) {
-      throw er; 
+      throw er;
     }
   }
 
@@ -38978,7 +39269,7 @@ Script.prototype.runInContext = function (context) {
 };
 
 Script.prototype.runInThisContext = function () {
-    return eval(this.code); 
+    return eval(this.code);
 };
 
 Script.prototype.runInNewContext = function (context) {
@@ -39447,7 +39738,7 @@ module.exports = run;
 
 'use strict';
 
-const LABEL_SIZE = 16; 
+const LABEL_SIZE = 16;
 
 const garble = require('./garble.js');
 const evaluate = require('./evaluate.js');
@@ -39913,9 +40204,9 @@ function longToByteArray(long) {
 function randomOracle(m, t) {
   return sodium.crypto_secretbox_easy(
     m,
-    longToByteArray(t),  
-    sodium.from_hex('da5698be17b9b46962335799779fbeca8ce5d491c0d26243bafef9ea1837a9d8')  
-  ).subarray(0, bytes+1);  
+    longToByteArray(t),
+    sodium.from_hex('da5698be17b9b46962335799779fbeca8ce5d491c0d26243bafef9ea1837a9d8')
+  ).subarray(0, bytes+1);
 }
 
 function encrypt_generic(plaintext, key, nonce) {
@@ -39923,9 +40214,9 @@ function encrypt_generic(plaintext, key, nonce) {
 }
 
 module.exports = {
-  encrypt: encrypt, 
+  encrypt: encrypt,
   decrypt: encrypt,
-  encrypt_generic: encrypt_generic, 
+  encrypt_generic: encrypt_generic,
   decrypt_generic: encrypt_generic
 };
 
@@ -39973,7 +40264,7 @@ module.exports = {
 
     </script>
     <script type="text/javascript">
-      
+
       // neptune.js
       (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (process){
@@ -41163,4 +41454,4 @@ module.exports = function () {
       panel.innerHTML = customOutputs[key];
     }
   }
-})({"defaultPanels":{},"customPanels":{}});</script></html>
+})({"defaultPanels":{"jigg-tab-1-output":"<code class=\"language-bash\"></code>","jigg-tab-2-output":"<code class=\"language-bash\"></code>","jigg-tab-3-output":"<code class=\"language-bash\"></code>","jigg-tab-4-output":"<code class=\"language-bash\"></code>"},"customPanels":{}});</script></html>
