@@ -21,8 +21,16 @@ npm install
     │  ├─ comm/         Communications modules (such as for OT)
     │  ├─ modules/         Data structure modules (such as circuits)
     │  └─ utils/        Other utility modules (such as cryptographic primitives)
-    └─ test/            End-to-end tests
+    ├─ test/            End-to-end tests
+    └─ tutorial/        Interactive tutorial on using JIGG
 
+## Running The tutorial
+
+You can run the tutorial interactively on your local machine, after cloning JIGG, by using
+```shell
+cd path/to/JIGG
+npm run tutorial
+```
 
 ## Running Demo Circuit Applications
 
@@ -77,7 +85,7 @@ JIGG can parse a circuit in the standardized '[Bristol](https://homes.esat.kuleu
 ```
 
 ### Circuit Assembler
-To create a new circuit, write a macro with existing circuits as its gates and run the [macro-circuit-assembler](https://github.com/wyatt-howe/macro-circuit-assembler/tree/casm) with:
+To create a new circuit, write a macro with existing circuits as its gates and run the [macro-circuit-assembler](https://github.com/wyatt-howe/macro-circuit-assembler/) with:
 
 ```shell
 npm run casm -- <path_to_macro> <output_path>

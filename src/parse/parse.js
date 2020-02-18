@@ -21,6 +21,10 @@ module.exports = function (text) {
     const tmp = line.trim();
     return !(tmp.startsWith('#') || tmp.length === 0);
   }).map(function (line) {
+    if (line.indexOf('#') > -1) {
+      line = line.substring(0, line.indexOf('#')).trim();
+    }
+
     return line.split(' ').map(function (token) {
       return token.trim();
     });
