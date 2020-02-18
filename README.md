@@ -77,7 +77,7 @@ JIGG can parse a circuit in the standardized '[Bristol](https://homes.esat.kuleu
 ```
 
 ### Circuit Assembler
-To create a new circuit, write a macro with existing circuits as its gates and run the [macro-circuit-assembler](https://github.com/wyatt-howe/macro-circuit-assembler/tree/casm) with:
+To create a new circuit, write a macro with existing circuits as its gates and run the [macro-circuit-assembler](https://github.com/wyatt-howe/macro-circuit-assembler/) with:
 
 ```shell
 npm run casm -- <path_to_macro> <output_path>

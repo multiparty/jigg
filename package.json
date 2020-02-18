@@ -11,14 +11,14 @@
   "devDependencies": {
     "browserify": "^16.5.0",
     "child_process": "^1.0.2",
+    "docdash": "^1.1.1",
     "eslint": "^5.16.0",
     "eslint-plugin-mocha": "^6.2.2",
     "eslint-plugin-requirejs": "^4.0.0",
     "express": "^4.17.1",
-    "neptune-notebook": "^1.1.1",
-    "mocha": "^4.0.1",
     "jsdoc": "^3.6.3",
-    "docdash": "^1.1.1"
+    "mocha": "^4.0.1",
+    "neptune-notebook": "^1.2.0"
   },
   "scripts": {
     "test": "mocha test/test.js --timeout 120000",
