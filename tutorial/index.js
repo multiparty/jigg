@@ -2,7 +2,6 @@ const express = require('express');
 const Neptune = require('neptune-notebook'); // Require neptune server-side code
 
 const neptune = new Neptune(); // Create a new server
-neptune.app.use('/document/src', express.static(__dirname + '/src'));
 neptune.app.use('/dist', express.static(__dirname + '/../dist/'));
 neptune.app.use('/circuits/bristol', express.static(__dirname + '/../circuits/bristol'));
 

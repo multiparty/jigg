@@ -33,7 +33,7 @@
         "id":"github_link"
       },
       "Tutorial":{
-        "href":"../tutorial/intro.html",
+        "href":"tutorial.html",
         "class":"menu-item"
       }
     },
