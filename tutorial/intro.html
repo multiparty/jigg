@@ -12826,7 +12826,7 @@ a node.js environment or in the browser. The server module can only be used in a
 # 2 and 3 are the evaluator's
 # 6 is the output wire
 
-# gates 
+# gates
 2 1 0 1 4 AND # 4 = 0 AND 1
 2 1 2 3 5 AND # 5 = 2 AND 3
 2 1 4 5 6 AND # 6 = 4 AND 5
@@ -12848,12 +12848,12 @@ window.fetch('/circuits/bristol/sha-256-reverse.txt').then(async function (circu
 <p>Now that we have the circuit, it is time to write the code for the parties and the server. JIGG requires minimal configurations.
 All we have to do is provide the JIGG parties with the address of the server, the circuit, and the inputs.</p>
 <p>The computation is asynchronous because it involves communication. The output is made available through a promise.
-Additionally, a listener may be set to keep track of the progress of the computation. </p>
+Additionally, a listener may be set to keep track of the progress of the computation.</p>
 <pre><code class="neptune[frame=2,scope=server,title=Server,env=server] language-neptune[frame=2,scope=server,title=Server,env=server]">// Create new JIGG Server, this server runs whenever httpServer is running
 const jiggServer = new JIGG.Server(httpServer);
 Console.log('JIGG Server created');
 </code></pre>
-<pre><code class="neptune[frame=2,scope=garbler1,title=Garbler,env=browser] language-neptune[frame=2,scope=garbler1,title=Garbler,env=browser]">const inputs = [0, 1];
+<pre><code class="neptune[frame=2,scope=garbler1,title=Garbler,env=browser,offline=false] language-neptune[frame=2,scope=garbler1,title=Garbler,env=browser,offline=false]">const inputs = [0, 1];
 const circuit = getAnd4Circuit();
 
 // in node.js, use new JIGG.Client(...)
@@ -12873,7 +12873,7 @@ agent.getOutput().then(function (outputs) {
 // start
 agent.start();
 </code></pre>
-<pre><code class="neptune[frame=2,scope=evaluator1,title=Evaluator,env=browser] language-neptune[frame=2,scope=evaluator1,title=Evaluator,env=browser]">const inputs = [0, 1];
+<pre><code class="neptune[frame=2,scope=evaluator1,title=Evaluator,env=browser,offline=false] language-neptune[frame=2,scope=evaluator1,title=Evaluator,env=browser,offline=false]">const inputs = [0, 1];
 const circuit = getAnd4Circuit();
 
 // in node.js, use new JIGG.Client(...)
@@ -12904,7 +12904,7 @@ to bit yourself, and make sure the bits are fed in the right order.</p>
 The circuit behaves as you would expect. For every two bits at the same position in the input, the circuit XORs these bits and the carry bit (initially 0)
 to find the output bit in the corresponding position, the circuit then determines the next carry by checking if
 any two of the input bits and previous carry wires are 1.</p>
-<pre><code class="neptune[frame=3,scope=garbler3,title=Garbler,env=browser] language-neptune[frame=3,scope=garbler3,title=Garbler,env=browser]">const input = 154;
+<pre><code class="neptune[frame=3,scope=garbler3,title=Garbler,env=browser,offline=false] language-neptune[frame=3,scope=garbler3,title=Garbler,env=browser,offline=false]">const input = 154;
 const circuit = getAdd32Circuit();
 
 // in node.js, use new JIGG.Client(...)
@@ -12924,7 +12924,7 @@ agent.getOutput('number').then(function (output) {
 // start
 agent.start();
 </code></pre>
-<pre><code class="neptune[frame=3,scope=evaluator3,title=Evaluator,env=browser] language-neptune[frame=3,scope=evaluator3,title=Evaluator,env=browser]">const input = 310;
+<pre><code class="neptune[frame=3,scope=evaluator3,title=Evaluator,env=browser,offline=false] language-neptune[frame=3,scope=evaluator3,title=Evaluator,env=browser,offline=false]">const input = 310;
 const circuit = getAdd32Circuit();
 
 // in node.js, use new JIGG.Client(...)
@@ -12969,7 +12969,7 @@ agent.getOutput('hex').then(function (output) {
 // start
 agent.start();
 </code></pre>
-<pre><code class="neptune[frame=4,scope=evaluator3,title=Evaluator,env=browser] language-neptune[frame=4,scope=evaluator3,title=Evaluator,env=browser]">const input = '202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f'; // hex input
+<pre><code class="neptune[frame=4,scope=evaluator3,title=Evaluator,env=browser,offline=false] language-neptune[frame=4,scope=evaluator3,title=Evaluator,env=browser,offline=false]">const input = '202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f'; // hex input
 const circuit = getSha256Circuit();
 
 // in node.js, use new JIGG.Client(...)
@@ -14974,13 +14974,11 @@ function fromByteArray (uint8) {
 
 },{}],20:[function(require,module,exports){
 
-
 var BlobBuilder = typeof BlobBuilder !== 'undefined' ? BlobBuilder :
   typeof WebKitBlobBuilder !== 'undefined' ? WebKitBlobBuilder :
   typeof MSBlobBuilder !== 'undefined' ? MSBlobBuilder :
   typeof MozBlobBuilder !== 'undefined' ? MozBlobBuilder : 
   false;
-
 
 
 var blobSupported = (function() {
@@ -14993,7 +14991,6 @@ var blobSupported = (function() {
 })();
 
 
-
 var blobSupportsArrayBufferView = blobSupported && (function() {
   try {
     var b = new Blob([new Uint8Array([1,2])]);
@@ -15004,11 +15001,9 @@ var blobSupportsArrayBufferView = blobSupported && (function() {
 })();
 
 
-
 var blobBuilderSupported = BlobBuilder
   && BlobBuilder.prototype.append
   && BlobBuilder.prototype.getBlob;
-
 
 
 function mapArrayBufferViews(ary) {
@@ -21933,17 +21928,14 @@ module.exports = function(obj, fn){
 },{}],55:[function(require,module,exports){
 
 
-
 if (typeof module !== 'undefined') {
   module.exports = Emitter;
 }
 
 
-
 function Emitter(obj) {
   if (obj) return mixin(obj);
 };
-
 
 
 function mixin(obj) {
@@ -21954,7 +21946,6 @@ function mixin(obj) {
 }
 
 
-
 Emitter.prototype.on =
 Emitter.prototype.addEventListener = function(event, fn){
   this._callbacks = this._callbacks || {};
@@ -21962,7 +21953,6 @@ Emitter.prototype.addEventListener = function(event, fn){
     .push(fn);
   return this;
 };
-
 
 
 Emitter.prototype.once = function(event, fn){
@@ -21975,7 +21965,6 @@ Emitter.prototype.once = function(event, fn){
   this.on(event, on);
   return this;
 };
-
 
 
 Emitter.prototype.off =
@@ -22009,7 +21998,6 @@ Emitter.prototype.removeEventListener = function(event, fn){
 };
 
 
-
 Emitter.prototype.emit = function(event){
   this._callbacks = this._callbacks || {};
   var args = [].slice.call(arguments, 1)
@@ -22026,12 +22014,10 @@ Emitter.prototype.emit = function(event){
 };
 
 
-
 Emitter.prototype.listeners = function(event){
   this._callbacks = this._callbacks || {};
   return this._callbacks['$' + event] || [];
 };
-
 
 
 Emitter.prototype.hasListeners = function(event){
@@ -32742,7 +32728,6 @@ function decrypt (data, password) {
 
 },{"./aesid.json":134,"./asn1":135,"./fixProc":137,"browserify-aes":26,"pbkdf2":142,"safe-buffer":173}],139:[function(require,module,exports){
 
-
 exports.encode = function (obj) {
   var str = '';
 
@@ -32757,7 +32742,6 @@ exports.encode = function (obj) {
 };
 
 
-
 exports.decode = function(qs){
   var qry = {};
   var pairs = qs.split('&');
@@ -32769,7 +32753,6 @@ exports.decode = function(qs){
 };
 
 },{}],140:[function(require,module,exports){
-
 
 var re = /^(?:(?![^:@]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
 
@@ -39712,7 +39695,6 @@ module.exports = function (text) {
       return token.trim();
     });
   });
-  console.log(rows);
 
   const wireCount = parseInt(rows[0][1]);
   const inputs = rows[1].slice(1);

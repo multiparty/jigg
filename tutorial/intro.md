@@ -92,7 +92,7 @@ This circuit is as simple as it sounds. Our two parties provide each provide 2 b
 # 2 and 3 are the evaluator's
 # 6 is the output wire
 
-# gates 
+# gates
 2 1 0 1 4 AND # 4 = 0 AND 1
 2 1 2 3 5 AND # 5 = 2 AND 3
 2 1 4 5 6 AND # 6 = 4 AND 5
@@ -118,7 +118,7 @@ Now that we have the circuit, it is time to write the code for the parties and t
 All we have to do is provide the JIGG parties with the address of the server, the circuit, and the inputs.
 
 The computation is asynchronous because it involves communication. The output is made available through a promise.
-Additionally, a listener may be set to keep track of the progress of the computation. 
+Additionally, a listener may be set to keep track of the progress of the computation.
 
 ```neptune[frame=2,scope=server,title=Server,env=server]
 // Create new JIGG Server, this server runs whenever httpServer is running
@@ -126,7 +126,7 @@ const jiggServer = new JIGG.Server(httpServer);
 Console.log('JIGG Server created');
 ```
 
-```neptune[frame=2,scope=garbler1,title=Garbler,env=browser]
+```neptune[frame=2,scope=garbler1,title=Garbler,env=browser,offline=false]
 const inputs = [0, 1];
 const circuit = getAnd4Circuit();
 
@@ -148,7 +148,7 @@ agent.getOutput().then(function (outputs) {
 agent.start();
 ```
 
-```neptune[frame=2,scope=evaluator1,title=Evaluator,env=browser]
+```neptune[frame=2,scope=evaluator1,title=Evaluator,env=browser,offline=false]
 const inputs = [0, 1];
 const circuit = getAnd4Circuit();
 
@@ -185,7 +185,7 @@ The circuit behaves as you would expect. For every two bits at the same position
 to find the output bit in the corresponding position, the circuit then determines the next carry by checking if
 any two of the input bits and previous carry wires are 1.
 
-```neptune[frame=3,scope=garbler3,title=Garbler,env=browser]
+```neptune[frame=3,scope=garbler3,title=Garbler,env=browser,offline=false]
 const input = 154;
 const circuit = getAdd32Circuit();
 
@@ -207,7 +207,7 @@ agent.getOutput('number').then(function (output) {
 agent.start();
 ```
 
-```neptune[frame=3,scope=evaluator3,title=Evaluator,env=browser]
+```neptune[frame=3,scope=evaluator3,title=Evaluator,env=browser,offline=false]
 const input = 310;
 const circuit = getAdd32Circuit();
 
@@ -261,7 +261,7 @@ agent.getOutput('hex').then(function (output) {
 agent.start();
 ```
 
-```neptune[frame=4,scope=evaluator3,title=Evaluator,env=browser]
+```neptune[frame=4,scope=evaluator3,title=Evaluator,env=browser,offline=false]
 const input = '202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f'; // hex input
 const circuit = getSha256Circuit();
 
