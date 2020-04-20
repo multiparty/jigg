@@ -1,0 +1,6 @@
+3 7    # 3 gates, 7 wires
+2 2 2  # 2 parties, 2 bits for each of them
+1 1    # 1 output, 1 bit long
+2 1 0 1 4 LOR
+2 1 2 3 5 LOR
+2 1 4 5 6 LOR

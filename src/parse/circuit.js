@@ -56,7 +56,7 @@ const circuitParser = function (text) {
     outputWire = parseInt(outputWire);
 
     // parse truth table if exists
-    if (operation === 'AND') {
+    if (operation === 'AND' || operation === 'LOR') {
       i++;
       truthTable = [];
       // parse one label at a time

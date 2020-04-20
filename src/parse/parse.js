@@ -73,7 +73,7 @@ module.exports = function (text) {
     if ((operation === 'INV' || operation === 'NOT') && (inputs.length !== 1)) {
       throw new Error(operation + ' Gate ' + r + ' does not have exactly 1 input!');
     }
-    if ((operation === 'AND' || operation === 'XOR') && (inputs.length !== 2)) {
+    if ((operation === 'AND' || operation === 'LOR' || operation === 'XOR') && (inputs.length !== 2)) {
       throw new Error('Gate ' + r + ' does not have exactly 2 inputs!');
     }
 

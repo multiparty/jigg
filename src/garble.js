@@ -77,7 +77,7 @@ const garbleLor = function (agent, gate, R, garbledAssignment) {
   truthTable[points[2]] = values[2];
   truthTable[points[3]] = values[3];
 
-  return new Gate(gate.id, 'AND', gate.inputWires, gate.outputWire, truthTable);
+  return new Gate(gate.id, 'LOR', gate.inputWires, gate.outputWire, truthTable);
 };
 
 const garbleXor = function (agent, gate, R, garbledAssignment) {
