@@ -73,10 +73,14 @@ const run = function (agent) {
 
         if (garbledGate.operation === 'AND') {
           evaluateAnd(agent, garbledGate, garbledAssignment);
+        } else if (garbledGate.operation === 'LOR') {
+          evaluateAnd(agent, garbledGate, garbledAssignment);
         } else if (garbledGate.operation === 'XOR') {
           evaluateXor(agent, garbledGate, garbledAssignment);
-        } else {
+        } else if (garbledGate.operation === 'NOT' || garbledGate.operation === 'INV') {
           evaluateNot(agent, garbledGate, garbledAssignment);
+        } else {
+          throw new Error('Unrecognized gate: ' + garbledGate.operation);
         }
       }
       agent.progress('evaluating', circuit.gates.length, circuit.gates.length);

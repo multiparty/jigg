@@ -24,6 +24,8 @@ Gate.prototype.serialize = function () {
     gateStr.push('^');
   } else if (this.operation === 'NOT') {
     gateStr.push('!');
+  } else if (this.operation === 'NOT') {
+    gateStr.push('|');
   }
 
   gateStr.push(this.id);

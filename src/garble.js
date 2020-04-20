@@ -49,6 +49,37 @@ const garbleAnd = function (agent, gate, R, garbledAssignment) {
   return new Gate(gate.id, 'AND', gate.inputWires, gate.outputWire, truthTable);
 };
 
+const garbleLor = function (agent, gate, R, garbledAssignment) {
+  const in1 = gate.inputWires[0];
+  const in2 = gate.inputWires[1];
+  const out = gate.outputWire;
+
+  const randomLabel = new Label(sodium.randombytes_buf(agent.labelSize));
+  garbledAssignment[out] = [randomLabel, randomLabel.xor(R)];
+
+  let values = [
+    crypto.encrypt(garbledAssignment[in1][0], garbledAssignment[in2][0], gate.id, garbledAssignment[out][0]),
+    crypto.encrypt(garbledAssignment[in1][0], garbledAssignment[in2][1], gate.id, garbledAssignment[out][1]),
+    crypto.encrypt(garbledAssignment[in1][1], garbledAssignment[in2][0], gate.id, garbledAssignment[out][1]),
+    crypto.encrypt(garbledAssignment[in1][1], garbledAssignment[in2][1], gate.id, garbledAssignment[out][1])
+  ];
+
+  let points = [
+    2 * garbledAssignment[in1][0].getPoint() + garbledAssignment[in2][0].getPoint(),
+    2 * garbledAssignment[in1][0].getPoint() + garbledAssignment[in2][1].getPoint(),
+    2 * garbledAssignment[in1][1].getPoint() + garbledAssignment[in2][0].getPoint(),
+    2 * garbledAssignment[in1][1].getPoint() + garbledAssignment[in2][1].getPoint()
+  ];
+
+  let truthTable = [];
+  truthTable[points[0]] = values[0];
+  truthTable[points[1]] = values[1];
+  truthTable[points[2]] = values[2];
+  truthTable[points[3]] = values[3];
+
+  return new Gate(gate.id, 'AND', gate.inputWires, gate.outputWire, truthTable);
+};
+
 const garbleXor = function (agent, gate, R, garbledAssignment) {
   const in1 = gate.inputWires[0];
   const in2 = gate.inputWires[1];
@@ -128,10 +159,14 @@ const run = function (agent) {
 
     if (gate.operation === 'AND') {
       gate = garbleAnd(agent, gate, R, garbledAssignment);
+    } else if (gate.operation === 'LOR') {
+      gate = garbleLor(agent, gate, R, garbledAssignment);
     } else if (gate.operation === 'XOR') {
       gate = garbleXor(agent, gate, R, garbledAssignment);
-    } else {
+    } else if (gate.operation === 'NOT' || gate.operation === 'INV') {
       gate = garbleNot(agent, gate, R, garbledAssignment);
+    } else {
+      throw new Error('Unrecognized gate: ' + gate.operation);
     }
 
     garbledCircuit.gates.push(gate);

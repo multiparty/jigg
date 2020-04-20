@@ -24,6 +24,8 @@ const circuitParser = function (text) {
       operation = 'XOR';
     } else if (operation === '!') {
       operation = 'NOT';
+    } else if (operation === '|') {
+      operation = 'LOR';
     }
 
     // parse gate Id

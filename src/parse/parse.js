@@ -14,7 +14,7 @@
 const Circuit = require('../modules/circuit.js');
 const Gate = require('../modules/gate.js');
 
-const RECOGNIZED_OPERATIONS = ['AND', 'XOR', 'INV', 'NOT'];
+const RECOGNIZED_OPERATIONS = ['AND', 'XOR', 'INV', 'NOT', 'LOR'];
 
 module.exports = function (text) {
   const rows = text.split('\n').filter(function (line) {
