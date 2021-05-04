@@ -20,15 +20,31 @@ Label.prototype.xorBytes = function (bytes2) {
   return new Label(bytes);
 };
 
+Label.prototype.double = function () {
+  const bytes = this.bytes.slice();
+  const leastbyte = bytes[0];
+  bytes.copyWithin(0,1,15);  // Logical left shift by 1 byte
+  bytes[14] = leastbyte;  // Restore old least byte as new greatest (non-pointer) byte
+  return new Label(bytes);
+};
+
+Label.prototype.quadruple = function () {
+  const bytes = this.bytes.slice();
+  const leastbytes = [bytes[0], bytes[1]];
+  bytes.copyWithin(0,2,15);  // Logical left shift by 2 byte
+  [bytes[13], bytes[14]] = leastbytes;  // Restore old least two bytes as new greatest bytes
+  return new Label(bytes);
+};
+
 Label.prototype.getPoint = function () {
-  return this.bytes[0] & 0x01;
+  return this.bytes[15] & 0x01;
 };
 
 Label.prototype.setPoint = function (point) {
   if (point === 0) {
-    this.bytes[0] = this.bytes[0] & 0xFE;
+    this.bytes[15] = this.bytes[15] & 0xFE;
   } else {
-    this.bytes[0] = this.bytes[0] | 0x01;
+    this.bytes[15] = this.bytes[15] | 0x01;
   }
 };
 
