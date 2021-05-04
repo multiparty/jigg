@@ -1,6 +1,6 @@
 {
   "name": "jigg",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "JavaScript Implementation of Garbled Gates (two-party computation library for boolean circuits)",
   "main": "src/jigg.js",
   "dependencies": {
