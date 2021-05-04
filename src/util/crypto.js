@@ -4,7 +4,9 @@ const sodium = require('libsodium-wrappers-sumo');
 const bytes = 16;
 
 function encrypt(a, b, t, m) {
-  const k = a.xor(b);
+  const a2 = a.double();
+  const b4 = b.quadruple();
+  const k = a2.xor(b4);
   return m.xor(k).xorBytes(randomOracle(k.bytes, t));
 }
 
